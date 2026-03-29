@@ -1,41 +1,47 @@
-# Prerequisites
-*.d
+# --- Visual Studio especíﬁco ---
+.vs/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+out/
+*.user
+*.suo
+*.sln.doccache
+*.vssscc
+*.vspscc
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
+# --- Archivos de compilación y temporales ---
 *.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
+*.sbr
 *.ilk
-
-# Debugger Files
 *.pdb
+*.idb
+*.ispl
+*.tlog
+*.lastbuildstate
+*.recipe
+*.log
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.pch
+*.ipch
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
 
-# Compiled Dynamic libraries
+# --- Ejecutables y Librerías ---
+*.exe
+*.dll
+*.lib
 *.so
 *.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
 *.out
 *.app
 
-# debug information files
-*.dwo
+# --- Otros ---
+.DS_Store
+Thumbs.db
