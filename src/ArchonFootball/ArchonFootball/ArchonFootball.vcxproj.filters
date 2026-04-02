@@ -13,5 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Logica">
+      <UniqueIdentifier>{ae8b10ee-48c1-4565-8cdb-336b49842f22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graficos">
+      <UniqueIdentifier>{7dba4691-7748-498c-9480-faf302c5131e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
