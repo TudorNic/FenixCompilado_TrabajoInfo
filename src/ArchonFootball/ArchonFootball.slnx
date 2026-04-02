@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="ArchonFootball/ArchonFootball.vcxproj" />
+  <Project Path="ArchonFootball/ArchonFootball.vcxproj" Id="93f02960-17f8-47fb-8a76-979d56f0c68e" />
 </Solution>

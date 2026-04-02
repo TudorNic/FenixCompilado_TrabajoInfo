@@ -20,4 +20,20 @@
       <UniqueIdentifier>{7dba4691-7748-498c-9480-faf302c5131e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\logica\Arena.cpp">
+      <Filter>Logica</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\logica\Arena.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Delantero.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Jugador.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
