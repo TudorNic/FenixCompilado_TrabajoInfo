@@ -33,4 +33,5 @@ public:
     void mover(float dx, float dy) { hitbox.x += dx; hitbox.y += dy; }
     void recibirDano(int cantidad) { vidaActual -= cantidad; }
     bool estaMuerto() const { return vidaActual <= 0; }
+    int getVidaActual() const { return vidaActual; }
 };

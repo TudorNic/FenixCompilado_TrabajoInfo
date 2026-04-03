@@ -15,4 +15,7 @@ public:
 
     void actualizar(float deltaTime);
     bool comprobarColision(Hitbox a, Hitbox b);
+    bool isTerminado() const { return combateTerminado; }
+    Jugador* getGanador() const { return ganador; }
+
 };

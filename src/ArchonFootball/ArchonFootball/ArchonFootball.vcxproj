@@ -22,8 +22,11 @@
     <ClCompile Include="..\..\logica\Arena.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\logica\Aficion.h" />
     <ClInclude Include="..\..\logica\Arena.h" />
+    <ClInclude Include="..\..\logica\Defensa.h" />
     <ClInclude Include="..\..\logica\Delantero.h" />
+    <ClInclude Include="..\..\logica\Entrenador.h" />
     <ClInclude Include="..\..\logica\Jugador.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
