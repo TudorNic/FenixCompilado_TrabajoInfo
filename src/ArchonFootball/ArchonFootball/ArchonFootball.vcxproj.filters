@@ -44,5 +44,14 @@
     <ClInclude Include="..\..\logica\Entrenador.h">
       <Filter>Logica</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\logica\Lateral.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Centrocampista.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Proyectil.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

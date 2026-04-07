@@ -24,10 +24,13 @@
   <ItemGroup>
     <ClInclude Include="..\..\logica\Aficion.h" />
     <ClInclude Include="..\..\logica\Arena.h" />
+    <ClInclude Include="..\..\logica\Centrocampista.h" />
     <ClInclude Include="..\..\logica\Defensa.h" />
     <ClInclude Include="..\..\logica\Delantero.h" />
     <ClInclude Include="..\..\logica\Entrenador.h" />
     <ClInclude Include="..\..\logica\Jugador.h" />
+    <ClInclude Include="..\..\logica\Lateral.h" />
+    <ClInclude Include="..\..\logica\Proyectil.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
