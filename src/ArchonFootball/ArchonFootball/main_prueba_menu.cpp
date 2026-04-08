@@ -1,59 +1,35 @@
 //ARCHIVO DE PRUEBA PARA EL MENU, NO ES EL MAIN DEFINITIVO
-
+#include <conio.h> //libreria para captura de teclado sin necesidad de pulsar enter
 #include <iostream>
-#include "Menu.h"
+#include "PantallaMenu.h"
 
 using namespace std;
 
 int main()
 {
-    Menu menu;
+    PantallaMenu pantalla;
     char tecla;
     int salir = 0;
 
     while (salir == 0)
     {
         system("cls");
-        menu.mostrarMenu();
+        pantalla.dibujar();
 
-        cin >> tecla;
+        cout << "Pulsa w para subir, s para bajar, e para salir: ";
+		tecla = _getch();  
 
         if (tecla == 'w' || tecla == 'W')
         {
-            menu.moverArriba();
+            pantalla.obtenerMenu().moverArriba();
         }
         else if (tecla == 's' || tecla == 'S')
         {
-            menu.moverAbajo();
+            pantalla.obtenerMenu().moverAbajo();
         }
         else if (tecla == 'e' || tecla == 'E')
         {
-            system("cls");
-
-            if (menu.obtenerOpcionSeleccionada() == 0)
-            {
-                cout << "Has elegido: Jugar" << endl;
-            }
-            else if (menu.obtenerOpcionSeleccionada() == 1)
-            {
-                cout << "Has elegido: Ranking" << endl;
-            }
-            else if (menu.obtenerOpcionSeleccionada() == 2)
-            {
-                cout << "Has elegido: Instrucciones" << endl;
-            }
-            else if (menu.obtenerOpcionSeleccionada() == 3)
-            {
-                cout << "Has elegido: Salir" << endl;
-                salir = 1;
-            }
-
-            if (salir == 0)
-            {
-                cout << endl;
-                cout << "Pulsa una tecla y Enter para volver al menu..." << endl;
-                cin >> tecla;
-            }
+            salir = 1;
         }
     }
 

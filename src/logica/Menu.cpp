@@ -1,61 +1,46 @@
 #include "Menu.h"
-#include <cstring>
-
-using namespace std;
 
 Menu::Menu()
 {
-    strcpy_s(opciones[0], "Jugar");
-    strcpy_s(opciones[1], "Ranking");
-    strcpy_s(opciones[2], "Instrucciones");
-    strcpy_s(opciones[3], "Salir");
-
-    opcionSeleccionada = 0;
+    opcionSeleccionada = JUGAR;
     numeroOpciones = 4;
 }
 
 void Menu::moverArriba()
 {
-    if (opcionSeleccionada > 0)
+    if (opcionSeleccionada > JUGAR)
     {
-        opcionSeleccionada--;
+        opcionSeleccionada = static_cast<Opcion>(opcionSeleccionada - 1);
     }
 }
 
 void Menu::moverAbajo()
 {
-    if (opcionSeleccionada < numeroOpciones - 1)
+    if (opcionSeleccionada < SALIR)
     {
-        opcionSeleccionada++;
+        opcionSeleccionada = static_cast<Opcion>(opcionSeleccionada + 1);
     }
 }
 
-void Menu::mostrarMenu()
+void Menu::seleccionarOpcion(int indice)
 {
-    int i;
-
-    cout << "==============================" << endl;
-    cout << "      ARCHON FOOTBALL         " << endl;
-    cout << "==============================" << endl;
-    cout << endl;
-
-    for (i = 0; i < numeroOpciones; i++)
+    if (indice >= 0 && indice < numeroOpciones)
     {
-        if (i == opcionSeleccionada)
-        {
-            cout << " > " << opciones[i] << endl;
-        }
-        else
-        {
-            cout << "   " << opciones[i] << endl;
-        }
+        opcionSeleccionada = static_cast<Opcion>(indice);
     }
-
-    cout << endl;
-    cout << "Pulsa w para subir, s para bajar y e para elegir." << endl;
 }
 
-int Menu::obtenerOpcionSeleccionada()
+Menu::Opcion Menu::obtenerOpcionSeleccionada() const
 {
     return opcionSeleccionada;
+}
+
+int Menu::obtenerIndiceSeleccionado() const
+{
+    return static_cast<int>(opcionSeleccionada);
+}
+
+int Menu::obtenerNumeroOpciones() const
+{
+    return numeroOpciones;
 }
