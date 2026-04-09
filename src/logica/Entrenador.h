@@ -1,6 +1,6 @@
 #pragma once
 #include "Jugador.h"
-
+#include "Proyectil.h"
 class Entrenador : public Jugador {
 public:
     // Stats: Vida alta (80), velocidad media (3.0f), daño medio-alto (20), recarga media (1.0f)
@@ -9,8 +9,9 @@ public:
         hitbox.alto = 20.0f;
     }
 
-    void atacar() override {
-        // Lógica de ataque principal
+    Proyectil atacar(float dirX, float dirY) override {
+        // Tiro estándar, luego le añado la magia
+        return Proyectil(hitbox.x, hitbox.y, dirX * 250.0f, dirY * 250.0f, danoAtaque);
     }
 
     // El líder tiene habilidades extra q hare mas adelante

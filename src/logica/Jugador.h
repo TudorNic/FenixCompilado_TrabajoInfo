@@ -1,33 +1,44 @@
 #pragma once
 
-// Estructura matemática para colisiones y posición 
 struct Hitbox {
     float x, y, ancho, alto;
 };
 
-// CLASE BASE
 class Jugador {
 protected:
     int vidaMaxima;
     int vidaActual;
     float velocidad;
     int danoAtaque;
-    float tiempoRecarga; // Cadencia de ataque 
+
+    // Sistema de recarga
+    float tiempoRecarga;
+    float tiempoRecargaActual; // Cronómetro que bajará hasta 0
+
     Hitbox hitbox;
 
 public:
-    // Constructor
     Jugador(int vida, float vel, int dano, float recarga)
-        : vidaMaxima(vida), vidaActual(vida), velocidad(vel), danoAtaque(dano), tiempoRecarga(recarga) {
+        : vidaMaxima(vida), vidaActual(vida), velocidad(vel), danoAtaque(dano), tiempoRecarga(recarga), tiempoRecargaActual(0.0f) {
     }
 
-    // Destructor virtual
     virtual ~Jugador() = default;
 
-    
-    virtual void atacar() = 0;
+    //La función atacar ahora recibe hacia dónde chutamos y devuelve un balón
+    virtual Proyectil atacar(float dirX, float dirY) = 0;
+    //preparamos el ataque especial del entrenador
+    // 
+    // El jugador también necesita actualizar su cronómetro 
+    virtual void actualizar(float deltaTime) {
+        if (tiempoRecargaActual > 0.0f) {
+            tiempoRecargaActual -= deltaTime;
+        }
+    }
 
-    // Métodos comunes para el motor de la Arena
+    bool puedeAtacar() const { return tiempoRecargaActual <= 0.0f; }
+    void reiniciarRecarga() { tiempoRecargaActual = tiempoRecarga; }
+
+ 
     Hitbox getHitbox() const { return hitbox; }
     void setPosicion(float nx, float ny) { hitbox.x = nx; hitbox.y = ny; }
     void mover(float dx, float dy) { hitbox.x += dx; hitbox.y += dy; }

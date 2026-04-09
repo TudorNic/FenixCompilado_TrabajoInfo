@@ -1,4 +1,8 @@
 #include "Arena.h"
+#pragma once
+#include <vector>
+#include "Jugador.h"
+#include "Proyectil.h"
 
 Arena::Arena(Jugador* j1, Jugador* j2) {
     jugador1 = j1;
@@ -68,5 +72,22 @@ void Arena::actualizar(float deltaTime) {
     else if (jugador2->estaMuerto()) {
         combateTerminado = true;
         ganador = jugador1;
+    }
+}
+
+void Arena::comandoDisparoJugador1(float dirX, float dirY) {
+
+    if (jugador1->puedeAtacar()) {
+        Proyectil nuevoBalon = jugador1->atacar(dirX, dirY);
+        agregarProyectil(nuevoBalon);
+        jugador1->reiniciarRecarga();
+    }
+}
+
+void Arena::comandoDisparoJugador2(float dirX, float dirY) {
+    if (jugador2->puedeAtacar()) {
+        Proyectil nuevoBalon = jugador2->atacar(dirX, dirY);
+        agregarProyectil(nuevoBalon);
+        jugador2->reiniciarRecarga();
     }
 }

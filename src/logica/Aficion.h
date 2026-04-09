@@ -1,6 +1,6 @@
 #pragma once
 #include "Jugador.h"
-
+#include "Proyectil.h"
 class Aficion : public Jugador {
 public:
     // Stats: Vida muy baja (30), velocidad media-alta (4.0f), daño bajo (10), recarga rápida (0.4f)
@@ -9,7 +9,8 @@ public:
         hitbox.alto = 15.0f;
     }
 
-    void atacar() override {
-        // Lógica de ataque cuerpo a cuerpo ( un empujón)
+    Proyectil atacar(float dirX, float dirY) override {
+        // Proyectil a 200 de velocidad
+        return Proyectil(hitbox.x, hitbox.y, dirX * 200.0f, dirY * 200.0f, danoAtaque);
     }
 };

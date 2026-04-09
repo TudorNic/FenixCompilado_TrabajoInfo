@@ -1,5 +1,6 @@
 #pragma once
 #include "Jugador.h"
+#include "Proyectil.h"
 
 class Centrocampista : public Jugador {
 public:
@@ -9,8 +10,8 @@ public:
         hitbox.ancho = 22.0f;
         hitbox.alto = 22.0f;
     }
-
-    void atacar() override {
-        // Lógica de ataque para el centrocampista (ej. un pase tenso o disparo preciso)
+    Proyectil atacar(float dirX, float dirY) override {
+        // Balón a 250 de velocidad (tiro tenso y controlado)
+        return Proyectil(hitbox.x, hitbox.y, dirX * 250.0f, dirY * 250.0f, danoAtaque);
     }
 };
