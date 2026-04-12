@@ -61,23 +61,26 @@ void Arena::actualizar(float deltaTime) {
             // Solo avanzamos la 'i' si NO hemos borrado el balón
             i++;
         }
+
     }
 
    
-   
+    // Comprobar muertes
     if (jugador1->estaMuerto()) {
+        jugador1->setEstado(MUERTO);
         combateTerminado = true;
         ganador = jugador2;
     }
     else if (jugador2->estaMuerto()) {
+        jugador2->setEstado(MUERTO); 
         combateTerminado = true;
         ganador = jugador1;
     }
 }
 
 void Arena::comandoDisparoJugador1(float dirX, float dirY) {
-
     if (jugador1->puedeAtacar()) {
+        jugador1->setEstado(ATACANDO); 
         Proyectil nuevoBalon = jugador1->atacar(dirX, dirY);
         agregarProyectil(nuevoBalon);
         jugador1->reiniciarRecarga();
@@ -86,8 +89,55 @@ void Arena::comandoDisparoJugador1(float dirX, float dirY) {
 
 void Arena::comandoDisparoJugador2(float dirX, float dirY) {
     if (jugador2->puedeAtacar()) {
+        jugador2->setEstado(ATACANDO);
         Proyectil nuevoBalon = jugador2->atacar(dirX, dirY);
         agregarProyectil(nuevoBalon);
         jugador2->reiniciarRecarga();
     }
+}
+
+void Arena::comandoMoverJugador1(float dirX, float dirY, float deltaTime) {
+    // Comprobamos si el jugador está parado o moviéndose
+    if (dirX == 0.0f && dirY == 0.0f) {
+        jugador1->setEstado(QUIETO);
+    }
+    else {
+        jugador1->setEstado(CAMINANDO);
+
+        // El movimiento y límites
+        float desplazamientoX = dirX * jugador1->getVelocidad() * deltaTime;
+        float desplazamientoY = dirY * jugador1->getVelocidad() * deltaTime;
+        jugador1->mover(desplazamientoX, desplazamientoY);
+    }
+
+    // LÍMITES DEL CAMPO 
+    Hitbox caja = jugador1->getHitbox();
+    if (caja.x < 0.0f) jugador1->setPosicion(0.0f, caja.y);
+    if (caja.x + caja.ancho > 800.0f) jugador1->setPosicion(800.0f - caja.ancho, caja.y);
+
+    caja = jugador1->getHitbox();
+    if (caja.y < 0.0f) jugador1->setPosicion(caja.x, 0.0f);
+    if (caja.y + caja.alto > 600.0f) jugador1->setPosicion(caja.x, 600.0f - caja.alto);
+}
+
+void Arena::comandoMoverJugador2(float dirX, float dirY, float deltaTime) {
+    // Lo mismo para el jugador 2
+    if (dirX == 0.0f && dirY == 0.0f) {
+        jugador2->setEstado(QUIETO);
+    }
+    else {
+        jugador2->setEstado(CAMINANDO);
+
+        float desplazamientoX = dirX * jugador2->getVelocidad() * deltaTime;
+        float desplazamientoY = dirY * jugador2->getVelocidad() * deltaTime;
+        jugador2->mover(desplazamientoX, desplazamientoY);
+    }
+
+    Hitbox caja = jugador2->getHitbox();
+    if (caja.x < 0.0f) jugador2->setPosicion(0.0f, caja.y);
+    if (caja.x + caja.ancho > 800.0f) jugador2->setPosicion(800.0f - caja.ancho, caja.y);
+
+    caja = jugador2->getHitbox();
+    if (caja.y < 0.0f) jugador2->setPosicion(caja.x, 0.0f);
+    if (caja.y + caja.alto > 600.0f) jugador2->setPosicion(caja.x, 600.0f - caja.alto);
 }

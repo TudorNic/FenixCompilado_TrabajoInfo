@@ -25,4 +25,8 @@ public:
 
     bool isTerminado() const { return combateTerminado; }
     Jugador* getGanador() const { return ganador; }
+
+    void comandoMoverJugador1(float dirX, float dirY, float deltaTime);
+    void comandoMoverJugador2(float dirX, float dirY, float deltaTime);
+
 };

@@ -1,5 +1,15 @@
 #pragma once
 
+#include "Proyectil.h"
+
+enum EstadoJugador {
+    QUIETO,
+    CAMINANDO,
+    ATACANDO,
+    MUERTO
+};
+
+
 struct Hitbox {
     float x, y, ancho, alto;
 };
@@ -16,11 +26,12 @@ protected:
     float tiempoRecargaActual; // Cronómetro que bajará hasta 0
 
     Hitbox hitbox;
-
+    EstadoJugador estadoActual;
 public:
     Jugador(int vida, float vel, int dano, float recarga)
-        : vidaMaxima(vida), vidaActual(vida), velocidad(vel), danoAtaque(dano), tiempoRecarga(recarga), tiempoRecargaActual(0.0f) {
+        : vidaMaxima(vida), vidaActual(vida), velocidad(vel), danoAtaque(dano), tiempoRecarga(recarga), tiempoRecargaActual(0.0f), estadoActual(QUIETO) {
     }
+
 
     virtual ~Jugador() = default;
 
@@ -38,6 +49,8 @@ public:
     bool puedeAtacar() const { return tiempoRecargaActual <= 0.0f; }
     void reiniciarRecarga() { tiempoRecargaActual = tiempoRecarga; }
 
+    EstadoJugador getEstado() const { return estadoActual; }
+    void setEstado(EstadoJugador nuevoEstado) { estadoActual = nuevoEstado; }
  
     Hitbox getHitbox() const { return hitbox; }
     void setPosicion(float nx, float ny) { hitbox.x = nx; hitbox.y = ny; }
@@ -45,4 +58,5 @@ public:
     void recibirDano(int cantidad) { vidaActual -= cantidad; }
     bool estaMuerto() const { return vidaActual <= 0; }
     int getVidaActual() const { return vidaActual; }
+    float getVelocidad() const { return velocidad; }
 };
