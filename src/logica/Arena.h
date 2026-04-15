@@ -28,5 +28,6 @@ public:
 
     void comandoMoverJugador1(float dirX, float dirY, float deltaTime);
     void comandoMoverJugador2(float dirX, float dirY, float deltaTime);
-
+    void comandoHabilidadJugador1();
+    void comandoHabilidadJugador2();
 };

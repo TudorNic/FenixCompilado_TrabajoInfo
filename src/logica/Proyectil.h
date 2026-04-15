@@ -1,6 +1,9 @@
 #pragma once
-// incluyo Jugador.h  para reutilizar Hitbox 
-#include "Jugador.h" 
+
+// Definimos la hitbox aquí arriba
+struct Hitbox {
+    float x, y, ancho, alto;
+};
 
 class Proyectil {
 private:

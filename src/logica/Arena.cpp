@@ -141,3 +141,13 @@ void Arena::comandoMoverJugador2(float dirX, float dirY, float deltaTime) {
     if (caja.y < 0.0f) jugador2->setPosicion(caja.x, 0.0f);
     if (caja.y + caja.alto > 600.0f) jugador2->setPosicion(caja.x, 600.0f - caja.alto);
 }
+
+void Arena::comandoHabilidadJugador1() {
+    jugador1->usarHabilidadEspecial();
+    jugador1->setEstado(ATACANDO);
+}
+
+void Arena::comandoHabilidadJugador2() {
+    jugador2->usarHabilidadEspecial();
+    jugador2->setEstado(ATACANDO);
+}
