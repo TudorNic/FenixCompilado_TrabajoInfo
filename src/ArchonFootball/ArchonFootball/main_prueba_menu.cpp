@@ -1,35 +1,30 @@
-//ARCHIVO DE PRUEBA PARA EL MENU, NO ES EL MAIN DEFINITIVO
-#include <conio.h> //libreria para captura de teclado sin necesidad de pulsar enter
+#include <SFML/Graphics.hpp>
 #include <iostream>
 #include "PantallaMenu.h"
 
-using namespace std;
-
 int main()
 {
-    PantallaMenu pantalla;
-    char tecla;
-    int salir = 0;
+    sf::RenderWindow ventana(sf::VideoMode({ 800, 600 }), "Menu Archon");
+    ventana.setFramerateLimit(60);
 
-    while (salir == 0)
+    PantallaMenu pantalla(ventana, "../../../assets/fonts/Bungee-Regular.ttf");
+
+    while (ventana.isOpen())
     {
-        system("cls");
+        pantalla.procesarEventos();
+        pantalla.actualizar();
         pantalla.dibujar();
 
-        cout << "Pulsa w para subir, s para bajar, e para salir: ";
-		tecla = _getch();  
+        if (pantalla.estaOpcionConfirmada())
+        {
+            Menu::Opcion opcion = pantalla.obtenerOpcionConfirmada();
 
-        if (tecla == 'w' || tecla == 'W')
-        {
-            pantalla.obtenerMenu().moverArriba();
-        }
-        else if (tecla == 's' || tecla == 'S')
-        {
-            pantalla.obtenerMenu().moverAbajo();
-        }
-        else if (tecla == 'e' || tecla == 'E')
-        {
-            salir = 1;
+            if (opcion == Menu::SALIR)
+            {
+                ventana.close();
+            }
+
+            pantalla.reiniciarConfirmacion();
         }
     }
 

@@ -1,40 +1,185 @@
 #include "PantallaMenu.h"
-#include <iostream>
+#include <stdexcept>
 
-using namespace std;
-
-PantallaMenu::PantallaMenu()
+PantallaMenu::PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente)
+    : ventana(v),
+    titulo(fuente),
+    opcionesTexto{ sf::Text(fuente), sf::Text(fuente), sf::Text(fuente), sf::Text(fuente) },
+    pelota1(18.f, { 60.f, 120.f }, { 1.6f, 1.2f }),
+    pelota2(24.f, { 620.f, 420.f }, { -1.3f, -1.0f }),
+    opcionConfirmada(false)
 {
+    if (!fuente.openFromFile(rutaFuente))
+    {
+        throw std::runtime_error("No se pudo cargar la fuente del menu.");
+    }
+
+    pelota1.setColor(sf::Color(220, 220, 220));
+    pelota2.setColor(sf::Color(180, 180, 180));
+
+    inicializarTextos();
+    actualizarAspectoOpciones();
 }
 
-void PantallaMenu::procesarEntrada()
+void PantallaMenu::procesarEventos()
 {
-    // Aqui ira la captura de teclado y raton con SFML.
-    // Por ejemplo:
-    // - Flecha arriba  -> menu.moverArriba();
-    // - Flecha abajo   -> menu.moverAbajo();
-    // - Enter o click  -> confirmar opcion
+    while (const auto evento = ventana.pollEvent())
+    {
+        if (evento->is<sf::Event::Closed>())
+        {
+            ventana.close();
+        }
+
+        manejarTeclado(*evento);
+        manejarRaton(*evento);
+    }
 }
 
 void PantallaMenu::actualizar()
 {
-    // Aqui ira la logica de actualizacion visual del menu.
-    // Por ejemplo:
-    // - animaciones
-    // - transiciones
-    // - efecto hover del raton
+    pelota1.actualizar(ventana);
+	pelota2.actualizar(ventana);
+
+    actualizarAspectoOpciones();
 }
 
 void PantallaMenu::dibujar()
 {
-    // Aqui ira el dibujado real con SFML.
-    // De momento dejamos una salida sencilla de prueba.
+    ventana.clear(sf::Color(30, 30, 30));
 
-    cout << "===== MENU =====" << endl;
-    cout << "Opcion seleccionada: " << menu.obtenerIndiceSeleccionado() << endl;
+    //dibujamos fondo animado
+	pelota1.dibujar(ventana);
+    pelota2.dibujar(ventana);
+
+    //Dibujamos luego el menu por encima
+    ventana.draw(titulo);
+
+    for (int i = 0; i < menu.obtenerNumeroOpciones(); i++)
+    {
+        ventana.draw(opcionesTexto[i]);
+    }
+
+    ventana.display();
 }
 
 Menu& PantallaMenu::obtenerMenu()
 {
     return menu;
+}
+
+bool PantallaMenu::estaOpcionConfirmada() const
+{
+    return opcionConfirmada;
+}
+
+Menu::Opcion PantallaMenu::obtenerOpcionConfirmada() const
+{
+    return menu.obtenerOpcionSeleccionada();
+}
+
+void PantallaMenu::reiniciarConfirmacion()
+{
+    opcionConfirmada = false;
+}
+
+void PantallaMenu::inicializarTextos()
+{
+    titulo.setString("ARCHON FOOTBALL");
+    titulo.setCharacterSize(42);
+    titulo.setFillColor(sf::Color::White);
+    titulo.setPosition({ 220.f, 80.f });
+
+    for (int i = 0; i < menu.obtenerNumeroOpciones(); i++)
+    {
+        opcionesTexto[i].setString(obtenerTextoOpcion(i));
+        opcionesTexto[i].setCharacterSize(30);
+        opcionesTexto[i].setPosition({ 280.f, 200.f + i * 70.f });
+        opcionesTexto[i].setFillColor(sf::Color(0, 0, 0));
+    }
+}
+
+void PantallaMenu::actualizarAspectoOpciones()
+{
+    for (int i = 0; i < menu.obtenerNumeroOpciones(); i++)
+    {
+        if (i == menu.obtenerIndiceSeleccionado())
+        {
+            opcionesTexto[i].setFillColor(sf::Color::Yellow);
+            opcionesTexto[i].setScale({ 1.15f, 1.15f });
+        }
+        else
+        {
+            opcionesTexto[i].setFillColor(sf::Color(0, 0, 0));
+            opcionesTexto[i].setScale({ 1.f, 1.f });
+        }
+    }
+}
+
+void PantallaMenu::manejarTeclado(const sf::Event& evento)
+{
+    if (const auto* tecla = evento.getIf<sf::Event::KeyPressed>())
+    {
+        if (tecla->code == sf::Keyboard::Key::Up)
+        {
+            menu.moverArriba();
+        }
+        else if (tecla->code == sf::Keyboard::Key::Down)
+        {
+            menu.moverAbajo();
+        }
+        else if (tecla->code == sf::Keyboard::Key::Enter)
+        {
+            opcionConfirmada = true;
+        }
+        else if (tecla->code == sf::Keyboard::Key::Escape)
+        {
+            ventana.close();
+        }
+    }
+}
+
+void PantallaMenu::manejarRaton(const sf::Event& evento)
+{
+    if (const auto* mouseMove = evento.getIf<sf::Event::MouseMoved>())
+    {
+        seleccionarOpcionConRaton(mouseMove->position);
+    }
+
+    if (const auto* mouseClick = evento.getIf<sf::Event::MouseButtonPressed>())
+    {
+        if (mouseClick->button == sf::Mouse::Button::Left)
+        {
+            seleccionarOpcionConRaton(mouseClick->position);
+            opcionConfirmada = true;
+        }
+    }
+}
+
+void PantallaMenu::seleccionarOpcionConRaton(sf::Vector2i posicionRaton)
+{
+    sf::Vector2f posicion(
+        static_cast<float>(posicionRaton.x),
+        static_cast<float>(posicionRaton.y)
+    );
+
+    for (int i = 0; i < menu.obtenerNumeroOpciones(); i++)
+    {
+        if (opcionesTexto[i].getGlobalBounds().contains(posicion))
+        {
+            menu.seleccionarOpcion(i);
+            break;
+        }
+    }
+}
+
+std::string PantallaMenu::obtenerTextoOpcion(int indice) const
+{
+    switch (indice)
+    {
+    case 0: return "Jugar";
+    case 1: return "Ranking";
+    case 2: return "Instrucciones";
+    case 3: return "Salir";
+    default: return "";
+    }
 }
