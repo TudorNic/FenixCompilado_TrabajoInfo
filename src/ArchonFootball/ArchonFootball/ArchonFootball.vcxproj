@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath); C:\librerias trabajo infor\SFML-3.0.2\include</ExternalIncludePath>
-    <LibraryWPath>$(WindowsSDK_MetadataPath); C:\librerias trabajo infor\SFML-3.0.2\lib</LibraryWPath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\..\..\external\SFML\include</ExternalIncludePath>
+    <LibraryWPath>$(WindowsSDK_MetadataPath);$(ProjectDir)..\..\..\external\SFML\include</LibraryWPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -115,6 +115,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);C:\librerias trabajo infor\SFML-3.0.2\lib\sfml-graphics-d.lib;C:\librerias trabajo infor\SFML-3.0.2\lib\sfml-window-d.lib;C:\librerias trabajo infor\SFML-3.0.2\lib\sfml-system-d.lib</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Y /D "$(ProjectDir)..\..\..\external\SFML\bin\*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
