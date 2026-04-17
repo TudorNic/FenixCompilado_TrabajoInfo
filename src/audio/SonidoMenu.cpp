@@ -39,8 +39,8 @@ SonidoMenu::SonidoMenu(const std::string& rutaMover,
 
     musicaFondo.setLooping(true);
 
-    setVolumenEfectos(65.f);
-    setVolumenMusica(30.f);
+    setVolumenEfectos(30.f);
+    setVolumenMusica(50.f);
 }
 
 void SonidoMenu::reproducirMover()

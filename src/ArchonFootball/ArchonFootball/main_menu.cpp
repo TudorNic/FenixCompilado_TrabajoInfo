@@ -10,7 +10,7 @@ int main()
         "../../../assets/images/menu/pelota_futbol.png", "../../../assets/audio/menu/mover_opcion.mp3",
         "../../../assets/audio/menu/confirmar_opcion.mp3",
         "../../../assets/audio/menu/salir_menu.mp3",
-        "../../../assets/audio/menu/musica_fondo_menu.mp3"
+        "../../../assets/audio/menu/musica_haram_fondo_menu.mp3"
     );
        
     while (ventana.isOpen())
