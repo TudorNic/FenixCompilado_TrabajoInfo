@@ -1,33 +1,37 @@
 #include "PelotasAnimadas.h"
+#include <stdexcept>
 
-PelotaAnimada::PelotaAnimada(float radio, sf::Vector2f posicionInicial, sf::Vector2f velocidadInicial)
+PelotaAnimada::PelotaAnimada(const std::string& rutaImagen, sf::Vector2f posicionInicial, sf::Vector2f velocidadInicial, float escala)
     : velocidad(velocidadInicial)
 {
-    forma.setRadius(radio);
-    forma.setPosition(posicionInicial);
-    forma.setFillColor(sf::Color::White);
+    if (!textura.loadFromFile(rutaImagen))
+    {
+        throw std::runtime_error("No se pudo cargar la imagen de la pelota.");
+    }
 
-    // Para que quede algo mas decorativa
-    forma.setOutlineThickness(2.f);
-    forma.setOutlineColor(sf::Color::Black);
+    sprite.setTexture(textura);
+    sprite.setPosition(posicionInicial);
+    sprite.setScale({ escala, escala });
+
+    sf::FloatRect bounds = sprite.getLocalBounds();
+    sprite.setOrigin({ bounds.size.x / 2.f, bounds.size.y / 2.f });
 }
 
 void PelotaAnimada::actualizar(const sf::RenderWindow& ventana)
 {
-    forma.move(velocidad);
+    sprite.move(velocidad);
+    sprite.rotate(0.3f);
 
-    sf::Vector2f posicion = forma.getPosition();
-    float radio = forma.getRadius();
+    sf::Vector2f posicion = sprite.getPosition();
+    sf::FloatRect bounds = sprite.getGlobalBounds();
     sf::Vector2u size = ventana.getSize();
 
-    // Rebote horizontal
-    if (posicion.x <= 0.f || posicion.x + 2.f * radio >= size.x)
+    if (posicion.x - bounds.size.x / 2.f <= 0.f || posicion.x + bounds.size.x / 2.f >= size.x)
     {
         velocidad.x = -velocidad.x;
     }
 
-    // Rebote vertical
-    if (posicion.y <= 0.f || posicion.y + 2.f * radio >= size.y)
+    if (posicion.y - bounds.size.y / 2.f <= 0.f || posicion.y + bounds.size.y / 2.f >= size.y)
     {
         velocidad.y = -velocidad.y;
     }
@@ -35,10 +39,10 @@ void PelotaAnimada::actualizar(const sf::RenderWindow& ventana)
 
 void PelotaAnimada::dibujar(sf::RenderWindow& ventana)
 {
-    ventana.draw(forma);
+    ventana.draw(sprite);
 }
 
-void PelotaAnimada::setColor(const sf::Color& color)
+void PelotaAnimada::setRotacion(float angulo)
 {
-    forma.setFillColor(color);
+    sprite.setRotation(sf::degrees(angulo));
 }

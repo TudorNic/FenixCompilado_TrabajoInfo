@@ -1,18 +1,20 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <string>
 
 class PelotaAnimada
 {
 private:
-    sf::CircleShape forma;
+    sf::Texture textura;
+    sf::Sprite sprite;
     sf::Vector2f velocidad;
 
 public:
-    PelotaAnimada(float radio, sf::Vector2f posicionInicial, sf::Vector2f velocidadInicial);
+    PelotaAnimada(const std::string& rutaImagen, sf::Vector2f posicionInicial, sf::Vector2f velocidadInicial, float escala);
 
     void actualizar(const sf::RenderWindow& ventana);
     void dibujar(sf::RenderWindow& ventana);
 
-    void setColor(const sf::Color& color);
+	void setRotacion(float angulo);
 };

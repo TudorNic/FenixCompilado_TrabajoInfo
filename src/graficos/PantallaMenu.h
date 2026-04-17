@@ -16,13 +16,16 @@ private:
     sf::Text titulo;
     sf::Text opcionesTexto[4];
 
+    sf::Texture texturaFondo;
+    sf::Sprite fondoCampo;
+
     PelotaAnimada pelota1;
     PelotaAnimada pelota2;
 
     bool opcionConfirmada;
 
 public:
-    PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente);
+    PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente, const std::string& rutaCampo, const std::string& rutaPelota);
 
     void procesarEventos();
     void actualizar();

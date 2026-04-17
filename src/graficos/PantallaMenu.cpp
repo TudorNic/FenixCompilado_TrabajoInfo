@@ -1,21 +1,30 @@
 #include "PantallaMenu.h"
 #include <stdexcept>
 
-PantallaMenu::PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente)
+PantallaMenu::PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente, const std::string& rutaCampo, const std::string& rutaPelota)
     : ventana(v),
     titulo(fuente),
     opcionesTexto{ sf::Text(fuente), sf::Text(fuente), sf::Text(fuente), sf::Text(fuente) },
-    pelota1(18.f, { 60.f, 120.f }, { 1.6f, 1.2f }),
-    pelota2(24.f, { 620.f, 420.f }, { -1.3f, -1.0f }),
+    pelota1(rutaPelota, { 60.f, 120.f }, { 1.6f, 1.2f }, 0.12f),
+    pelota2(rutaPelota, { 620.f, 420.f }, { -1.3f, -1.0f }, 0.16f),
     opcionConfirmada(false)
 {
     if (!fuente.openFromFile(rutaFuente))
     {
         throw std::runtime_error("No se pudo cargar la fuente del menu.");
     }
+    if (!texturaFondo.loadFromFile(rutaCampo))
+    {
+        throw std::runtime_error("No se pudo cargar la imagen del campo.");
+    }
 
-    pelota1.setColor(sf::Color(220, 220, 220));
-    pelota2.setColor(sf::Color(180, 180, 180));
+    fondoCampo.setTexture(texturaFondo);
+
+    sf::Vector2u sizeVentana = ventana.getSize();
+    sf::Vector2u sizeImagen = texturaFondo.getSize();
+
+    fondoCampo.setScale({static_cast<float>(sizeVentana.x) / static_cast<float>(sizeImagen.x),static_cast<float>(sizeVentana.y) / static_cast<float>(sizeImagen.y)});
+   
 
     inicializarTextos();
     actualizarAspectoOpciones();
@@ -45,11 +54,19 @@ void PantallaMenu::actualizar()
 
 void PantallaMenu::dibujar()
 {
-    ventana.clear(sf::Color(30, 30, 30));
-
+    ventana.clear();
+    //campo de fondo
+	ventana.draw(fondoCampo);
     //dibujamos fondo animado
 	pelota1.dibujar(ventana);
     pelota2.dibujar(ventana);
+    // Capa suave oscura para que el texto se lea mejor
+    sf::RectangleShape oscurecedor(sf::Vector2f(
+        static_cast<float>(ventana.getSize().x),
+        static_cast<float>(ventana.getSize().y)
+    ));
+    oscurecedor.setFillColor(sf::Color(0, 0, 0, 90));
+    ventana.draw(oscurecedor);
 
     //Dibujamos luego el menu por encima
     ventana.draw(titulo);
