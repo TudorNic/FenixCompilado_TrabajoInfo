@@ -6,7 +6,7 @@ int main()
     sf::RenderWindow ventana(sf::VideoMode({ 800, 600 }), "Menu Archon");
     ventana.setFramerateLimit(60);
 
-    PantallaMenu pantalla(ventana, "../../../assets/fonts/Bungee-Regular.ttf", "../../../assets/images/campo_futbol.png", "../../../assets/images/pelota_futbol.png");
+    PantallaMenu pantalla(ventana, "../../../assets/fonts/Bungee-Regular.ttf", "../../../assets/images/menu/campo_futbol.png", "../../../assets/images/menu/pelota_futbol.png");
 
     while (ventana.isOpen())
     {

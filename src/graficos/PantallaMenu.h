@@ -42,6 +42,7 @@ private:
     void manejarTeclado(const sf::Event& evento);
     void manejarRaton(const sf::Event& evento);
     void seleccionarOpcionConRaton(sf::Vector2i posicionRaton);
+    void comprobarChoquePelotas();
 
     std::string obtenerTextoOpcion(int indice) const;
 };

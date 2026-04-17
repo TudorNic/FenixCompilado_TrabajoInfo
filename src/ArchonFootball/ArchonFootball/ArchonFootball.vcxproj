@@ -147,7 +147,7 @@
     <ClCompile Include="..\..\graficos\PantallaMenu.cpp" />
     <ClCompile Include="..\..\graficos\PelotasAnimadas.cpp" />
     <ClCompile Include="..\..\logica\Menu.cpp" />
-    <ClCompile Include="main_prueba_menu.cpp" />
+    <ClCompile Include="main_menu.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,15 +1,18 @@
 #include "PelotasAnimadas.h"
 #include <stdexcept>
+#include<iostream>
 
 PelotaAnimada::PelotaAnimada(const std::string& rutaImagen, sf::Vector2f posicionInicial, sf::Vector2f velocidadInicial, float escala)
-    : velocidad(velocidadInicial)
+    : textura(),sprite(textura), velocidad(velocidadInicial)
 {
     if (!textura.loadFromFile(rutaImagen))
     {
         throw std::runtime_error("No se pudo cargar la imagen de la pelota.");
     }
 
-    sprite.setTexture(textura);
+	std::cout << "Pelota cargada correctamente. Tamano: " << textura.getSize().x << " x " << textura.getSize().y << std::endl;//prueba para verificar que la imagen se carga correctamente
+
+	sprite.setTexture(textura,true);
     sprite.setPosition(posicionInicial);
     sprite.setScale({ escala, escala });
 
@@ -20,7 +23,7 @@ PelotaAnimada::PelotaAnimada(const std::string& rutaImagen, sf::Vector2f posicio
 void PelotaAnimada::actualizar(const sf::RenderWindow& ventana)
 {
     sprite.move(velocidad);
-    sprite.rotate(0.3f);
+    sprite.rotate(sf::degrees(0.3f));
 
     sf::Vector2f posicion = sprite.getPosition();
     sf::FloatRect bounds = sprite.getGlobalBounds();
@@ -45,4 +48,25 @@ void PelotaAnimada::dibujar(sf::RenderWindow& ventana)
 void PelotaAnimada::setRotacion(float angulo)
 {
     sprite.setRotation(sf::degrees(angulo));
+}
+
+sf::Vector2f PelotaAnimada::obtenerPosicion() const
+{
+    return sprite.getPosition();
+}
+
+sf::Vector2f PelotaAnimada::obtenerVelocidad() const
+{
+    return velocidad;
+}
+
+void PelotaAnimada::setVelocidad(sf::Vector2f nuevaVelocidad)
+{
+    velocidad = nuevaVelocidad;
+}
+
+float PelotaAnimada::obtenerRadioAproximado() const
+{
+    sf::FloatRect bounds = sprite.getGlobalBounds();
+    return bounds.size.x / 2.f;
 }

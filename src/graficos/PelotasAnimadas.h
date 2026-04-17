@@ -17,4 +17,11 @@ public:
     void dibujar(sf::RenderWindow& ventana);
 
 	void setRotacion(float angulo);
+
+	//Métodos para la deteccion de colisiones
+    sf::Vector2f obtenerPosicion() const;
+    sf::Vector2f obtenerVelocidad() const;
+    void setVelocidad(sf::Vector2f nuevaVelocidad);
+    float obtenerRadioAproximado() const;
+
 };
