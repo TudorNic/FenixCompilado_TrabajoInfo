@@ -10,8 +10,6 @@ PelotaAnimada::PelotaAnimada(const std::string& rutaImagen, sf::Vector2f posicio
         throw std::runtime_error("No se pudo cargar la imagen de la pelota.");
     }
 
-	std::cout << "Pelota cargada correctamente. Tamano: " << textura.getSize().x << " x " << textura.getSize().y << std::endl;//prueba para verificar que la imagen se carga correctamente
-
 	sprite.setTexture(textura,true);
     sprite.setPosition(posicionInicial);
     sprite.setScale({ escala, escala });

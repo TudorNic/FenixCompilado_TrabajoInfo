@@ -5,6 +5,7 @@
 #include <string>
 #include "Menu.h"
 #include "PelotasAnimadas.h"
+#include "SonidoMenu.h"
 
 class PantallaMenu
 {
@@ -21,11 +22,15 @@ private:
 
     PelotaAnimada pelota1;
     PelotaAnimada pelota2;
+    
+    SonidoMenu sonidoMenu;
 
     bool opcionConfirmada;
 
 public:
-    PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente, const std::string& rutaCampo, const std::string& rutaPelota);
+    PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente, const std::string& rutaCampo, 
+        const std::string& rutaPelota, const std::string& rutaMover, const std::string& rutaConfirmar,
+        const std::string& rutaSalir, const std::string& rutaMusica);
 
     void procesarEventos();
     void actualizar();

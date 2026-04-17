@@ -2,7 +2,9 @@
 #include <stdexcept>
 #include <iostream>
 
-PantallaMenu::PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente, const std::string& rutaCampo, const std::string& rutaPelota)
+PantallaMenu::PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente, const std::string& rutaCampo, 
+    const std::string& rutaPelota,const std::string& rutaMover, const std::string& rutaConfirmar,
+    const std::string& rutaSalir, const std::string& rutaMusica)
     : ventana(v),
     fuente(),
     titulo(fuente),
@@ -11,6 +13,7 @@ PantallaMenu::PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente, c
 	fondoCampo(texturaFondo),
     pelota1(rutaPelota, { 60.f, 120.f }, { 1.6f, 1.2f }, 0.12f),
     pelota2(rutaPelota, { 620.f, 420.f }, { -1.3f, -1.0f }, 0.12f),
+	sonidoMenu(rutaMover, rutaConfirmar, rutaSalir, rutaMusica),
     opcionConfirmada(false)
 {
     if (!fuente.openFromFile(rutaFuente))
@@ -21,7 +24,6 @@ PantallaMenu::PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente, c
     {
         throw std::runtime_error("No se pudo cargar la imagen del campo.");
     }
-	std::cout << "Campo cargado correctamente. Tamano: " << texturaFondo.getSize().x << " x " << texturaFondo.getSize().y << std::endl;//prueba para verificar que la imagen se carga correctamente
 
     fondoCampo.setTexture(texturaFondo, true);
 
@@ -33,6 +35,8 @@ PantallaMenu::PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente, c
 
     inicializarTextos();
     actualizarAspectoOpciones();
+
+    sonidoMenu.reproducirMusica();
 }
 
 void PantallaMenu::procesarEventos()
@@ -139,17 +143,21 @@ void PantallaMenu::manejarTeclado(const sf::Event& evento)
         if (tecla->code == sf::Keyboard::Key::Up)
         {
             menu.moverArriba();
+            sonidoMenu.reproducirMover();
         }
         else if (tecla->code == sf::Keyboard::Key::Down)
         {
             menu.moverAbajo();
+            sonidoMenu.reproducirMover();
         }
         else if (tecla->code == sf::Keyboard::Key::Enter)
         {
             opcionConfirmada = true;
+            sonidoMenu.reproducirConfirmar();
         }
         else if (tecla->code == sf::Keyboard::Key::Escape)
         {
+			sonidoMenu.reproducirSalir();   
             ventana.close();
         }
     }
@@ -168,6 +176,7 @@ void PantallaMenu::manejarRaton(const sf::Event& evento)
         {
             seleccionarOpcionConRaton(mouseClick->position);
             opcionConfirmada = true;
+			sonidoMenu.reproducirConfirmar();// Sonido de confirmación al hacer clic, no ponemos al moverse por encima de las opciones por si es molesto
         }
     }
 }
