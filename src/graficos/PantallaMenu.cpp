@@ -115,7 +115,7 @@ void PantallaMenu::inicializarTextos()
         opcionesTexto[i].setString(obtenerTextoOpcion(i));
         opcionesTexto[i].setCharacterSize(30);
         opcionesTexto[i].setPosition({ 280.f, 200.f + i * 70.f });
-        opcionesTexto[i].setFillColor(sf::Color(255, 255, 255));
+        opcionesTexto[i].setFillColor(sf::Color(0, 0, 0));
     }
 }
 
@@ -130,7 +130,7 @@ void PantallaMenu::actualizarAspectoOpciones()
         }
         else
         {
-            opcionesTexto[i].setFillColor(sf::Color(255, 255, 255));
+            opcionesTexto[i].setFillColor(sf::Color(0, 0, 0));
             opcionesTexto[i].setScale({ 1.f, 1.f });
         }
     }
