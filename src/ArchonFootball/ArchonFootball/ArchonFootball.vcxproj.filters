@@ -24,6 +24,9 @@
     <ClCompile Include="..\..\logica\Arena.cpp">
       <Filter>Logica</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\logica\main.cpp">
+      <Filter>Logica</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\logica\Arena.h">

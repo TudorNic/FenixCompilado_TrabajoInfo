@@ -9,8 +9,4 @@ public:
         hitbox.alto = 15.0f;
     }
 
-    Proyectil atacar(float dirX, float dirY) override {
-        // Proyectil a 200 de velocidad
-        return Proyectil(hitbox.x, hitbox.y, dirX * 200.0f, dirY * 200.0f, danoAtaque);
-    }
 };

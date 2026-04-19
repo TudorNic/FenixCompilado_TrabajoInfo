@@ -30,7 +30,13 @@ public:
     virtual ~Jugador() = default;
 
     //La función atacar ahora recibe hacia dónde chutamos y devuelve un balón
-    virtual Proyectil atacar(float dirX, float dirY) = 0;
+    virtual Proyectil atacar(float dirX, float dirY) {
+        // Todos los jugadores nacen con este disparo arreglado por defecto
+        float inicioX = hitbox.x + (dirX * 25.0f);
+        float inicioY = hitbox.y + (dirY * 25.0f);
+
+        return Proyectil(inicioX, inicioY, dirX * 250.0f, dirY * 250.0f, danoAtaque);
+    }
     virtual void usarHabilidadEspecial() {
         // Por defecto no hace nada, para que piezas como el Defensa no crasheen
     }

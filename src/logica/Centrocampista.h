@@ -10,8 +10,5 @@ public:
         hitbox.ancho = 22.0f;
         hitbox.alto = 22.0f;
     }
-    Proyectil atacar(float dirX, float dirY) override {
-        // Balón a 250 de velocidad (tiro tenso y controlado)
-        return Proyectil(hitbox.x, hitbox.y, dirX * 250.0f, dirY * 250.0f, danoAtaque);
-    }
+   
 };

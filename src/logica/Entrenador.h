@@ -20,7 +20,5 @@ public:
         }
     }
 
-    Proyectil atacar(float dirX, float dirY) override {
-        return Proyectil(hitbox.x, hitbox.y, dirX * 250.0f, dirY * 250.0f, danoAtaque);
-    }
+    
 };

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\logica\Arena.cpp" />
+    <ClCompile Include="..\..\logica\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\logica\Aficion.h" />

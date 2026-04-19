@@ -10,8 +10,5 @@ public:
         hitbox.alto = 25.0f;
     }
 
-    Proyectil atacar(float dirX, float dirY) override {
-        // Balón a 150 de velocidad (lento, pero quita mucha vida)
-        return Proyectil(hitbox.x, hitbox.y, dirX * 150.0f, dirY * 150.0f, danoAtaque);
-    }
+    
 };
