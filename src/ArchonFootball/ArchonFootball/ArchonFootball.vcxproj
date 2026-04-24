@@ -17,11 +17,9 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\logica\Arena.cpp" />
-    <ClCompile Include="..\..\logica\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\logica\Aficion.h" />
@@ -33,7 +31,7 @@
     <ClInclude Include="..\..\logica\Jugador.h" />
     <ClInclude Include="..\..\logica\Lateral.h" />
     <ClInclude Include="..\..\logica\Proyectil.h" />
-
+    <ClInclude Include="ControladorIA.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
@@ -87,12 +85,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\..\..\external\SFML\include</ExternalIncludePath>
     <LibraryWPath>$(WindowsSDK_MetadataPath);$(ProjectDir)..\..\..\external\SFML\include</LibraryWPath>
   </PropertyGroup>
-
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -132,9 +128,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);C:\librerias trabajo infor\SFML-3.0.2\lib\sfml-graphics-d.lib;C:\librerias trabajo infor\SFML-3.0.2\lib\sfml-window-d.lib;C:\librerias trabajo infor\SFML-3.0.2\lib\sfml-system-d.lib</AdditionalDependencies>
-
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /D "$(ProjectDir)..\..\..\external\SFML\bin\*.dll" "$(OutDir)"</Command>
@@ -156,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ControladorIA.cpp" />
     <ClCompile Include="main_prueba_SFML_local.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

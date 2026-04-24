@@ -24,8 +24,8 @@
     <ClCompile Include="..\..\logica\Arena.cpp">
       <Filter>Logica</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\logica\main.cpp">
-      <Filter>Logica</Filter>
+    <ClCompile Include="ControladorIA.cpp">
+      <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +55,9 @@
     </ClInclude>
     <ClInclude Include="..\..\logica\Proyectil.h">
       <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="ControladorIA.h">
+      <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
