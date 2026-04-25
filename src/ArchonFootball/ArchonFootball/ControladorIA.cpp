@@ -77,7 +77,20 @@ void ControladorIA::actualizar(float deltaTime) {
     }
 
     }
+    //Disparar si se está cerca
+    if (estadoActual == EstadoIA::PERSEGUIR) {
+        float dx = hHumano.x - hBot.x;
+        float dy = hHumano.y - hBot.y;
+        float distancia = std::sqrt(dx * dx + dy * dy);
 
+        // Si está a tiro y el arma se ha recargado
+        if (distancia < 300.0f && bot->puedeAtacar()) {
+            float velDisparoX = dx / distancia;
+            float velDisparoY = dy / distancia;
+
+            arena->comandoDisparoJugador2(velDisparoX, velDisparoY);
+        }
+    }
     // Aplicar movimiento final
     arena->comandoMoverJugador2(dirX, dirY, deltaTime);
 }
