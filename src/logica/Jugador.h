@@ -24,8 +24,8 @@ public:
         float centroX = hitbox.x + (hitbox.ancho / 2.0f);
         float centroY = hitbox.y + (hitbox.alto / 2.0f);
 
-        // El proyectil nace en el centro exacto
-        return Proyectil(centroX, centroY, dirX * 450.0f, dirY * 450.0f, danoAtaque, miID);
+        // El proyectil nace centrado (ajustamos -10 para que el centro del balón coincida)
+        return Proyectil(centroX - 10.0f, centroY - 10.0f, dirX * 450.0f, dirY * 450.0f, danoAtaque, miID);
     }
 
     virtual void usarHabilidadEspecial() {}
