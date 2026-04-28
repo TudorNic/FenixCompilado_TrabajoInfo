@@ -30,4 +30,5 @@ public:
     void comandoMoverJugador2(float dirX, float dirY, float deltaTime);
     void comandoHabilidadJugador1();
     void comandoHabilidadJugador2();
+    const std::vector<Proyectil>& getProyectiles() const { return proyectiles; }
 };

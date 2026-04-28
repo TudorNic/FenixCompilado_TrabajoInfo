@@ -76,6 +76,19 @@ void Arena::actualizar(float deltaTime) {
         combateTerminado = true;
         ganador = jugador1;
     }
+    // 1. Obtener la posición actual del jugador
+    float x = jugador1->getHitbox().x;
+    float y = jugador1->getHitbox().y;
+
+    // 2. Comprobar límites del campo (ejemplo: 0 a 1200)
+    if (x < 0) x = 0;
+    if (x > 1200) x = 1200;
+    if (y < 0) y = 0;
+    if (y > 800) y = 800;
+
+    // 3. Devolver la posición corregida al jugador
+    jugador1->setPosicion(x, y);
+
 }
 
 void Arena::comandoDisparoJugador1(float dirX, float dirY) {
