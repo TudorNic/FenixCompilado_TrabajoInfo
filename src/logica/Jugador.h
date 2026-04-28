@@ -33,7 +33,7 @@ public:
     virtual Proyectil atacar(float dirX, float dirY) {
         // Todos los jugadores nacen con este disparo arreglado por defecto
         float inicioX = hitbox.x + (dirX * 25.0f);
-        float inicioY = hitbox.y + (dirY * 25.0f);
+        float inicioY = hitbox.y + (dirY * 20.0f);
 
         return Proyectil(inicioX, inicioY, dirX * 250.0f, dirY * 250.0f, danoAtaque);
     }
