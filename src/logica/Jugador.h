@@ -44,4 +44,6 @@ public:
     void recibirDano(int cantidad) { vidaActual -= cantidad; }
     bool estaMuerto() const { return vidaActual <= 0; }
     float getVelocidad() const { return velocidad; }
+    int getVidaActual() const { return vidaActual; }
+    int getVidaMaxima() const { return vidaMaxima; }
 };
