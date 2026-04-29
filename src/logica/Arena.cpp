@@ -51,16 +51,14 @@ void Arena::actualizar(float deltaTime) {
     else if (jugador2->estaMuerto()) { combateTerminado = true; ganador = jugador1; }
 }
 
-void Arena::comandoDisparoJugador1(float dirX, float dirY) {
-    if (!combateTerminado && jugador1->puedeAtacar()) {
-        agregarProyectil(jugador1->atacar(dirX, dirY, 1));
-        jugador1->reiniciarRecarga();
+void Arena::comandoDisparoJugador1(float dx, float dy) {
+    if (!combateTerminado) {
+        jugador1->atacar(proyectiles, jugador2, dx, dy, 1);
     }
 }
 
-void Arena::comandoDisparoJugador2(float dirX, float dirY) {
-    if (!combateTerminado && jugador2->puedeAtacar()) {
-        agregarProyectil(jugador2->atacar(dirX, dirY, 2));
-        jugador2->reiniciarRecarga();
+void Arena::comandoDisparoJugador2(float dx, float dy) {
+    if (!combateTerminado) {
+        jugador2->atacar(proyectiles, jugador1, dx, dy, 2);
     }
 }

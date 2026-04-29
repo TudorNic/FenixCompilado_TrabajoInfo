@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+#include <cmath>
 #include "Proyectil.h"
 
 enum EstadoJugador { QUIETO, CAMINANDO, ATACANDO, MUERTO };
@@ -8,7 +10,7 @@ protected:
     int vidaMaxima, vidaActual;
     float velocidad, tiempoRecarga, tiempoRecargaActual;
     int danoAtaque;
-    Hitbox hitbox; // De Proyectil.h
+    Hitbox hitbox;
     EstadoJugador estadoActual;
 
 public:
@@ -19,31 +21,23 @@ public:
 
     virtual ~Jugador() = default;
 
-    virtual Proyectil atacar(float dirX, float dirY, int miID) {
-        // Calculamos el centro matemático de la caja de colisión
-        float centroX = hitbox.x + (hitbox.ancho / 2.0f);
-        float centroY = hitbox.y + (hitbox.alto / 2.0f);
+    // MÉTODO CLAVE: Ahora cada clase decide si genera un proyectil o pega cuerpo a cuerpo
+    virtual void atacar(std::vector<Proyectil>& proyectiles, Jugador* oponente, float dirX, float dirY, int miID) = 0;
 
-        // El proyectil nace centrado (ajustamos -10 para que el centro del balón coincida)
-        return Proyectil(centroX - 10.0f, centroY - 10.0f, dirX * 450.0f, dirY * 450.0f, danoAtaque, miID);
-    }
-
-    virtual void usarHabilidadEspecial() {}
+    virtual void usarHabilidadEspecial() {} // Por defecto no hace nada (solo Entrenador la usa)
 
     virtual void actualizar(float deltaTime) {
         if (tiempoRecargaActual > 0.0f) tiempoRecargaActual -= deltaTime;
     }
 
+    // Getters y Setters
     bool puedeAtacar() const { return tiempoRecargaActual <= 0.0f; }
     void reiniciarRecarga() { tiempoRecargaActual = tiempoRecarga; }
-    EstadoJugador getEstado() const { return estadoActual; }
-    void setEstado(EstadoJugador nuevoEstado) { estadoActual = nuevoEstado; }
-    Hitbox getHitbox() const { return hitbox; }
-    void setPosicion(float nx, float ny) { hitbox.x = nx; hitbox.y = ny; }
-    void mover(float dx, float dy) { hitbox.x += dx; hitbox.y += dy; }
-    void recibirDano(int cantidad) { vidaActual -= cantidad; }
-    bool estaMuerto() const { return vidaActual <= 0; }
-    float getVelocidad() const { return velocidad; }
     int getVidaActual() const { return vidaActual; }
     int getVidaMaxima() const { return vidaMaxima; }
+    void recibirDano(int cant) { vidaActual -= cant; if (vidaActual < 0) vidaActual = 0; }
+    bool estaMuerto() const { return vidaActual <= 0; }
+    Hitbox getHitbox() const { return hitbox; }
+    void setPosicion(float nx, float ny) { hitbox.x = nx; hitbox.y = ny; }
+    float getVelocidad() const { return velocidad; }
 };
