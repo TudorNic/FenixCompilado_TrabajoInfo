@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "PantallaMenu.h"
+#include "PantallaInstrucciones.h"
 
 int main()
 {
@@ -7,28 +8,61 @@ int main()
     ventana.setFramerateLimit(60);
 
     PantallaMenu pantalla(ventana, "../../../assets/fonts/Bungee-Regular.ttf", "../../../assets/images/menu/fondo_haram.png",
-        "../../../assets/images/menu/pelota_futbol.png", "../../../assets/audio/menu/mover_opcion_FAH.mp3",
+        "../../../assets/images/menu/pelota_futbol.png", "../../../assets/audio/menu/mover_opcion.mp3",
         "../../../assets/audio/menu/confirmar_opcion.mp3",
         "../../../assets/audio/menu/salir_menu.mp3",
         "../../../assets/audio/menu/musica_haram_fondo_menu.mp3"
     );
-       
+    
+    PantallaInstrucciones pantallaInstrucciones(
+        ventana,
+        "../../../assets/fonts/Bungee-Regular.ttf"
+    );
+
+    enum EstadoPantalla
+    {
+        MENU,
+        INSTRUCCIONES
+    };
+
+    EstadoPantalla estadoActual = MENU;
+
     while (ventana.isOpen())
     {
-        pantalla.procesarEventos();
-        pantalla.actualizar();
-        pantalla.dibujar();
-
-        if (pantalla.estaOpcionConfirmada())
+        if (estadoActual == MENU) 
         {
-            Menu::Opcion opcion = pantalla.obtenerOpcionConfirmada();
+            pantalla.procesarEventos();
+            pantalla.actualizar();
+            pantalla.dibujar();
 
-            if (opcion == Menu::SALIR)
+            if (pantalla.estaOpcionConfirmada())
             {
-                ventana.close();
-            }
+                Menu::Opcion opcion = pantalla.obtenerOpcionConfirmada();
 
-            pantalla.reiniciarConfirmacion();
+                if (opcion == Menu::SALIR)
+                {
+                    ventana.close();
+                }
+                else if (opcion == Menu::INSTRUCCIONES)
+                {
+                    estadoActual = INSTRUCCIONES;
+
+                }
+
+                pantalla.reiniciarConfirmacion();
+            }
+        }
+        else if (estadoActual == INSTRUCCIONES)
+        {
+            pantallaInstrucciones.procesarEventos();
+            pantallaInstrucciones.actualizar();
+            pantallaInstrucciones.dibujar();
+
+            if (pantallaInstrucciones.debeVolverAlMenu())
+            {
+                pantallaInstrucciones.reiniciarVolver();
+                estadoActual = MENU;
+            }
         }
     }
 
