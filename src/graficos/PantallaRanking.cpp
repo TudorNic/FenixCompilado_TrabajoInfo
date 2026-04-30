@@ -1,8 +1,11 @@
 #include "PantallaRanking.h"
 #include <stdexcept>
+#include <sstream> //Para construir textos como si estuvieramos escribiendo un flujo
+#include <iomanip> //PAra dar formato a textos y números
 
-PantallaRanking::PantallaRanking(sf::RenderWindow& v, const std::string& rutaFuente)
+PantallaRanking::PantallaRanking(sf::RenderWindow& v, Ranking& r, const std::string& rutaFuente)
     : ventana(v),
+    ranking(r),
     fuente(),
     titulo(fuente),
     subtitulo(fuente),
@@ -16,6 +19,7 @@ PantallaRanking::PantallaRanking(sf::RenderWindow& v, const std::string& rutaFue
     }
 
     inicializarTextos();
+	actualizarTextoRanking();
 }
 
 void PantallaRanking::procesarEventos()
@@ -39,6 +43,7 @@ void PantallaRanking::procesarEventos()
 
 void PantallaRanking::actualizar()
 {
+    actualizarTextoRanking();
 }
 
 void PantallaRanking::dibujar()
@@ -70,24 +75,50 @@ void PantallaRanking::inicializarTextos()
     titulo.setFillColor(sf::Color::White);
     titulo.setPosition({ 260.f, 40.f });
 
-    subtitulo.setString("Clasificacion provisional");
+    subtitulo.setString("Clasificacion general");
     subtitulo.setCharacterSize(20);
     subtitulo.setFillColor(sf::Color::Yellow);
     subtitulo.setPosition({ 220.f, 95.f });
 
-    rankingTexto.setString(
-        "POS   JUGADOR         PUNTOS   VICTORIAS   DERROTAS\n\n"
-        "1     Sergio          1200     8           2\n"
-        "2     Pablo           980      6           3\n"
-        "3     IA              760      4           5\n"
-        "4     Invitado        540      3           6\n"
-    );
     rankingTexto.setCharacterSize(18);
     rankingTexto.setFillColor(sf::Color(220, 220, 220));
-    rankingTexto.setPosition({ 90.f, 180.f });
+    rankingTexto.setPosition({ 70.f, 170.f });
 
     textoVolver.setString("Pulsa ESC para volver al menu");
     textoVolver.setCharacterSize(18);
     textoVolver.setFillColor(sf::Color::Yellow);
     textoVolver.setPosition({ 220.f, 520.f });
+}
+
+void PantallaRanking::actualizarTextoRanking()
+{
+    std::ostringstream ss;
+
+    ss << "POS  "
+        << std::left << std::setw(14) << "JUGADOR"
+        << std::setw(8) << "VIC"
+        << std::setw(8) << "DER"
+        << std::setw(8) << "PART"
+        << "PROM\n\n";
+
+    const std::vector<RegistroJugador>& jugadores = ranking.obtenerJugadores();
+
+    for (size_t i = 0; i < jugadores.size(); i++)
+    {
+        ss << std::left
+            << std::setw(5) << (std::to_string(i + 1) + ".")
+            << std::setw(14) << jugadores[i].nombre
+            << std::setw(8) << jugadores[i].victorias
+            << std::setw(8) << jugadores[i].derrotas
+            << std::setw(8) << jugadores[i].partidasJugadas
+            << std::fixed << std::setprecision(2) << jugadores[i].obtenerPromedio()
+            << "\n";
+    }
+
+    if (jugadores.empty())
+    {
+        ss << "Todavia no hay partidas registradas.";
+    }
+
+    rankingTexto.setString(ss.str());
 }

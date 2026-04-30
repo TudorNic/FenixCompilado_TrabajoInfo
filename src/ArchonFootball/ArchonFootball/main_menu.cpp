@@ -2,11 +2,15 @@
 #include "PantallaMenu.h"
 #include "PantallaInstrucciones.h"
 #include "PantallaRanking.h"
+#include "Ranking.h"
 
 int main()
 {
     sf::RenderWindow ventana(sf::VideoMode({ 800, 600 }), "Menu Archon");
     ventana.setFramerateLimit(60);
+
+    Ranking ranking("../../../assets/texto/ranking_prueba.txt");
+	ranking.cargar();
 
     PantallaMenu pantalla(ventana, "../../../assets/fonts/Bungee-Regular.ttf", "../../../assets/images/menu/fondo_haram.png",
         "../../../assets/images/menu/pelota_futbol.png", "../../../assets/audio/menu/mover_opcion.mp3",
@@ -21,7 +25,7 @@ int main()
     );
 
     PantallaRanking pantallaRanking(
-        ventana,
+        ventana, ranking,
         "../../../assets/fonts/Bungee-Regular.ttf"
     );
 
@@ -29,7 +33,7 @@ int main()
     {
         MENU,
         INSTRUCCIONES,
-        RANKING
+        RANKING_PANTALLA
     };
 
     EstadoPantalla estadoActual = MENU;
@@ -57,7 +61,7 @@ int main()
                 }
                 else if (opcion == Menu::RANKING)
                 {
-                    estadoActual = RANKING;
+                    estadoActual = RANKING_PANTALLA;
                 }
 
                 pantalla.reiniciarConfirmacion();
@@ -68,12 +72,6 @@ int main()
             pantallaInstrucciones.procesarEventos();
             pantallaInstrucciones.actualizar();
             pantallaInstrucciones.dibujar();
-        }
-        else if (estadoActual == RANKING)
-        {
-            pantallaRanking.procesarEventos();
-            pantallaRanking.actualizar();
-            pantallaRanking.dibujar();
 
             if (pantallaInstrucciones.debeVolverAlMenu())
             {
@@ -81,6 +79,19 @@ int main()
                 estadoActual = MENU;
             }
         }
+        else if (estadoActual == RANKING_PANTALLA)
+        {
+            pantallaRanking.procesarEventos();
+            pantallaRanking.actualizar();
+            pantallaRanking.dibujar();
+
+            if (pantallaRanking.debeVolverAlMenu())
+            {
+                pantallaRanking.reiniciarVolver();
+                estadoActual = MENU;
+            }
+        }
+       
     }
 
     return 0;

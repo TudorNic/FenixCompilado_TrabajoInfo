@@ -145,15 +145,17 @@
     <ClInclude Include="..\..\graficos\PantallaRanking.h" />
     <ClInclude Include="..\..\graficos\PelotasAnimadas.h" />
     <ClInclude Include="..\..\logica\Menu.h" />
+    <ClInclude Include="..\..\logica\Ranking.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\audio\SonidoMenu.cpp" />
+    <ClCompile Include="..\..\graficos\PantallaInstrucciones.cpp" />
     <ClCompile Include="..\..\graficos\PantallaMenu.cpp" />
     <ClCompile Include="..\..\graficos\PantallaRanking.cpp" />
     <ClCompile Include="..\..\graficos\PelotasAnimadas.cpp" />
     <ClCompile Include="..\..\logica\Menu.cpp" />
+    <ClCompile Include="..\..\logica\Ranking.cpp" />
     <ClCompile Include="main_menu.cpp" />
-    <ClCompile Include="PantallaInstrucciones.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

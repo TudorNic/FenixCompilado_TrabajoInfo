@@ -3,11 +3,13 @@
 #include <SFML/Graphics.hpp>
 #include <optional>
 #include <string>
+#include "Ranking.h"
 
 class PantallaRanking
 {
 private:
     sf::RenderWindow& ventana;
+    Ranking& ranking;
 
     sf::Font fuente;
     sf::Text titulo;
@@ -18,7 +20,7 @@ private:
     bool volverAlMenu;
 
 public:
-    PantallaRanking(sf::RenderWindow& v, const std::string& rutaFuente);
+    PantallaRanking(sf::RenderWindow& v, Ranking& r, const std::string& rutaFuente);
 
     void procesarEventos();
     void actualizar();
@@ -29,5 +31,6 @@ public:
 
 private:
     void inicializarTextos();
+	void actualizarTextoRanking();
 };
 

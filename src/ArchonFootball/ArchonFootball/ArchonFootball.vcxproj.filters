@@ -33,6 +33,9 @@
     <ClInclude Include="..\..\graficos\PantallaRanking.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\logica\Ranking.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main_menu.cpp">
@@ -50,10 +53,13 @@
     <ClCompile Include="..\..\audio\SonidoMenu.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="PantallaInstrucciones.cpp">
+    <ClCompile Include="..\..\graficos\PantallaRanking.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\graficos\PantallaRanking.cpp">
+    <ClCompile Include="..\..\graficos\PantallaInstrucciones.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\logica\Ranking.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
