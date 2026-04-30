@@ -47,7 +47,7 @@ void PantallaMenu::procesarEventos()
         {
             ventana.close();
         }
-
+  
         manejarTeclado(*evento);
         manejarRaton(*evento);
     }

@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "PantallaMenu.h"
 #include "PantallaInstrucciones.h"
+#include "PantallaRanking.h"
 
 int main()
 {
@@ -19,10 +20,16 @@ int main()
         "../../../assets/fonts/Bungee-Regular.ttf"
     );
 
+    PantallaRanking pantallaRanking(
+        ventana,
+        "../../../assets/fonts/Bungee-Regular.ttf"
+    );
+
     enum EstadoPantalla
     {
         MENU,
-        INSTRUCCIONES
+        INSTRUCCIONES,
+        RANKING
     };
 
     EstadoPantalla estadoActual = MENU;
@@ -48,6 +55,10 @@ int main()
                     estadoActual = INSTRUCCIONES;
 
                 }
+                else if (opcion == Menu::RANKING)
+                {
+                    estadoActual = RANKING;
+                }
 
                 pantalla.reiniciarConfirmacion();
             }
@@ -57,6 +68,12 @@ int main()
             pantallaInstrucciones.procesarEventos();
             pantallaInstrucciones.actualizar();
             pantallaInstrucciones.dibujar();
+        }
+        else if (estadoActual == RANKING)
+        {
+            pantallaRanking.procesarEventos();
+            pantallaRanking.actualizar();
+            pantallaRanking.dibujar();
 
             if (pantallaInstrucciones.debeVolverAlMenu())
             {
