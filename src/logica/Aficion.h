@@ -1,12 +1,27 @@
 #pragma once
 #include "Jugador.h"
-#include "Proyectil.h"
+
 class Aficion : public Jugador {
 public:
-    // Stats: Vida muy baja (30), velocidad media-alta (4.0f), daño bajo (10), recarga rápida (0.4f)
-    Aficion() : Jugador(30, 4.0f, 10, 0.4f) {
-        hitbox.ancho = 15.0f;
-        hitbox.alto = 15.0f;
+    Aficion() : Jugador(40, 4.5f, 20, 0.4f) { // Muy rápida pero poca vida
+        hitbox.ancho = 40.0f;
+        hitbox.alto = 70.0f;
     }
 
+    void atacar(std::vector<Proyectil>& proyectiles, Jugador* oponente, float dx, float dy, int id) override {
+        if (!puedeAtacar()) return;
+
+        // Calculamos distancia al centro del oponente
+        float centroX = hitbox.x + hitbox.ancho / 2;
+        float centroY = hitbox.y + hitbox.alto / 2;
+        float oX = oponente->getHitbox().x + oponente->getHitbox().ancho / 2;
+        float oY = oponente->getHitbox().y + oponente->getHitbox().alto / 2;
+
+        float dist = std::sqrt(std::pow(oX - centroX, 2) + std::pow(oY - centroY, 2));
+
+        if (dist < 85.0f) { // Rango de golpe corto
+            oponente->recibirDano(danoAtaque);
+            reiniciarRecarga();
+        }
+    }
 };
