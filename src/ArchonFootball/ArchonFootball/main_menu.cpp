@@ -9,8 +9,9 @@ int main()
     sf::RenderWindow ventana(sf::VideoMode({ 800, 600 }), "Menu Archon");
     ventana.setFramerateLimit(60);
 
-    Ranking ranking("../../../assets/texto/ranking_prueba.txt");
+    Ranking ranking("../../../assets/texto/ranking.txt");
 	ranking.cargar();
+
 
     PantallaMenu pantalla(ventana, "../../../assets/fonts/Bungee-Regular.ttf", "../../../assets/images/menu/fondo_haram.png",
         "../../../assets/images/menu/pelota_futbol.png", "../../../assets/audio/menu/mover_opcion.mp3",

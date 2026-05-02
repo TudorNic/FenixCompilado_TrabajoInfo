@@ -96,9 +96,9 @@ void PantallaRanking::actualizarTextoRanking()
 
     ss << "POS  "
         << std::left << std::setw(14) << "JUGADOR"
-        << std::setw(8) << "VIC"
-        << std::setw(8) << "DER"
-        << std::setw(8) << "PART"
+        << std::setw(8) << "V"
+        << std::setw(8) << "D"
+        << std::setw(8) << "PJ"
         << "PROM\n\n";
 
     const std::vector<RegistroJugador>& jugadores = ranking.obtenerJugadores();
