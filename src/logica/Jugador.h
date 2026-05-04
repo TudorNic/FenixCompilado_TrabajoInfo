@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 #include <cmath>
 #include "Proyectil.h"
 
@@ -21,16 +22,16 @@ public:
 
     virtual ~Jugador() = default;
 
-    // MÉTODO CLAVE: Ahora cada clase decide si genera un proyectil o pega cuerpo a cuerpo
+    // Obligatorio para todas las clases
     virtual void atacar(std::vector<Proyectil>& proyectiles, Jugador* oponente, float dirX, float dirY, int miID) = 0;
-
-    virtual void usarHabilidadEspecial() {} // Por defecto no hace nada (solo Entrenador la usa)
+    virtual std::string getNombreClase() const = 0;
+    virtual void usarHabilidadEspecial() {}
 
     virtual void actualizar(float deltaTime) {
         if (tiempoRecargaActual > 0.0f) tiempoRecargaActual -= deltaTime;
     }
 
-    // Getters y Setters
+    // Getters / Setters
     bool puedeAtacar() const { return tiempoRecargaActual <= 0.0f; }
     void reiniciarRecarga() { tiempoRecargaActual = tiempoRecarga; }
     int getVidaActual() const { return vidaActual; }
