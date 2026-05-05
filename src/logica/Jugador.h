@@ -71,4 +71,5 @@ public:
     void setPosicion(float nx, float ny) { hitbox.x = nx; hitbox.y = ny; }
     bool puedeAtacar() const { return tiempoRecargaActual <= 0.0f; }
     void reiniciarRecarga() { tiempoRecargaActual = tiempoRecarga; }
+    float getVelocidad() const { return velocidad; }
 };

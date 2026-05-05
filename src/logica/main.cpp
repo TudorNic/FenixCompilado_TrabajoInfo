@@ -8,6 +8,7 @@
 #include "Delantero.h"
 #include "Aficion.h"
 #include "Entrenador.h"
+#include "ControladorIA.h"
 
 int main() {
     sf::Texture texC, texB;
@@ -19,9 +20,12 @@ int main() {
     window.setFramerateLimit(60);
 
     // --- SELECCIÓN DE JUGADORES ---
-    Jugador* azul = new Defensa(); // Prueba a cambiarlo por new Aficion() o new Defensa()
+    Jugador* azul = new Defensa();
     Jugador* rojo = new Entrenador();
     Arena arena(azul, rojo);
+
+    //Inicializar IA
+    ControladorIA ia(rojo, azul, &arena);
 
     // --- CARGA DINÁMICA DE TEXTURAS ---
     std::vector<sf::Texture> walkA(3), walkR(3);
@@ -55,7 +59,7 @@ int main() {
         sf::Event ev;
         while (window.pollEvent(ev)) { if (ev.type == sf::Event::Closed) window.close(); }
 
-        // Movimiento Azul (WASD)
+        // Movimiento Azul (WASD) HUMANO
         sf::Vector2f vA(0.f, 0.f);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) vA.y -= 1;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) vA.y += 1;
@@ -67,28 +71,19 @@ int main() {
                 std::clamp(azul->getHitbox().y + (vA.y / len) * 350.f * dt, L, alto - L - azul->getHitbox().alto));
         }
 
-        // Movimiento Rojo (Flechas)
-        sf::Vector2f vR(0.f, 0.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) vR.y -= 1;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) vR.y += 1;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { vR.x -= 1; mirR = -1.0f; }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) { vR.x += 1; mirR = 1.0f; }
-        if (vR.x != 0 || vR.y != 0) {
-            float len = std::sqrt(vR.x * vR.x + vR.y * vR.y);
-            rojo->setPosicion(std::clamp(rojo->getHitbox().x + (vR.x / len) * 350.f * dt, L, ancho - L - rojo->getHitbox().ancho),
-                std::clamp(rojo->getHitbox().y + (vR.y / len) * 350.f * dt, L, alto - L - rojo->getHitbox().alto));
-        }
-
-        // Acciones
+        // Acciones (Solo controles del Azul)
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) arena.comandoDisparoJugador1(mirA, 0.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)) arena.comandoDisparoJugador2(mirR, 0.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) arena.comandoEspecialJugador1(); // Especial Azul
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) arena.comandoEspecialJugador2(); // Especial Rojo
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) arena.comandoEspecialJugador1(); // Especial Azul  
+        
+        ia.actualizar(dt);
 
-        arena.actualizar(dt); azul->actualizar(dt); rojo->actualizar(dt);
+        arena.actualizar(dt);
+        azul->actualizar(dt);
+        rojo->actualizar(dt);
 
         window.clear();
         window.draw(sprC);
+
 
         // Renderizado Dinámico
         float cAX = azul->getHitbox().x + azul->getHitbox().ancho / 2;

@@ -24,8 +24,11 @@
     <ClCompile Include="..\..\logica\Arena.cpp">
       <Filter>Logica</Filter>
     </ClCompile>
-    <ClCompile Include="ControladorIA.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="..\..\logica\main.cpp">
+      <Filter>Logica</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\logica\ControladorIA.cpp">
+      <Filter>Logica</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,13 +59,8 @@
     <ClInclude Include="..\..\logica\Proyectil.h">
       <Filter>Logica</Filter>
     </ClInclude>
-    <ClInclude Include="ControladorIA.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="..\..\logica\ControladorIA.h">
+      <Filter>Logica</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main_prueba_SFML_local.cpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
