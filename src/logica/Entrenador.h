@@ -11,6 +11,7 @@ public:
         if (!puedeAtacar()) return;
         proy.push_back(Proyectil(hitbox.x + hitbox.ancho / 2 - 10, hitbox.y + hitbox.alto / 2 - 10, dx * 420, dy * 420, danoAtaque, id));
         reiniciarRecarga();
+        activarAnimacionAtaque();
     }
     void usarHabilidadEspecial() override {
         if (cargasMagia > 0 && vidaActual < vidaMaxima) {

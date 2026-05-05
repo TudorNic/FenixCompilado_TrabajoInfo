@@ -10,6 +10,10 @@ public:
         float oX = op->getHitbox().x + op->getHitbox().ancho / 2;
         float oY = op->getHitbox().y + op->getHitbox().alto / 2;
         float dist = std::sqrt(std::pow(oX - (hitbox.x + hitbox.ancho / 2), 2) + std::pow(oY - (hitbox.y + hitbox.alto / 2), 2));
-        if (dist < 85.0f) { op->recibirDano(danoAtaque); reiniciarRecarga(); }
+        if (dist < 85.0f) {
+            op->recibirDano(danoAtaque);
+            reiniciarRecarga();
+            activarAnimacionAtaque(); // Golpe visual
+        }
     }
 };

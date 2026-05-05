@@ -9,5 +9,6 @@ public:
         if (!puedeAtacar()) return;
         proy.push_back(Proyectil(hitbox.x + hitbox.ancho / 2 - 10, hitbox.y + hitbox.alto / 2 - 10, dx * 450, dy * 450, danoAtaque, id));
         reiniciarRecarga();
+        activarAnimacionAtaque(); // Disparo visual
     }
 };

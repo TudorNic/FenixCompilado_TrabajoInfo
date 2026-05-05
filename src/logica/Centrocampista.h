@@ -18,5 +18,6 @@ public:
         proyectiles.push_back(Proyectil(spawnX, spawnY, dirX * 480.0f, dirY * 480.0f, danoAtaque, miID));
 
         reiniciarRecarga();
+        activarAnimacionAtaque();
     }
 };
