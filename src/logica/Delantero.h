@@ -4,7 +4,7 @@
 class Delantero : public Jugador {
 public:
     // Stats: 50 Vida, 5.0f Velocidad, 15 Daño, 0.5f Recarga
-    Delantero() : Jugador(50, 5.0f, 15, 0.5f) {
+    Delantero() : Jugador(50, 300.0f, 15, 0.5f) { // 300.0f de velocidad
         hitbox.ancho = 40.0f;
         hitbox.alto = 80.0f;
     }

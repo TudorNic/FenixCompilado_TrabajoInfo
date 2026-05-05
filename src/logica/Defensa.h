@@ -4,7 +4,7 @@
 class Defensa : public Jugador {
 public:
     // Stats: 100 Vida, 2.0f Velocidad, 25 Daño, 1.5f Recarga
-    Defensa() : Jugador(100, 2.0f, 25, 1.5f) {
+    Defensa() : Jugador(100, 150.0f, 25, 1.5f) { // 150.0f de velocidad
         hitbox.ancho = 50.0f;
         hitbox.alto = 100.0f;
     }

@@ -62,3 +62,23 @@ void Arena::comandoDisparoJugador2(float dx, float dy) {
         jugador2->atacar(proyectiles, jugador1, dx, dy, 2);
     }
 }
+
+void Arena::comandoMoverJugador1(float dirX, float dirY, float deltaTime) {
+    if (!jugador1) return;
+
+    // Calculamos la nueva posición en base a la velocidad del jugador
+    float nuevaX = jugador1->getHitbox().x + (dirX * jugador1->getVelocidad() * deltaTime);
+    float nuevaY = jugador1->getHitbox().y + (dirY * jugador1->getVelocidad() * deltaTime);
+
+    jugador1->setPosicion(nuevaX, nuevaY);
+}
+
+void Arena::comandoMoverJugador2(float dirX, float dirY, float deltaTime) {
+    if (!jugador2) return;
+
+    // Lo mismo para el jugador 2 (la IA)
+    float nuevaX = jugador2->getHitbox().x + (dirX * jugador2->getVelocidad() * deltaTime);
+    float nuevaY = jugador2->getHitbox().y + (dirY * jugador2->getVelocidad() * deltaTime);
+
+    jugador2->setPosicion(nuevaX, nuevaY);
+}

@@ -17,6 +17,7 @@ public:
     Jugador(int vida, float vel, int dano, float recarga)
         : vidaMaxima(vida), vidaActual(vida), velocidad(vel), danoAtaque(dano),
         tiempoRecarga(recarga), tiempoRecargaActual(0.0f), estadoActual(QUIETO) {
+        hitbox.x = 0.0f; hitbox.y = 0.0f; hitbox.ancho = 0.0f; hitbox.alto = 0.0f;
     }
 
     virtual ~Jugador() = default;

@@ -3,15 +3,16 @@
 #include "Arena.h"
 #include "Jugador.h"
 #include "ControladorIA.h"
-
+#include "Delantero.h"
+#include "Defensa.h"
 int main()
 {
     sf::RenderWindow window(sf::VideoMode({ 800, 600 }), "Fenix Football - Test IA");
     window.setFramerateLimit(60);
 
 
-    Jugador humano(100, 200.0f, 10, 1.0f);
-    Jugador bot(100, 150.0f, 10, 1.5f); // El bot es un poco más lento
+    Delantero humano;
+    Defensa bot;
 
     // Posiciones iniciales
     humano.setPosicion(100.0f, 300.0f);

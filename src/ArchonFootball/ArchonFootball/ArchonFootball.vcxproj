@@ -124,21 +124,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-
       <AdditionalIncludeDirectories>..\..\logica;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-
-      <AdditionalIncludeDirectories>C:\Users\jorge\OneDrive\Escritorio\EG1\SFML-2.6.1\SFML-2.6.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);C:\librerias trabajo infor\SFML-3.0.2\lib\sfml-graphics-d.lib;C:\librerias trabajo infor\SFML-3.0.2\lib\sfml-window-d.lib;C:\librerias trabajo infor\SFML-3.0.2\lib\sfml-system-d.lib</AdditionalDependencies>
-
-      <AdditionalLibraryDirectories>C:\Users\jorge\OneDrive\Escritorio\EG1\SFML-2.6.1\SFML-2.6.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;</AdditionalDependencies>
-
+      <AdditionalLibraryDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /D "$(ProjectDir)..\..\..\external\SFML\bin\*.dll" "$(OutDir)"</Command>
@@ -153,17 +145,12 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-
       <AdditionalIncludeDirectories>..\..\logica;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-
-      <AdditionalIncludeDirectories>C:\Users\jorge\OneDrive\Escritorio\EG1\SFML-2.6.1\SFML-2.6.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\jorge\OneDrive\Escritorio\EG1\SFML-2.6.1\SFML-2.6.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
