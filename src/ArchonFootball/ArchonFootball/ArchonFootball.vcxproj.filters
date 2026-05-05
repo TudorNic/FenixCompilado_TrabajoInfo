@@ -36,6 +36,9 @@
     <ClInclude Include="..\..\logica\Ranking.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\graficos\PantallaModoJuego.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main_menu.cpp">
@@ -60,6 +63,9 @@
       <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="..\..\logica\Ranking.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\graficos\PantallaModoJuego.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>

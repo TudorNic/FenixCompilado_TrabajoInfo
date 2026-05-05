@@ -3,6 +3,7 @@
 #include "PantallaInstrucciones.h"
 #include "PantallaRanking.h"
 #include "Ranking.h"
+#include "PantallaModoJuego.h"
 
 int main()
 {
@@ -30,11 +31,17 @@ int main()
         "../../../assets/fonts/Bungee-Regular.ttf"
     );
 
+    PantallaModoJuego pantallaModoJuego(
+        ventana,
+        "../../../assets/fonts/Bungee-Regular.ttf"
+    );
+
     enum EstadoPantalla
     {
         MENU,
         INSTRUCCIONES,
-        RANKING_PANTALLA
+        RANKING_PANTALLA,
+        MODO_JUEGO
     };
 
     EstadoPantalla estadoActual = MENU;
@@ -64,7 +71,10 @@ int main()
                 {
                     estadoActual = RANKING_PANTALLA;
                 }
-
+                else if (opcion == Menu::JUGAR)
+                {
+                    estadoActual = MODO_JUEGO;
+                }
                 pantalla.reiniciarConfirmacion();
             }
         }
@@ -90,6 +100,38 @@ int main()
             {
                 pantallaRanking.reiniciarVolver();
                 estadoActual = MENU;
+            }
+        }
+        else if (estadoActual == MODO_JUEGO)
+        {
+            pantallaModoJuego.procesarEventos();
+            pantallaModoJuego.actualizar();
+            pantallaModoJuego.dibujar();
+
+            if (pantallaModoJuego.debeVolverAlMenu())
+            {
+                pantallaModoJuego.reiniciarVolver();
+                estadoActual = MENU;
+            }
+
+            if (pantallaModoJuego.estaOpcionConfirmada())
+            {
+                PantallaModoJuego::OpcionModo modo = pantallaModoJuego.obtenerOpcionConfirmada();
+
+                if (modo == PantallaModoJuego::JUGADOR_VS_IA)
+                {
+                    // AQUI se conectara despues la partida contra la IA
+                    // Ejemplo futuro:
+                    // estadoActual = PARTIDA;
+                }
+                else if (modo == PantallaModoJuego::JUGADOR_VS_JUGADOR)
+                {
+                    // AQUI se conectara despues la partida entre 2 jugadores
+                    // Ejemplo futuro:
+                    // estadoActual = PARTIDA;
+                }
+
+                pantallaModoJuego.reiniciarConfirmacion();
             }
         }
        

@@ -142,6 +142,7 @@
     <ClInclude Include="..\..\audio\SonidoMenu.h" />
     <ClInclude Include="..\..\graficos\PantallaInstrucciones.h" />
     <ClInclude Include="..\..\graficos\PantallaMenu.h" />
+    <ClInclude Include="..\..\graficos\PantallaModoJuego.h" />
     <ClInclude Include="..\..\graficos\PantallaRanking.h" />
     <ClInclude Include="..\..\graficos\PelotasAnimadas.h" />
     <ClInclude Include="..\..\logica\Menu.h" />
@@ -151,6 +152,7 @@
     <ClCompile Include="..\..\audio\SonidoMenu.cpp" />
     <ClCompile Include="..\..\graficos\PantallaInstrucciones.cpp" />
     <ClCompile Include="..\..\graficos\PantallaMenu.cpp" />
+    <ClCompile Include="..\..\graficos\PantallaModoJuego.cpp" />
     <ClCompile Include="..\..\graficos\PantallaRanking.cpp" />
     <ClCompile Include="..\..\graficos\PelotasAnimadas.cpp" />
     <ClCompile Include="..\..\logica\Menu.cpp" />
