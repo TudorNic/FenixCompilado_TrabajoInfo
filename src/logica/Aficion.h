@@ -3,25 +3,17 @@
 
 class Aficion : public Jugador {
 public:
-    Aficion() : Jugador(40, 4.5f, 20, 0.4f) { // Muy rápida pero poca vida
-        hitbox.ancho = 40.0f;
-        hitbox.alto = 70.0f;
-    }
-
-    void atacar(std::vector<Proyectil>& proyectiles, Jugador* oponente, float dx, float dy, int id) override {
+    Aficion() : Jugador(40, 4.5f, 20, 0.4f) { hitbox.ancho = 40.f; hitbox.alto = 70.f; }
+    std::string getNombreClase() const override { return "aficion"; }
+    void atacar(std::vector<Proyectil>& proy, Jugador* op, float dx, float dy, int id) override {
         if (!puedeAtacar()) return;
-
-        // Calculamos distancia al centro del oponente
-        float centroX = hitbox.x + hitbox.ancho / 2;
-        float centroY = hitbox.y + hitbox.alto / 2;
-        float oX = oponente->getHitbox().x + oponente->getHitbox().ancho / 2;
-        float oY = oponente->getHitbox().y + oponente->getHitbox().alto / 2;
-
-        float dist = std::sqrt(std::pow(oX - centroX, 2) + std::pow(oY - centroY, 2));
-
-        if (dist < 85.0f) { // Rango de golpe corto
-            oponente->recibirDano(danoAtaque);
+        float oX = op->getHitbox().x + op->getHitbox().ancho / 2;
+        float oY = op->getHitbox().y + op->getHitbox().alto / 2;
+        float dist = std::sqrt(std::pow(oX - (hitbox.x + hitbox.ancho / 2), 2) + std::pow(oY - (hitbox.y + hitbox.alto / 2), 2));
+        if (dist < 85.0f) {
+            op->recibirDano(danoAtaque);
             reiniciarRecarga();
+            activarAnimacionAtaque(); // Golpe visual
         }
     }
 };
