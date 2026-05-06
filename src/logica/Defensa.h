@@ -3,7 +3,7 @@
 
 class Defensa : public Jugador {
 public:
-    Defensa() : Jugador(100, 2.0f, 25, 1.5f) { hitbox.ancho = 50.f; hitbox.alto = 100.f; }
+    Defensa() : Jugador(100, 200.0f, 25, 1.5f) { hitbox.ancho = 50.f; hitbox.alto = 100.f; }
     std::string getNombreClase() const override { return "defensa"; }
     void atacar(std::vector<Proyectil>& proy, Jugador* op, float dx, float dy, int id) override {
         if (!puedeAtacar()) return;

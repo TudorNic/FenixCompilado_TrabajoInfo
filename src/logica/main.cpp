@@ -67,8 +67,9 @@ int main() {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) { vA.x += 1; mirA = 1.0f; }
         if (vA.x != 0 || vA.y != 0) {
             float len = std::sqrt(vA.x * vA.x + vA.y * vA.y);
-            azul->setPosicion(std::clamp(azul->getHitbox().x + (vA.x / len) * 350.f * dt, L, ancho - L - azul->getHitbox().ancho),
-                std::clamp(azul->getHitbox().y + (vA.y / len) * 350.f * dt, L, alto - L - azul->getHitbox().alto));
+            float miVelocidad = azul->getVelocidad();
+            azul->setPosicion(std::clamp(azul->getHitbox().x + (vA.x / len) * miVelocidad * dt, L, ancho - L - azul->getHitbox().ancho),
+                std::clamp(azul->getHitbox().y + (vA.y / len) * miVelocidad * dt, L, alto - L - azul->getHitbox().alto));
         }
 
         // Acciones (Solo controles del Azul)
