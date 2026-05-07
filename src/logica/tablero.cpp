@@ -169,7 +169,6 @@ void Tablero::Avanzar_Turno() {
 	else {
 		Turno_Actual = 1;
 	}
-
 	std::cout << " TURNO DEL EQUIPO " << Turno_Actual << std::endl;
 }
 
