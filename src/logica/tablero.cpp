@@ -121,19 +121,38 @@ bool Tablero::mover_Pieza(int dest_x, int dest_y) {
 	int orig_x = pieza_Seleccionada->getX();
 	int orig_y = pieza_Seleccionada->getY();
 
-	if (Verificar_Movimiento(orig_x, orig_y, dest_x, dest_y)) {
+	if (Verificar_Movimiento(orig_x, orig_y, dest_x, dest_y)) 
+	{
+		
+		if (casillas[dest_x][dest_y] != nullptr) {
+			// LLamada al combate que debe devolver un ganador 
+		}
 
-		casillas[dest_x][dest_y] = pieza_Seleccionada;
+		if (casillas[dest_x][dest_y] == nullptr /*&& La llamada al combate devuleve victoria para el atacante,el defesnor se elimina dentro de la funcion */)
+		{
 
-		casillas[orig_x][orig_y] = nullptr;
+			casillas[dest_x][dest_y] = pieza_Seleccionada;
 
-		pieza_Seleccionada->establecer_Posicion(dest_x, dest_y);
+			casillas[orig_x][orig_y] = nullptr;
 
-		Avanzar_Turno();
+			pieza_Seleccionada->establecer_Posicion(dest_x, dest_y);
 
-		deseleccionar_Pieza();
+			Avanzar_Turno();
 
-		return true;
+			deseleccionar_Pieza();
+
+			return true;
+		}
+		else {
+			if (/*La llamada al combate devuelve derrota para el atacante*/) 
+			{
+				delete casillas[orig_x][orig_y];
+				casillas[orig_x][orig_y] = nullptr;
+				Avanzar_Turno();
+				deseleccionar_Pieza();
+			}
+
+		}
 	}
 }
 
@@ -158,6 +177,16 @@ bool Tablero::Verificar_Movimiento(int x1, int y1, int x2, int y2) {
 		std::cout << "La pieza no puede llegar ahi." << std::endl;
 		return false;
 	}
+
+	if(casillas[x2][y2] != nullptr)
+	{
+		if (casillas[x2][y2]->getBando() == pieza_Seleccionada->getBando()) //Se impide que un aliado pise a otro
+		{
+			std::cout << "Casilla destino ocupada por una pieza alida" << std::endl;
+			return false;
+		}
+	}
+
 	return true;
 }
 
@@ -173,7 +202,41 @@ void Tablero::Avanzar_Turno() {
 }
 
 int Tablero::Comprobar_Ganador() {
-	return 0;
+	int piezas_1, piezas_2;
+
+	for (int i = 0; i < 9;i++) 
+	{
+		for (int j = 0; j < 9; j++) 
+		{
+			if (casillas[i][j] != nullptr) 
+			{
+				if (casillas[i][j]->getBando() == 1) piezas_1++;
+				else piezas_2++;
+			}
+		}
+	}
+	if (piezas_1 == 0) return 2;
+	if (piezas_2 == 0) return 1;
+
+
+	int puntos_Poder1 = 0;
+	int puntos_Poder2 = 0;
+
+	for (int i = 0; i < 5; i++) {
+		int px = posicion[i].x;
+		int py = posicion[i].y;
+
+		if (casillas[px][py] != nullptr) {
+			if (casillas[px][py]->getBando() == 1) puntos_Poder1++;
+			else if (casillas[px][py]->getBando() == 2) puntos_Poder2++;
+		}
+	}
+
+	if (puntos_Poder1 == 5) return 1;
+	if (puntos_Poder2 == 5) return 2;
+
+	return 0; 
+	
 }
 
 

@@ -35,6 +35,8 @@ public:
 
 	void Avanzar_Turno();
 
+	int Ejecutar_combate(Pieza* atacante, Pieza* defensor);
+
 	bool Verificar_Movimiento(int x1, int y1, int x2, int y2);
 
 	int Comprobar_Ganador();
