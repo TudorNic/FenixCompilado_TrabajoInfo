@@ -144,7 +144,7 @@ bool Tablero::mover_Pieza(int dest_x, int dest_y) {
 			return true;
 		}
 		else {
-			if (/*La llamada al combate devuelve derrota para el atacante*/) 
+			if (false/*La llamada al combate devuelve derrota para el atacante*/) 
 			{
 				delete casillas[orig_x][orig_y];
 				casillas[orig_x][orig_y] = nullptr;
@@ -154,35 +154,38 @@ bool Tablero::mover_Pieza(int dest_x, int dest_y) {
 
 		}
 	}
+	return false;
 }
 
 bool Tablero::Verificar_Movimiento(int x1, int y1, int x2, int y2) {
 
 	if (x2 < 0 || x2>8 || y2 < 0 || y2>8) {
-		std::cout << "[ERROR MOVIMIENTO]: Te sales del campo "<< std::endl;
+		//std::cout << "[ERROR MOVIMIENTO]: Te sales del campo "<< std::endl;
 		return false;
 	} //Se comprueba que el movimiento este en los limites del campo
 
 
 	if (x1 == x2 && y1 == y2) {
-		std::cout << "[ERROR MOVIMIENTO]: Ya estas en esa casilla." << std::endl;
+		//std::cout << "[ERROR MOVIMIENTO]: Ya estas en esa casilla." << std::endl;
 		return false;
 	} //Se impide que el destino sea el mismo que el origen
-	
+	Pieza* p = casillas[x1][y1];
+
+	if (p == nullptr) return false;
 
 	int distancia = abs(x2 - x1) + abs(y2 - y1); // 
 
-	if (distancia > pieza_Seleccionada->getradio()) //Se impide el movimiento si la distancia es mayor que el radio permitido
+	if (distancia > p->getradio()) //Se impide el movimiento si la distancia es mayor que el radio permitido
 	{ 
-		std::cout << "La pieza no puede llegar ahi." << std::endl;
+		//std::cout << "La pieza no puede llegar ahi." << std::endl;
 		return false;
 	}
 
 	if(casillas[x2][y2] != nullptr)
 	{
-		if (casillas[x2][y2]->getBando() == pieza_Seleccionada->getBando()) //Se impide que un aliado pise a otro
+		if (casillas[x2][y2]->getBando() == p->getBando()) //Se impide que un aliado pise a otro
 		{
-			std::cout << "Casilla destino ocupada por una pieza alida" << std::endl;
+			//std::cout << "Casilla destino ocupada por una pieza alida" << std::endl;
 			return false;
 		}
 	}
@@ -202,7 +205,7 @@ void Tablero::Avanzar_Turno() {
 }
 
 int Tablero::Comprobar_Ganador() {
-	int piezas_1, piezas_2;
+	int piezas_1=0, piezas_2=0;
 
 	for (int i = 0; i < 9;i++) 
 	{

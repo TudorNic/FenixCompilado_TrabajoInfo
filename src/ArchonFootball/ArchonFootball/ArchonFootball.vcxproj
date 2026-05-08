@@ -21,19 +21,31 @@
   <ItemGroup>
     <ClCompile Include="..\..\logica\Arena.cpp" />
     <ClCompile Include="..\..\logica\ControladorIA.cpp" />
+    <ClCompile Include="..\..\logica\IA_Tablero.cpp" />
     <ClCompile Include="..\..\logica\main.cpp" />
+    <ClCompile Include="..\..\logica\Piezas.cpp" />
+    <ClCompile Include="..\..\logica\tablero.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\logica\Aficion.h" />
     <ClInclude Include="..\..\logica\Arena.h" />
     <ClInclude Include="..\..\logica\Centrocampista.h" />
+    <ClInclude Include="..\..\logica\Centrocampistas.h" />
     <ClInclude Include="..\..\logica\ControladorIA.h" />
     <ClInclude Include="..\..\logica\Defensa.h" />
     <ClInclude Include="..\..\logica\Delantero.h" />
     <ClInclude Include="..\..\logica\Entrenador.h" />
+    <ClInclude Include="..\..\logica\IA_Tablero.h" />
     <ClInclude Include="..\..\logica\Jugador.h" />
     <ClInclude Include="..\..\logica\Lateral.h" />
+    <ClInclude Include="..\..\logica\Laterales.h" />
+    <ClInclude Include="..\..\logica\Pieza.h" />
+    <ClInclude Include="..\..\logica\Portero.h" />
     <ClInclude Include="..\..\logica\Proyectil.h" />
+    <ClInclude Include="..\..\logica\tablero.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\logica\campo.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
@@ -122,7 +134,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\include;C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\src\logica</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,7 +152,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\include;C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\src\logica</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

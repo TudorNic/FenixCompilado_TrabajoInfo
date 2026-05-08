@@ -30,6 +30,15 @@
     <ClCompile Include="..\..\logica\ControladorIA.cpp">
       <Filter>Logica</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\logica\Piezas.cpp">
+      <Filter>Logica</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\logica\tablero.cpp">
+      <Filter>Logica</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\logica\IA_Tablero.cpp">
+      <Filter>Logica</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\logica\Arena.h">
@@ -62,5 +71,28 @@
     <ClInclude Include="..\..\logica\ControladorIA.h">
       <Filter>Logica</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\logica\Pieza.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\tablero.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Centrocampistas.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Laterales.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Portero.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\IA_Tablero.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\logica\campo.png">
+      <Filter>Logica</Filter>
+    </Image>
   </ItemGroup>
 </Project>
