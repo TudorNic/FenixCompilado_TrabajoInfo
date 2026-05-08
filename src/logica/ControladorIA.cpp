@@ -32,6 +32,8 @@ ControladorIA::ControladorIA(Jugador* botPtr, Jugador* humanoPtr, Arena* arenaPt
     humano = humanoPtr;
     arena = arenaPtr;
     estadoActual = EstadoIA::PERSEGUIR;
+
+    dificultadActual = DificultadIA::NORMAL;
 }
 
 void ControladorIA::actualizar(float deltaTime) {
@@ -75,9 +77,12 @@ void ControladorIA::actualizar(float deltaTime) {
             direccionStrafe *= -1.0f;
             tiempoStrafe = 0.0f;
             tiempoParaCambiar = 2.0f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 2.0f));
-            //35 % de probabilidad de hacer un quiebro BRUSCO al cambiar de dirección
+            int probabilidadQuiebro = 0;
+            if (dificultadActual == DificultadIA::NORMAL) probabilidadQuiebro = 15;
+            else if (dificultadActual == DificultadIA::DIFICIL) probabilidadQuiebro = 35;
+            // En Fácil se queda en 0, nunca hace quiebros bruscos
             if (rand() % 100 < 35) {
-                timerBrusco = 0.35f; // El efecto explosivo durará un tercio de segundo
+                timerBrusco = 0.35f;
             }
         }
 
@@ -144,22 +149,57 @@ void ControladorIA::actualizar(float deltaTime) {
         }
         break;
     }
+
     }
 
     //Disparar si se está cerca
     if (estadoActual == EstadoIA::PERSEGUIR) {
+        // Deducir velocidad del humano
+        static float lastHumanoX = hHumano.x;
+        static float lastHumanoY = hHumano.y;
+
+        float velHumanoX = (hHumano.x - lastHumanoX) / deltaTime;
+        float velHumanoY = (hHumano.y - lastHumanoY) / deltaTime;
+        lastHumanoX = hHumano.x;
+        lastHumanoY = hHumano.y;
+
         float dx = hHumano.x - hBot.x;
         float dy = hHumano.y - hBot.y;
         float distancia = std::sqrt(dx * dx + dy * dy);
 
         // Si está a tiro y el arma se ha recargado
         if (distancia < 450.0f && bot->puedeAtacar()) {
-            float velDisparoX = dx / distancia;
-            float velDisparoY = dy / distancia;
-            //Disparo
-            arena->comandoDisparoJugador2(velDisparoX, velDisparoY);
-            //Recarga
-            bot->reiniciarRecarga();
+            float velocidadProyectil = 420.0f;
+            float tiempoImpacto = distancia / velocidadProyectil;
+
+            float futuroX = hHumano.x;
+            float futuroY = hHumano.y;
+
+            // En nivel Fácil no predice el futuro, tira a donde estás
+            if (dificultadActual != DificultadIA::FACIL) {
+                futuroX += (velHumanoX * tiempoImpacto);
+                futuroY += (velHumanoY * tiempoImpacto);
+            }
+            float errorApuntado = 0.0f;
+            if (dificultadActual == DificultadIA::FACIL) errorApuntado = 120.0f; // Muy torpe
+            else if (dificultadActual == DificultadIA::NORMAL) errorApuntado = 40.0f; // Falla un poco
+
+            if (errorApuntado > 0.0f) {
+                // Desvío aleatorio
+                futuroX += ((rand() % 200) / 100.0f - 1.0f) * errorApuntado;
+                futuroY += ((rand() % 200) / 100.0f - 1.0f) * errorApuntado;
+            }
+            float predX = futuroX - hBot.x;
+            float predY = futuroY - hBot.y;
+            float distPred = std::sqrt(predX * predX + predY * predY);
+
+            if (distPred > 0) {
+                float velDisparoX = predX / distPred;
+                float velDisparoY = predY / distPred;
+
+                arena->comandoDisparoJugador2(velDisparoX, velDisparoY);
+                bot->reiniciarRecarga();
+            }
         }
     }
     // Aplicar movimiento final

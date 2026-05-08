@@ -3,7 +3,12 @@
 #include "Arena.h"
 #include "Proyectil.h"
 
-// Definimos los estados de la IA
+enum class DificultadIA {
+    FACIL,
+    NORMAL,
+    DIFICIL
+};
+
 enum class EstadoIA {
     PERSEGUIR,
     ESQUIVAR
@@ -16,11 +21,13 @@ private:
     Arena* arena;       // Puntero a la arena para poder ejecutar movimientos
     EstadoIA estadoActual;
 
+    DificultadIA dificultadActual;
     bool detectarPeligro(float& dirEscapeX, float& dirEscapeY);
 
 public:
     // Constructor
     ControladorIA(Jugador* botPtr, Jugador* humanoPtr, Arena* arenaPtr);
-    // Función que se llamará en cada frame
+
+    void setDificultad(DificultadIA nivel) { dificultadActual = nivel; }
     void actualizar(float deltaTime);
 };

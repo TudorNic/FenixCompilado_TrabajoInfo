@@ -6,6 +6,7 @@
 #include "Arena.h"
 #include "Defensa.h"
 #include "Delantero.h"
+#include "Lateral.h"
 #include "Aficion.h"
 #include "Entrenador.h"
 #include "ControladorIA.h"
@@ -26,6 +27,7 @@ int main() {
 
     //Inicializar IA
     ControladorIA ia(rojo, azul, &arena);
+    ia.setDificultad(DificultadIA::DIFICIL);
 
     // --- CARGA DINÁMICA DE TEXTURAS ---
     std::vector<sf::Texture> walkA(3), walkR(3);

@@ -17,6 +17,8 @@ protected:
     float tiempoAnimacion = 0.0f;
     int frameActual = 0;
     float timerAtaqueVisual = 0.0f;
+    float cooldownEspecial = 5.0f;
+    float tiempoEspecialActual = 0.0f;
     const float DURACION_ATAQUE = 0.2f;
 
 public:
@@ -38,7 +40,7 @@ public:
 
     virtual void actualizar(float deltaTime) {
         if (tiempoRecargaActual > 0.0f) tiempoRecargaActual -= deltaTime;
-
+        if (tiempoEspecialActual > 0.0f) tiempoEspecialActual -= deltaTime;
         if (timerAtaqueVisual > 0.0f) {
             timerAtaqueVisual -= deltaTime;
             if (timerAtaqueVisual <= 0.0f) {
@@ -72,4 +74,6 @@ public:
     bool puedeAtacar() const { return tiempoRecargaActual <= 0.0f; }
     void reiniciarRecarga() { tiempoRecargaActual = tiempoRecarga; }
     float getVelocidad() const { return velocidad; }
+    bool puedeUsarEspecial() const { return tiempoEspecialActual <= 0.0f; }
+    void reiniciarEspecial() { tiempoEspecialActual = cooldownEspecial; }
 };
