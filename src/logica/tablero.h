@@ -40,5 +40,7 @@ public:
 	bool Verificar_Movimiento(int x1, int y1, int x2, int y2);
 
 	int Comprobar_Ganador();
-};
 
+	Pieza* getCasilla(int x, int y) { return casillas[x][y]; }
+	int getTurnoActual() const { return Turno_Actual; }
+};
