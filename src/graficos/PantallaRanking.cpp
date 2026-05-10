@@ -6,17 +6,17 @@
 PantallaRanking::PantallaRanking(sf::RenderWindow& v, Ranking& r, const std::string& rutaFuente)
     : ventana(v),
     ranking(r),
-    fuente(),
-    titulo(fuente),
-    subtitulo(fuente),
-    rankingTexto(fuente),
-    textoVolver(fuente),
     volverAlMenu(false)
 {
-    if (!fuente.openFromFile(rutaFuente))
+    if (!fuente.loadFromFile(rutaFuente))
     {
         throw std::runtime_error("No se pudo cargar la fuente del ranking.");
     }
+
+    titulo.setFont(fuente);
+    subtitulo.setFont(fuente);
+    rankingTexto.setFont(fuente);
+    textoVolver.setFont(fuente);
 
     inicializarTextos();
 	actualizarTextoRanking();
@@ -24,16 +24,18 @@ PantallaRanking::PantallaRanking(sf::RenderWindow& v, Ranking& r, const std::str
 
 void PantallaRanking::procesarEventos()
 {
-    while (const auto evento = ventana.pollEvent())
+    sf::Event evento;
+
+    while (ventana.pollEvent(evento))
     {
-        if (evento->is<sf::Event::Closed>())
+        if (evento.type == sf::Event::Closed)
         {
             ventana.close();
         }
 
-        if (const auto* tecla = evento->getIf<sf::Event::KeyPressed>())
+        if (evento.type == sf::Event::KeyPressed)
         {
-            if (tecla->code == sf::Keyboard::Key::Escape)
+            if (evento.key.code == sf::Keyboard::Escape)
             {
                 volverAlMenu = true;
             }

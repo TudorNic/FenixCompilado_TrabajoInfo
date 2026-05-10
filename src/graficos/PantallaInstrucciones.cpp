@@ -3,39 +3,41 @@
 
 PantallaInstrucciones::PantallaInstrucciones(sf::RenderWindow& v, const std::string& rutaFuente)
     : ventana(v),
-    fuente(),
-    titulo(fuente),
-    textoInstrucciones(fuente),
-    textoVolver(fuente),
     volverAlMenu(false),
     desplazamientoVertical(0.f),
     velocidadScroll(25.f),
     limiteInferiorScroll(-250.f)
 {
-    if (!fuente.openFromFile(rutaFuente))
+    if (!fuente.loadFromFile(rutaFuente))
     {
         throw std::runtime_error("No se pudo cargar la fuente de instrucciones.");
     }
+
+    titulo.setFont(fuente);
+    textoInstrucciones.setFont(fuente);
+    textoVolver.setFont(fuente);
 
     inicializarTextos();
 }
 
 void PantallaInstrucciones::procesarEventos()
 {
-    while (const auto evento = ventana.pollEvent())
+    sf::Event evento;
+
+    while (ventana.pollEvent(evento))
     {
-        if (evento->is<sf::Event::Closed>())
+        if (evento.type == sf::Event::Closed)
         {
             ventana.close();
         }
 
-        if (const auto* tecla = evento->getIf<sf::Event::KeyPressed>())
+        if (evento.type == sf::Event::KeyPressed)
         {
-            if (tecla->code == sf::Keyboard::Key::Escape)
+            if (evento.key.code == sf::Keyboard::Escape)
             {
                 volverAlMenu = true;
             }
-            else if (tecla->code == sf::Keyboard::Key::Down || tecla->code == sf::Keyboard::Key::S)
+            else if (evento.key.code == sf::Keyboard::Down || evento.key.code == sf::Keyboard::S)
             {
                 desplazamientoVertical -= velocidadScroll;
 
@@ -44,7 +46,7 @@ void PantallaInstrucciones::procesarEventos()
                     desplazamientoVertical = limiteInferiorScroll;
                 }
             }
-            else if (tecla->code == sf::Keyboard::Key::Up || tecla->code == sf::Keyboard::Key::W)
+            else if (evento.key.code == sf::Keyboard::Up || evento.key.code == sf::Keyboard::W)
             {
                 desplazamientoVertical += velocidadScroll;
 

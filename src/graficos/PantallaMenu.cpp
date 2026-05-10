@@ -1,22 +1,16 @@
 #include "PantallaMenu.h"
 #include <stdexcept>
-#include <iostream>
 
 PantallaMenu::PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente, const std::string& rutaCampo, 
     const std::string& rutaPelota,const std::string& rutaMover, const std::string& rutaConfirmar,
     const std::string& rutaSalir, const std::string& rutaMusica)
     : ventana(v),
-    fuente(),
-    titulo(fuente),
-    opcionesTexto{ sf::Text(fuente), sf::Text(fuente), sf::Text(fuente), sf::Text(fuente) },
-    texturaFondo(),
-	fondoCampo(texturaFondo),
     pelota1(rutaPelota, { 60.f, 120.f }, { 1.6f, 1.2f }, 0.12f),
     pelota2(rutaPelota, { 620.f, 420.f }, { -1.3f, -1.0f }, 0.12f),
 	sonidoMenu(rutaMover, rutaConfirmar, rutaSalir, rutaMusica),
     opcionConfirmada(false)
 {
-    if (!fuente.openFromFile(rutaFuente))
+    if (!fuente.loadFromFile(rutaFuente))
     {
         throw std::runtime_error("No se pudo cargar la fuente del menu.");
     }
@@ -25,12 +19,18 @@ PantallaMenu::PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente, c
         throw std::runtime_error("No se pudo cargar la imagen del campo.");
     }
 
+    titulo.setFont(fuente);
+    for (int i = 0; i < 4; i++)
+    {
+        opcionesTexto[i].setFont(fuente);
+    }
+
     fondoCampo.setTexture(texturaFondo, true);
 
     sf::Vector2u sizeVentana = ventana.getSize();
     sf::Vector2u sizeImagen = texturaFondo.getSize();
 
-    fondoCampo.setScale({static_cast<float>(sizeVentana.x) / static_cast<float>(sizeImagen.x),static_cast<float>(sizeVentana.y) / static_cast<float>(sizeImagen.y)});
+    fondoCampo.setScale(static_cast<float>(sizeVentana.x) / static_cast<float>(sizeImagen.x),static_cast<float>(sizeVentana.y) / static_cast<float>(sizeImagen.y));
    
 
     inicializarTextos();
@@ -41,15 +41,34 @@ PantallaMenu::PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente, c
 
 void PantallaMenu::procesarEventos()
 {
-    while (const auto evento = ventana.pollEvent())
+    sf::Event evento;
+
+    while (ventana.pollEvent(evento))
     {
-        if (evento->is<sf::Event::Closed>())
+        if (evento.type == sf::Event::Closed)
         {
             ventana.close();
         }
-  
-        manejarTeclado(*evento);
-        manejarRaton(*evento);
+
+        if (evento.type == sf::Event::Resized)
+        {
+            sf::View vista(sf::FloatRect(
+                0.f,
+                0.f,
+                static_cast<float>(evento.size.width),
+                static_cast<float>(evento.size.height)
+            ));
+            ventana.setView(vista);
+
+            sf::Vector2u sizeImagen = texturaFondo.getSize();
+            fondoCampo.setScale(
+                static_cast<float>(evento.size.width) / static_cast<float>(sizeImagen.x),
+                static_cast<float>(evento.size.height) / static_cast<float>(sizeImagen.y)
+            );
+        }
+
+        manejarTeclado(evento);
+        manejarRaton(evento);
     }
 }
 
@@ -65,7 +84,7 @@ void PantallaMenu::actualizar()
 
 void PantallaMenu::dibujar()
 {
-    ventana.clear(sf::Color::Red);
+    ventana.clear();
     //campo de fondo
 	ventana.draw(fondoCampo);
     //dibujamos fondo animado
@@ -114,8 +133,8 @@ void PantallaMenu::inicializarTextos()
     {
         opcionesTexto[i].setString(obtenerTextoOpcion(i));
         opcionesTexto[i].setCharacterSize(30);
-        opcionesTexto[i].setPosition({ 280.f, 200.f + i * 70.f });
-        opcionesTexto[i].setFillColor(sf::Color(0, 0, 0));
+        opcionesTexto[i].setPosition( 280.f, 200.f + i * 70.f );
+        opcionesTexto[i].setFillColor(sf::Color::Black);
     }
 }
 
@@ -130,7 +149,7 @@ void PantallaMenu::actualizarAspectoOpciones()
         }
         else
         {
-            opcionesTexto[i].setFillColor(sf::Color(0, 0, 0));
+            opcionesTexto[i].setFillColor(sf::Color::Black);
             opcionesTexto[i].setScale({ 1.f, 1.f });
         }
     }
@@ -138,26 +157,26 @@ void PantallaMenu::actualizarAspectoOpciones()
 
 void PantallaMenu::manejarTeclado(const sf::Event& evento)
 {
-    if (const auto* tecla = evento.getIf<sf::Event::KeyPressed>())
+    if (evento.type == sf::Event::KeyPressed)
     {
-        if (tecla->code == sf::Keyboard::Key::Up)
+        if (evento.key.code == sf::Keyboard::Up)
         {
             menu.moverArriba();
             sonidoMenu.reproducirMover();
         }
-        else if (tecla->code == sf::Keyboard::Key::Down)
+        else if (evento.key.code == sf::Keyboard::Down)
         {
             menu.moverAbajo();
             sonidoMenu.reproducirMover();
         }
-        else if (tecla->code == sf::Keyboard::Key::Enter)
+        else if (evento.key.code == sf::Keyboard::Return)
         {
             opcionConfirmada = true;
             sonidoMenu.reproducirConfirmar();
         }
-        else if (tecla->code == sf::Keyboard::Key::Escape)
+        else if (evento.key.code == sf::Keyboard::Escape)
         {
-			sonidoMenu.reproducirSalir();   
+            sonidoMenu.reproducirSalir();
             ventana.close();
         }
     }
@@ -165,18 +184,18 @@ void PantallaMenu::manejarTeclado(const sf::Event& evento)
 
 void PantallaMenu::manejarRaton(const sf::Event& evento)
 {
-    if (const auto* mouseMove = evento.getIf<sf::Event::MouseMoved>())
+    if (evento.type == sf::Event::MouseMoved)
     {
-        seleccionarOpcionConRaton(mouseMove->position);
+        seleccionarOpcionConRaton(sf::Vector2i(evento.mouseMove.x, evento.mouseMove.y));
     }
 
-    if (const auto* mouseClick = evento.getIf<sf::Event::MouseButtonPressed>())
+    if (evento.type == sf::Event::MouseButtonPressed)
     {
-        if (mouseClick->button == sf::Mouse::Button::Left)
+        if (evento.mouseButton.button == sf::Mouse::Left)
         {
-            seleccionarOpcionConRaton(mouseClick->position);
+            seleccionarOpcionConRaton(sf::Vector2i(evento.mouseButton.x, evento.mouseButton.y));
             opcionConfirmada = true;
-			sonidoMenu.reproducirConfirmar();// Sonido de confirmación al hacer clic, no ponemos al moverse por encima de las opciones por si es molesto
+            sonidoMenu.reproducirConfirmar();
         }
     }
 }

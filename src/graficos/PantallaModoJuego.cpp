@@ -4,17 +4,19 @@
 PantallaModoJuego::PantallaModoJuego(sf::RenderWindow& v, const std::string& rutaFuente)
     : ventana(v),
     fuente(),
-    titulo(fuente),
-    opcionesTexto{ sf::Text(fuente), sf::Text(fuente) },
-    textoVolver(fuente),
     opcionSeleccionada(0),
     opcionConfirmada(false),
     volverAlMenu(false)
 {
-    if (!fuente.openFromFile(rutaFuente))
+    if (!fuente.loadFromFile(rutaFuente))
     {
         throw std::runtime_error("No se pudo cargar la fuente del modo de juego.");
     }
+
+	titulo.setFont(fuente);
+    opcionesTexto[0].setFont(fuente);
+    opcionesTexto[1].setFont(fuente);
+    textoVolver.setFont(fuente);
 
     inicializarTextos();
     actualizarAspectoOpciones();
@@ -22,28 +24,30 @@ PantallaModoJuego::PantallaModoJuego(sf::RenderWindow& v, const std::string& rut
 
 void PantallaModoJuego::procesarEventos()
 {
-    while (const auto evento = ventana.pollEvent())
+    sf::Event evento;
+
+    while (ventana.pollEvent(evento))
     {
-        if (evento->is<sf::Event::Closed>())
+        if (evento.type == sf::Event::Closed)
         {
             ventana.close();
         }
 
-        if (const auto* tecla = evento->getIf<sf::Event::KeyPressed>())
+        if (evento.type == sf::Event::KeyPressed)
         {
-            if (tecla->code == sf::Keyboard::Key::Up || tecla->code == sf::Keyboard::Key::W)
+            if (evento.key.code == sf::Keyboard::Up || evento.key.code == sf::Keyboard::W)
             {
                 moverArriba();
             }
-            else if (tecla->code == sf::Keyboard::Key::Down || tecla->code == sf::Keyboard::Key::S)
+            else if (evento.key.code == sf::Keyboard::Down || evento.key.code == sf::Keyboard::S)
             {
                 moverAbajo();
             }
-            else if (tecla->code == sf::Keyboard::Key::Enter)
+            else if (evento.key.code == sf::Keyboard::Return)
             {
                 opcionConfirmada = true;
             }
-            else if (tecla->code == sf::Keyboard::Key::Escape)
+            else if (evento.key.code == sf::Keyboard::Escape)
             {
                 volverAlMenu = true;
             }

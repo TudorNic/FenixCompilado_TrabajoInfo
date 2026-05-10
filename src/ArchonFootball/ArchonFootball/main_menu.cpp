@@ -7,7 +7,7 @@
 
 int main()
 {
-    sf::RenderWindow ventana(sf::VideoMode({ 800, 600 }), "Menu Archon");
+    sf::RenderWindow ventana(sf::VideoMode(800, 600), "Menu Archon");
     ventana.setFramerateLimit(60);
 
     Ranking ranking("../../../assets/texto/ranking.txt");

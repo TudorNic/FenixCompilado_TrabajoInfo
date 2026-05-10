@@ -5,13 +5,6 @@ SonidoMenu::SonidoMenu(const std::string& rutaMover,
     const std::string& rutaConfirmar,
     const std::string& rutaSalir,
     const std::string& rutaMusica) 
-	: bufferMover(), // Inicialización de los buffers de sonido ya que sf:Sound no tiene constructor por defecto en SFML 3
-    bufferConfirmar(),
-    bufferSalir(),
-    sonidoMover(bufferMover),
-    sonidoConfirmar(bufferConfirmar),
-    sonidoSalir(bufferSalir),
-    musicaFondo() 
 {
     if (!bufferMover.loadFromFile(rutaMover))
     {
@@ -37,7 +30,7 @@ SonidoMenu::SonidoMenu(const std::string& rutaMover,
     sonidoConfirmar.setBuffer(bufferConfirmar);
     sonidoSalir.setBuffer(bufferSalir);
 
-    musicaFondo.setLooping(true);
+    musicaFondo.setLoop(true);
 
     setVolumenEfectos(30.f);
     setVolumenMusica(50.f);

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <optional>
 #include <string>
 #include "Menu.h"
 #include "PelotasAnimadas.h"
