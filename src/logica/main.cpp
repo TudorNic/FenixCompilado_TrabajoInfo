@@ -27,7 +27,7 @@ int main() {
     window.setFramerateLimit(60);
 
     // 2. JUGADORES
-    Jugador* azul = new Entrenador();
+    Jugador* azul = new Aficion();
     Jugador* rojo = new Defensa();
     Arena arena(azul, rojo);
 
