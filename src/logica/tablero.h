@@ -1,11 +1,11 @@
 #pragma once
 #include<vector>
 
-class Pieza;
+class Jugador;
 
 class Tablero {
-	Pieza* casillas[9][9]; //Tablero
-	Pieza* pieza_Seleccionada;
+	Jugador* casillas[9][9]; //Tablero
+	Jugador* pieza_Seleccionada;
 
 	int Turno_Actual;
 
@@ -35,12 +35,12 @@ public:
 
 	void Avanzar_Turno();
 
-	int Ejecutar_combate(Pieza* atacante, Pieza* defensor);
+	int Ejecutar_combate(Jugador* atacante, Jugador* defensor);
 
 	bool Verificar_Movimiento(int x1, int y1, int x2, int y2);
 
 	int Comprobar_Ganador();
 
-	Pieza* getCasilla(int x, int y) { return casillas[x][y]; }
+	Jugador* getCasilla(int x, int y) { return casillas[x][y]; }
 	int getTurnoActual() const { return Turno_Actual; }
 };

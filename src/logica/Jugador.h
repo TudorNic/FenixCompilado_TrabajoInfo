@@ -20,12 +20,15 @@ protected:
     float cooldownEspecial = 5.0f;
     float tiempoEspecialActual = 0.0f;
     const float DURACION_ATAQUE = 0.2f;
+    int bando;
+    int radio;
+    int pos_x, pos_y;
 
 public:
-    Jugador(int vida, float vel, int dano, float recarga)
+    Jugador(int vida, float vel, int dano, float recarga,int rad,int equipo)
         : vidaMaxima(vida), vidaActual(vida), velocidad(vel), danoAtaque(dano),
-        tiempoRecarga(recarga), tiempoRecargaActual(0.0f), estadoActual(QUIETO) {
-        hitbox.x = 0.0f; hitbox.y = 0.0f; hitbox.ancho = 0.0f; hitbox.alto = 0.0f;
+        tiempoRecarga(recarga),bando(equipo),radio(rad), tiempoRecargaActual(0.0f), estadoActual(QUIETO) {
+        hitbox.x = 0.0f; hitbox.y = 0.0f; hitbox.ancho = 0.0f; hitbox.alto = 0.0f; pos_x = 0; pos_y = 0;
     }
 
     virtual ~Jugador() = default;
@@ -60,6 +63,11 @@ public:
         }
     }
 
+    void establecer_Posicion(int x, int y) {
+        pos_x = x;
+        pos_y = y;
+    }
+
     int getFrameActual() const { return frameActual; }
     EstadoJugador getEstado() const { return estadoActual; }
     void setEstado(EstadoJugador nuevo) {
@@ -76,4 +84,8 @@ public:
     float getVelocidad() const { return velocidad; }
     bool puedeUsarEspecial() const { return tiempoEspecialActual <= 0.0f; }
     void reiniciarEspecial() { tiempoEspecialActual = cooldownEspecial; }
+    int getBando() const { return bando; }
+    int getRadio() const { return radio; }
+    int getX() const { return pos_x; }
+    int getY() const { return pos_y; }
 };

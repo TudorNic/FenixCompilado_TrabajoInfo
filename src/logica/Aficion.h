@@ -3,7 +3,7 @@
 
 class Aficion : public Jugador {
 public:
-    Aficion() : Jugador(40, 4.5f, 20, 0.4f) { hitbox.ancho = 40.f; hitbox.alto = 70.f; }
+    Aficion(int equipo) : Jugador(40, 4.5f, 20, 0.4f,1,equipo) { hitbox.ancho = 40.f; hitbox.alto = 70.f; }
     std::string getNombreClase() const override { return "aficion"; }
     void atacar(std::vector<Proyectil>& proy, Jugador* op, float dx, float dy, int id) override {
         if (!puedeAtacar()) return;

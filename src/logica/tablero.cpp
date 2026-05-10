@@ -1,10 +1,11 @@
 #include "tablero.h"
-#include "Portero.h"
+#include "Entrenador.h"
 #include "Defensa.h"
 #include "Delantero.h"
-#include "Laterales.h"
-#include "Centrocampistas.h"
-#include "Pieza.h"
+#include "Lateral.h"
+#include "Centrocampista.h"
+#include "Jugador.h"
+#include "Aficion.h"
 #include <iostream>
 
 Tablero::Tablero() : Turno_Actual(1), Fase_Ciclo(0) {
@@ -27,7 +28,7 @@ void Tablero::Inicializar_Campo() {
 void Tablero::Inicializar_Partida() {
 	
 	//Bando 1
-	casillas[0][4] = new Portero(1);
+	casillas[0][4] = new Entrenador(1);
 	casillas[0][4]->establecer_Posicion(0, 4);
 
 	casillas[0][3] = new Defensa(1);
@@ -35,18 +36,18 @@ void Tablero::Inicializar_Partida() {
 	casillas[0][5] = new Defensa(1);
 	casillas[0][5]->establecer_Posicion(0, 5);
 
-	casillas[0][1] = new Centrocampistas(1);
+	casillas[0][1] = new Centrocampista(1);
 	casillas[0][1]->establecer_Posicion(0, 1);
-	casillas[0][2] = new Centrocampistas(1);
+	casillas[0][2] = new Centrocampista(1);
 	casillas[0][2]->establecer_Posicion(0, 2);
-	casillas[0][6] = new Centrocampistas(1);
+	casillas[0][6] = new Centrocampista(1);
 	casillas[0][6]->establecer_Posicion(0, 6);
-	casillas[0][7] = new Centrocampistas(1);
+	casillas[0][7] = new Centrocampista(1);
 	casillas[0][7]->establecer_Posicion(0, 7);
 
-	casillas[0][0] = new Laterales(1);
+	casillas[0][0] = new Lateral(1);
 	casillas[0][0]->establecer_Posicion(0, 0);
-	casillas[0][8] = new Laterales(1);
+	casillas[0][8] = new Lateral(1);
 	casillas[0][8]->establecer_Posicion(0, 8);
 
 	casillas[1][0] = new Delantero(1);
@@ -55,7 +56,7 @@ void Tablero::Inicializar_Partida() {
 	casillas[1][8]->establecer_Posicion(1, 8);
 
 	//Bando 2
-	casillas[8][4] = new Portero(2);
+	casillas[8][4] = new Entrenador(2);
 	casillas[8][4]->establecer_Posicion(8, 4);
 
 	casillas[8][3] = new Defensa(2);
@@ -63,24 +64,34 @@ void Tablero::Inicializar_Partida() {
 	casillas[8][5] = new Defensa(2);
 	casillas[8][5]->establecer_Posicion(8, 5);
 
-	casillas[8][1] = new Centrocampistas(2);
+	casillas[8][1] = new Centrocampista(2);
 	casillas[8][1]->establecer_Posicion(8, 1);
-	casillas[8][2] = new Centrocampistas(2);
+	casillas[8][2] = new Centrocampista(2);
 	casillas[8][2]->establecer_Posicion(8, 2);
-	casillas[8][6] = new Centrocampistas(2);
+	casillas[8][6] = new Centrocampista(2);
 	casillas[8][6]->establecer_Posicion(8, 6);
-	casillas[8][7] = new Centrocampistas(2);
+	casillas[8][7] = new Centrocampista(2);
 	casillas[8][7]->establecer_Posicion(8, 7);
 
-	casillas[8][0] = new Laterales(2);
+	casillas[8][0] = new Lateral(2);
 	casillas[8][0]->establecer_Posicion(8, 0);
-	casillas[8][8] = new Laterales(2);
+	casillas[8][8] = new Lateral(2);
 	casillas[8][8]->establecer_Posicion(8, 8);
 
 	casillas[7][0] = new Delantero(2);
 	casillas[7][0]->establecer_Posicion(7, 0);
 	casillas[7][8] = new Delantero(2);
 	casillas[7][8]->establecer_Posicion(7, 8);
+
+	//Bando 1 y 2 aficion
+	for(int i=1;i<8;i++)
+	{
+		casillas[i][1] = new Aficion(1);
+		casillas[i][1]->establecer_Posicion(i, 1);
+
+		casillas[i][7] = new Aficion(2);
+		casillas[i][7]->establecer_Posicion(i, 7);
+	}
 
 
 }
@@ -89,12 +100,12 @@ bool Tablero::seleccionar_Pieza(int x, int y) {
 	if (x < 0 || x >= 9 || y < 0 || y >= 9)
 		return false;
 
-	Pieza* objetivo = casillas[x][y];
+	Jugador* objetivo = casillas[x][y];
 
 	if (objetivo != nullptr) {
 		if (objetivo->getBando() == Turno_Actual) {
 			pieza_Seleccionada = objetivo;
-		std::cout << "Has seleccionado: " << objetivo->getNombre() << " en (" << x << "," << y << ")" << std::endl;
+		std::cout << "Has seleccionado: " << objetivo->getNombreClase() << " en (" << x << "," << y << ")" << std::endl;
 		return true;
 		}
 		else {
@@ -160,24 +171,23 @@ bool Tablero::mover_Pieza(int dest_x, int dest_y) {
 bool Tablero::Verificar_Movimiento(int x1, int y1, int x2, int y2) {
 
 	if (x2 < 0 || x2>8 || y2 < 0 || y2>8) {
-		//std::cout << "[ERROR MOVIMIENTO]: Te sales del campo "<< std::endl;
 		return false;
 	} //Se comprueba que el movimiento este en los limites del campo
 
 
 	if (x1 == x2 && y1 == y2) {
-		//std::cout << "[ERROR MOVIMIENTO]: Ya estas en esa casilla." << std::endl;
 		return false;
 	} //Se impide que el destino sea el mismo que el origen
-	Pieza* p = casillas[x1][y1];
+
+	Jugador* p = casillas[x1][y1];
 
 	if (p == nullptr) return false;
 
-	int distancia = abs(x2 - x1) + abs(y2 - y1); // 
+	int distancia = abs(x2 - x1) + abs(y2 - y1); 
 
-	if (distancia > p->getradio()) //Se impide el movimiento si la distancia es mayor que el radio permitido
+	if (distancia > p->getRadio()) //Se impide el movimiento si la distancia es mayor que el radio permitido
 	{ 
-		//std::cout << "La pieza no puede llegar ahi." << std::endl;
+		
 		return false;
 	}
 
@@ -185,7 +195,6 @@ bool Tablero::Verificar_Movimiento(int x1, int y1, int x2, int y2) {
 	{
 		if (casillas[x2][y2]->getBando() == p->getBando()) //Se impide que un aliado pise a otro
 		{
-			//std::cout << "Casilla destino ocupada por una pieza alida" << std::endl;
 			return false;
 		}
 	}
@@ -262,9 +271,7 @@ void Tablero::mostrarTableroprueba() {
 				std::cout << " . "; // Espacio vacío
 			}
 			else {
-				// Aquí imprimimos la inicial de la pieza (P, D, C...)
-				// Tendrás que crear un método getInicial() en Pieza
-				std::cout << " " << casillas[i][j]->getNombre()[0]<<" ";
+				std::cout << " " << casillas[i][j]->getNombreClase()[0]<<" ";
 			}
 		}
 		std::cout << std::endl;

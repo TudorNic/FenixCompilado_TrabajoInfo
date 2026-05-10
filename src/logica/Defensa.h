@@ -3,9 +3,9 @@
 #include "Pieza.h"
 #include<iostream>
 
-class Defensa : public Jugador, public Pieza {
+class Defensa : public Jugador {
 public:
-    Defensa(int bando) : Jugador(100, 200.0f, 25, 1.5f), Pieza("Defensa", 80, 15, 0.8, 2, Forma_Movimiento::Tierra, bando) {
+    Defensa(int equipo) : Jugador(100, 200.0f, 25, 1.5f,1,equipo){
         hitbox.ancho = 50.f;
         hitbox.alto = 100.f;
         }

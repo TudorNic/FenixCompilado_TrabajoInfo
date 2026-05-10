@@ -1,5 +1,5 @@
 #include "IA_Tablero.h"
-#include "Pieza.h"
+#include "Jugador.h"
 #include <iostream>
 
 void IATablero::ejecutarTurno(Tablero& tablero) {
@@ -7,11 +7,11 @@ void IATablero::ejecutarTurno(Tablero& tablero) {
 
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-            Pieza* p = tablero.getCasilla(i, j);
+            Jugador* p = tablero.getCasilla(i, j);
 
             if (p != nullptr && p->getBando() == bandoIA) {
                 //Simulamos movimientos en un radio (según la pieza)
-                int radio = p->getradio();
+                int radio = p->getRadio();
                 for (int dx = -radio; dx <= radio; dx++) {
                     for (int dy = -radio; dy <= radio; dy++) {
                         int destX = i + dx;
@@ -37,17 +37,17 @@ void IATablero::ejecutarTurno(Tablero& tablero) {
     }
 }
 
-int IATablero::calcularPuntuacion(Tablero& tablero, int x, int y, Pieza* p) {
+int IATablero::calcularPuntuacion(Tablero& tablero, int x, int y, Jugador* p) {
     int puntos = 0;
 
     // Regla 1: Priorizar Puntos de Poder
     if (esPuntoDePoder(x, y)) puntos += 100;
 
     // Regla 2: Si hay un enemigo, evaluar si nos conviene atacar
-    Pieza* enemigo = tablero.getCasilla(x, y);
+    Jugador* enemigo = tablero.getCasilla(x, y);
     if (enemigo != nullptr && enemigo->getBando() != bandoIA) {
         puntos += 50;
-        if (enemigo->getNombre() == "Portero") puntos += 100;
+        if (enemigo->getNombreClase() == "Portero") puntos += 100;
     }
 
     // Regla 3: Bonus por acercarse al centro (4,4)

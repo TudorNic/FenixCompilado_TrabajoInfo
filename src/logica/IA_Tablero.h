@@ -11,7 +11,7 @@ struct MovimientoIA {
 class IATablero {
 private:
     int bandoIA;
-    int calcularPuntuacion(Tablero& tablero, int x, int y, Pieza* p);
+    int calcularPuntuacion(Tablero& tablero, int x, int y, Jugador* p);
     bool esPuntoDePoder(int x, int y);
 
 public:
