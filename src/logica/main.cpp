@@ -23,15 +23,15 @@ int main() {
 
     float anV = (float)texC.getSize().x;
     float alV = (float)texC.getSize().y;
-    sf::RenderWindow window(sf::VideoMode((int)anV, (int)alV), "Archon Football - Final de Combate");
+    sf::RenderWindow window(sf::VideoMode((int)anV, (int)alV), "Archon Football - Disparo Multidireccional");
     window.setFramerateLimit(60);
 
-    // 2. JUGADORES (Entrenador vs Defensa por defecto)
+    // 2. JUGADORES
     Jugador* azul = new Entrenador();
     Jugador* rojo = new Defensa();
     Arena arena(azul, rojo);
 
-    // 3. CARGA DINÁMICA DE TEXTURAS (Usando 'atack' y frame 3)
+    // 3. CARGA DINÁMICA DE TEXTURAS
     std::vector<sf::Texture> walkA(3), walkR(3);
     sf::Texture atkA, atkR;
     std::string cA = azul->getNombreClase();
@@ -54,12 +54,16 @@ int main() {
     hpBA.setFillColor(sf::Color(50, 50, 50)); hpFA.setFillColor(sf::Color::Green);
     hpBR.setFillColor(sf::Color(50, 50, 50)); hpFR.setFillColor(sf::Color::Green);
 
-    int vPA = azul->getVidaActual(); int vPR = rojo->getVidaActual();
     azul->setPosicion(anV * 0.2f, alV * 0.5f);
     rojo->setPosicion(anV * 0.8f, alV * 0.5f);
 
     sf::Clock clock;
-    float mirA = 1.0f, mirR = -1.0f;
+
+    // VARIABLES DE DIRECCIÓN MEJORADAS
+    float mirA = 1.0f, mirR = -1.0f;           // Para el espejo del sprite (X)
+    sf::Vector2f ultimaDirA(1.f, 0.f);         // Dirección real de disparo Azul
+    sf::Vector2f ultimaDirR(-1.f, 0.f);        // Dirección real de disparo Rojo
+
     float offY = 40.0f;
     bool partidaFinalizada = false;
 
@@ -69,50 +73,61 @@ int main() {
         while (window.pollEvent(ev)) { if (ev.type == sf::Event::Closed) window.close(); }
 
         if (!partidaFinalizada) {
-            // MOVIMIENTO
-            sf::Vector2f mA(0.f, 0.f), mR(0.f, 0.f);
+            // --- MOVIMIENTO AZUL ---
+            sf::Vector2f mA(0.f, 0.f);
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) mA.y -= 1;
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) mA.y += 1;
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) { mA.x -= 1; mirA = -1.0f; }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) { mA.x += 1; mirA = 1.0f; }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) mA.x -= 1;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) mA.x += 1;
+
             if (mA.x != 0 || mA.y != 0) {
                 azul->setEstado(CAMINANDO);
                 float mag = std::sqrt(mA.x * mA.x + mA.y * mA.y);
-                azul->setPosicion(std::clamp(azul->getHitbox().x + (mA.x / mag) * 350.f * dt, 25.f, anV - 25.f - azul->getHitbox().ancho),
-                    std::clamp(azul->getHitbox().y + (mA.y / mag) * 350.f * dt, 25.f, alV - 25.f - azul->getHitbox().alto));
+                sf::Vector2f dirNormalizada = { mA.x / mag, mA.y / mag };
+
+                // Actualizamos la dirección de apuntado y el espejo visual
+                ultimaDirA = dirNormalizada;
+                if (mA.x != 0) mirA = (mA.x > 0) ? 1.0f : -1.0f;
+
+                azul->setPosicion(std::clamp(azul->getHitbox().x + dirNormalizada.x * 350.f * dt, 25.f, anV - 25.f - azul->getHitbox().ancho),
+                    std::clamp(azul->getHitbox().y + dirNormalizada.y * 350.f * dt, 25.f, alV - 25.f - azul->getHitbox().alto));
             }
             else { if (azul->getEstado() != ATACANDO) azul->setEstado(QUIETO); }
 
+            // --- MOVIMIENTO ROJO ---
+            sf::Vector2f mR(0.f, 0.f);
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) mR.y -= 1;
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) mR.y += 1;
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { mR.x -= 1; mirR = -1.0f; }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) { mR.x += 1; mirR = 1.0f; }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) mR.x -= 1;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) mR.x += 1;
+
             if (mR.x != 0 || mR.y != 0) {
                 rojo->setEstado(CAMINANDO);
                 float mag = std::sqrt(mR.x * mR.x + mR.y * mR.y);
-                rojo->setPosicion(std::clamp(rojo->getHitbox().x + (mR.x / mag) * 350.f * dt, 25.f, anV - 25.f - rojo->getHitbox().ancho),
-                    std::clamp(rojo->getHitbox().y + (mR.y / mag) * 350.f * dt, 25.f, alV - 25.f - rojo->getHitbox().alto));
+                sf::Vector2f dirNormalizada = { mR.x / mag, mR.y / mag };
+
+                ultimaDirR = dirNormalizada;
+                if (mR.x != 0) mirR = (mR.x > 0) ? 1.0f : -1.0f;
+
+                rojo->setPosicion(std::clamp(rojo->getHitbox().x + dirNormalizada.x * 350.f * dt, 25.f, anV - 25.f - rojo->getHitbox().ancho),
+                    std::clamp(rojo->getHitbox().y + dirNormalizada.y * 350.f * dt, 25.f, alV - 25.f - rojo->getHitbox().alto));
             }
             else { if (rojo->getEstado() != ATACANDO) rojo->setEstado(QUIETO); }
 
-            // ACCIONES
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) arena.comandoDisparoJugador1(mirA, 0.f);
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)) arena.comandoDisparoJugador2(mirR, 0.f);
+            // --- ACCIONES (DISPARO MULTIDIRECCIONAL) ---
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+                arena.comandoDisparoJugador1(ultimaDirA.x, ultimaDirA.y);
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
+                arena.comandoDisparoJugador2(ultimaDirR.x, ultimaDirR.y);
+
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) arena.comandoEspecialJugador1();
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) arena.comandoEspecialJugador2();
 
             arena.actualizar(dt); azul->actualizar(dt); rojo->actualizar(dt);
 
-            // COMPROBACIÓN DE MUERTE (Lógica de cierre)
+            // COMPROBACIÓN DE MUERTE
             if (azul->estaMuerto() || rojo->estaMuerto()) {
-                std::cout << "\n======================================" << std::endl;
-                std::cout << "          COMBATE FINALIZADO          " << std::endl;
-                std::cout << "======================================" << std::endl;
-
-                if (azul->estaMuerto()) std::cout << "[TABLERO] Muere Ficha Azul (" << cA << ")" << std::endl;
-                if (rojo->estaMuerto()) std::cout << "[TABLERO] Muere Ficha Roja (" << cR << ")" << std::endl;
-
-                std::cout << "Devolviendo control al tablero en 2 segundos..." << std::endl;
                 partidaFinalizada = true;
             }
         }
@@ -124,39 +139,23 @@ int main() {
         float cAX = azul->getHitbox().x + azul->getHitbox().ancho / 2;
         float cRX = rojo->getHitbox().x + rojo->getHitbox().ancho / 2;
 
-        // Azul: Render y Efecto Muerte
+        // Azul: Render
         if (azul->getEstado() == ATACANDO) sprA.setTexture(atkA);
         else sprA.setTexture(walkA[azul->getFrameActual()]);
 
-        if (azul->estaMuerto()) {
-            sprA.setRotation(90.f); // "Caer" al suelo
-            sprA.setColor(sf::Color(255, 255, 255, 120)); // Transparente
-        }
-        else if (azul->getVidaActual() < vPA) {
-            sprA.setColor(sf::Color::Red); vPA = azul->getVidaActual();
-        }
-        else {
-            sprA.setColor(sf::Color::White);
-        }
+        sprA.setRotation(azul->estaMuerto() ? 90.f : 0.f);
+        sprA.setColor(azul->estaMuerto() ? sf::Color(255, 255, 255, 120) : sf::Color::White);
         sprA.setOrigin(sprA.getLocalBounds().width / 2, sprA.getLocalBounds().height / 2);
         sprA.setScale(3.0f * mirA, 3.0f);
         sprA.setPosition(cAX, azul->getHitbox().y + azul->getHitbox().alto / 2 + offY);
         window.draw(sprA);
 
-        // Rojo: Render y Efecto Muerte
+        // Rojo: Render
         if (rojo->getEstado() == ATACANDO) sprR.setTexture(atkR);
         else sprR.setTexture(walkR[rojo->getFrameActual()]);
 
-        if (rojo->estaMuerto()) {
-            sprR.setRotation(-90.f); // "Caer" al suelo (lado opuesto)
-            sprR.setColor(sf::Color(255, 255, 255, 120));
-        }
-        else if (rojo->getVidaActual() < vPR) {
-            sprR.setColor(sf::Color::Red); vPR = rojo->getVidaActual();
-        }
-        else {
-            sprR.setColor(sf::Color::White);
-        }
+        sprR.setRotation(rojo->estaMuerto() ? -90.f : 0.f);
+        sprR.setColor(rojo->estaMuerto() ? sf::Color(255, 255, 255, 120) : sf::Color::White);
         sprR.setOrigin(sprR.getLocalBounds().width / 2, sprR.getLocalBounds().height / 2);
         sprR.setScale(3.0f * mirR, 3.0f);
         sprR.setPosition(cRX, rojo->getHitbox().y + rojo->getHitbox().alto / 2 + offY);
@@ -179,7 +178,6 @@ int main() {
         }
         window.display();
 
-        // Si la partida ha terminado, esperamos un poco para ver el efecto y cerramos
         if (partidaFinalizada) {
             sf::sleep(sf::seconds(2.0f));
             window.close();
