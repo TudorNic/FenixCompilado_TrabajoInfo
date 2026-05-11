@@ -90,8 +90,11 @@ int main() {
 
     // --- CARGA DINÁMICA DE TEXTURAS ---
     std::vector<sf::Texture> walkA(3), walkR(3);
+    sf::Texture atkA, atkR;
     std::string cA = azul->getNombreClase();
     std::string cR = rojo->getNombreClase();
+
+
 
     for (int i = 0; i < 3; i++) {
         walkA[i].loadFromFile("assets/players/blue/" + cA + "/walk/sprite_" + cA + "_blue_walk-" + std::to_string(i + 1) + ".png");
@@ -113,36 +116,86 @@ int main() {
     rojo->setPosicion(ancho * 0.8f, alto * 0.5f);
     sf::Clock clock;
     float mirA = 1.0f, mirR = -1.0f;
-    float L = 25.f; float offY = 40.0f;
+    sf::Vector2f ultimaDirA(1.f, 0.f);
+    float offY = 40.0f;
+    bool partidaFinalizada = false;
 
     while (window.isOpen()) {
         float dt = clock.restart().asSeconds();
         sf::Event ev;
         while (window.pollEvent(ev)) { if (ev.type == sf::Event::Closed) window.close(); }
+        if (!partidaFinalizada) {
+            // --- MOVIMIENTO AZUL ---
+            sf::Vector2f mA(0.f, 0.f);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) mA.y -= 1;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) mA.y += 1;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) mA.x -= 1;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) mA.x += 1;
 
-        // Movimiento Azul (WASD) HUMANO
-        sf::Vector2f vA(0.f, 0.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) vA.y -= 1;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) vA.y += 1;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) { vA.x -= 1; mirA = -1.0f; }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) { vA.x += 1; mirA = 1.0f; }
-        if (vA.x != 0 || vA.y != 0) {
-            float len = std::sqrt(vA.x * vA.x + vA.y * vA.y);
-            float miVelocidad = azul->getVelocidad();
-            azul->setPosicion(std::clamp(azul->getHitbox().x + (vA.x / len) * miVelocidad * dt, L, ancho - L - azul->getHitbox().ancho),
-                std::clamp(azul->getHitbox().y + (vA.y / len) * miVelocidad * dt, L, alto - L - azul->getHitbox().alto));
+            if (mA.x != 0 || mA.y != 0) {
+                azul->setEstado(CAMINANDO);
+                float mag = std::sqrt(mA.x * mA.x + mA.y * mA.y);
+                sf::Vector2f dirNormalizada = { mA.x / mag, mA.y / mag };
+
+                // Actualizamos la dirección de apuntado y el espejo visual
+                ultimaDirA = dirNormalizada;
+                if (mA.x != 0) mirA = (mA.x > 0) ? 1.0f : -1.0f;
+
+                azul->setPosicion(std::clamp(azul->getHitbox().x + dirNormalizada.x * 350.f * dt, 25.f, ancho - 25.f - azul->getHitbox().ancho),
+                    std::clamp(azul->getHitbox().y + dirNormalizada.y * 350.f * dt, 25.f, alto - 25.f - azul->getHitbox().alto));
+            }
+            else { if (azul->getEstado() != ATACANDO) azul->setEstado(QUIETO); }
+
+            // --- MOVIMIENTO ROJO ---
+            ia.actualizar(dt);
+
+            arena.actualizar(dt);
+            azul->actualizar(dt);
+            rojo->actualizar(dt);
+            /*MOVIMIENTO ROJO de rama de integracion_logica_graficos (desactivado para pruebas de IA)
+            sf::Vector2f mR(0.f, 0.f);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) mR.y -= 1;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) mR.y += 1;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) mR.x -= 1;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) mR.x += 1;
+
+            if (mR.x != 0 || mR.y != 0) {
+                rojo->setEstado(CAMINANDO);
+                float mag = std::sqrt(mR.x * mR.x + mR.y * mR.y);
+                sf::Vector2f dirNormalizada = { mR.x / mag, mR.y / mag };
+
+                ultimaDirR = dirNormalizada;
+                if (mR.x != 0) mirR = (mR.x > 0) ? 1.0f : -1.0f;
+
+                rojo->setPosicion(std::clamp(rojo->getHitbox().x + dirNormalizada.x * 350.f * dt, 25.f, anV - 25.f - rojo->getHitbox().ancho),
+                    std::clamp(rojo->getHitbox().y + dirNormalizada.y * 350.f * dt, 25.f, alV - 25.f - rojo->getHitbox().alto));
+            }
+            else { if (rojo->getEstado() != ATACANDO) rojo->setEstado(QUIETO); }
+
+            // --- ACCIONES (DISPARO MULTIDIRECCIONAL) ---
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+                arena.comandoDisparoJugador1(ultimaDirA.x, ultimaDirA.y);
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
+                arena.comandoDisparoJugador2(ultimaDirR.x, ultimaDirR.y);
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) arena.comandoEspecialJugador1();
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) arena.comandoEspecialJugador2();
+
+            arena.actualizar(dt); azul->actualizar(dt); rojo->actualizar(dt);
+
+            // COMPROBACIÓN DE MUERTE
+            if (azul->estaMuerto() || rojo->estaMuerto()) {
+                partidaFinalizada = true;
+            }*/
         }
 
         // Acciones (Solo controles del Azul)
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) arena.comandoDisparoJugador1(mirA, 0.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) arena.comandoEspecialJugador1(); // Especial Azul  
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) arena.comandoDisparoJugador1(ultimaDirA.x, ultimaDirA.y);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) arena.comandoEspecialJugador1();
 
-        ia.actualizar(dt);
-
-        arena.actualizar(dt);
-        azul->actualizar(dt);
-        rojo->actualizar(dt);
-
+        if (azul->estaMuerto() || rojo->estaMuerto()) partidaFinalizada = true;
+    
         window.clear();
         window.draw(sprC);
 
@@ -151,7 +204,25 @@ int main() {
         float cAX = azul->getHitbox().x + azul->getHitbox().ancho / 2;
         float cRX = rojo->getHitbox().x + rojo->getHitbox().ancho / 2;
 
+        // Azul: Render
+        if (azul->getEstado() == ATACANDO) sprA.setTexture(atkA);
+        else sprA.setTexture(walkA[azul->getFrameActual()]);
+
+        sprA.setRotation(azul->estaMuerto() ? 90.f : 0.f);
+        sprA.setColor(azul->estaMuerto() ? sf::Color(255, 255, 255, 120) : sf::Color::White);
+        sprA.setOrigin(sprA.getLocalBounds().width / 2, sprA.getLocalBounds().height / 2);
+        sprA.setScale(3.0f * mirA, 3.0f);
         sprA.setPosition(cAX, azul->getHitbox().y + azul->getHitbox().alto / 2 + offY);
+        window.draw(sprA);
+
+        // Rojo: Render
+        if (rojo->getEstado() == ATACANDO) sprR.setTexture(atkR);
+        else sprR.setTexture(walkR[rojo->getFrameActual()]);
+
+        sprR.setRotation(rojo->estaMuerto() ? -90.f : 0.f);
+        sprR.setColor(rojo->estaMuerto() ? sf::Color(255, 255, 255, 120) : sf::Color::White);
+        sprR.setOrigin(sprR.getLocalBounds().width / 2, sprR.getLocalBounds().height / 2);
+        sprR.setScale(3.0f * mirR, 3.0f);
         sprR.setPosition(cRX, rojo->getHitbox().y + rojo->getHitbox().alto / 2 + offY);
         window.draw(sprA); window.draw(sprR);
 
@@ -172,6 +243,11 @@ int main() {
             window.draw(sprB);
         }
         window.display();
+
+        if (partidaFinalizada) {
+            sf::sleep(sf::seconds(2.0f));
+            window.close();
+        }
     }
     return 0;
 }
