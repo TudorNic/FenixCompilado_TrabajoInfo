@@ -90,15 +90,18 @@ int main() {
 
     // --- CARGA DINÁMICA DE TEXTURAS ---
     std::vector<sf::Texture> walkA(3), walkR(3);
-    sf::Texture atkA, atkR;
+    std::vector<sf::Texture> atkA(3), atkR(3);
     std::string cA = azul->getNombreClase();
     std::string cR = rojo->getNombreClase();
-
-
-
+   
     for (int i = 0; i < 3; i++) {
+        // Texturas de Caminar 
         walkA[i].loadFromFile("assets/players/blue/" + cA + "/walk/sprite_" + cA + "_blue_walk-" + std::to_string(i + 1) + ".png");
         walkR[i].loadFromFile("assets/players/red/" + cR + "/walk/sprite_" + cR + "_red_walk-" + std::to_string(i + 1) + ".png");
+
+        // Texturas de Ataque 
+        atkA[i].loadFromFile("assets/players/blue/" + cA + "/atack/sprite_" + cA + "_blue_atack-" + std::to_string(i + 1) + ".png");
+        atkR[i].loadFromFile("assets/players/red/" + cR + "/atack/sprite_" + cR + "_red_atack-" + std::to_string(i + 1) + ".png");
     }
 
     sf::Sprite sprA(walkA[0]), sprR(walkR[0]), sprC(texC), sprB(texB);
@@ -205,8 +208,12 @@ int main() {
         float cRX = rojo->getHitbox().x + rojo->getHitbox().ancho / 2;
 
         // Azul: Render
-        if (azul->getEstado() == ATACANDO) sprA.setTexture(atkA);
-        else sprA.setTexture(walkA[azul->getFrameActual()]);
+        if (azul->getEstado() == ATACANDO) {
+            sprA.setTexture(atkA[azul->getFrameActual()]);
+        }
+        else {
+            sprA.setTexture(walkA[azul->getFrameActual()]);
+        }
 
         sprA.setRotation(azul->estaMuerto() ? 90.f : 0.f);
         sprA.setColor(azul->estaMuerto() ? sf::Color(255, 255, 255, 120) : sf::Color::White);
@@ -216,15 +223,19 @@ int main() {
         window.draw(sprA);
 
         // Rojo: Render
-        if (rojo->getEstado() == ATACANDO) sprR.setTexture(atkR);
-        else sprR.setTexture(walkR[rojo->getFrameActual()]);
+        if (rojo->getEstado() == ATACANDO) {
+            sprR.setTexture(atkR[rojo->getFrameActual()]); // <--- AHORA CARGA EL FRAME 1, 2 o 3
+        }
+        else {
+            sprR.setTexture(walkR[rojo->getFrameActual()]);
+        }
 
         sprR.setRotation(rojo->estaMuerto() ? -90.f : 0.f);
         sprR.setColor(rojo->estaMuerto() ? sf::Color(255, 255, 255, 120) : sf::Color::White);
         sprR.setOrigin(sprR.getLocalBounds().width / 2, sprR.getLocalBounds().height / 2);
         sprR.setScale(3.0f * mirR, 3.0f);
         sprR.setPosition(cRX, rojo->getHitbox().y + rojo->getHitbox().alto / 2 + offY);
-        window.draw(sprA); window.draw(sprR);
+        window.draw(sprR);
 
         // Barras de Vida (Color dinámico para Entrenador)
         hpFA.setSize(sf::Vector2f(anchoB * ((float)azul->getVidaActual() / azul->getVidaMaxima()), altoB));

@@ -174,7 +174,21 @@ void ControladorIA::actualizar(float deltaTime) {
 
             float futuroX = hHumano.x;
             float futuroY = hHumano.y;
+            // --- USO DE HABILIDAD ESPECIAL ---
+            if (distancia < 350.0f && bot->puedeUsarEspecial()) {
 
+                // Probabilidad por frame de lanzarlo
+                int probabilidadEspecial = 0;
+                if (dificultadActual == DificultadIA::FACIL) probabilidadEspecial = 1;
+                else if (dificultadActual == DificultadIA::NORMAL) probabilidadEspecial = 3; 
+                else if (dificultadActual == DificultadIA::DIFICIL) probabilidadEspecial = 8; 
+
+                // Tiramos los dados
+                if (rand() % 100 < probabilidadEspecial) {
+                    arena->comandoEspecialJugador2(); 
+                    bot->reiniciarEspecial();         
+                }
+            }
             // En nivel Fácil no predice el futuro, tira a donde estás
             if (dificultadActual != DificultadIA::FACIL) {
                 futuroX += (velHumanoX * tiempoImpacto);

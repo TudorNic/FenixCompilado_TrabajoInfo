@@ -36,6 +36,8 @@ public:
     void activarAnimacionAtaque() {
         estadoActual = ATACANDO;
         timerAtaqueVisual = DURACION_ATAQUE;
+        frameActual = 0;
+        tiempoAnimacion = 0.0f;
     }
 
     virtual void actualizar(float deltaTime) {
@@ -47,15 +49,16 @@ public:
                 estadoActual = QUIETO;
             }
         }
-
-        if (estadoActual == CAMINANDO) {
+        if (estadoActual == CAMINANDO || estadoActual == ATACANDO) {
             tiempoAnimacion += deltaTime;
-            if (tiempoAnimacion >= 0.15f) {
+            float velocidadFrame = (estadoActual == ATACANDO) ? 0.06f : 0.15f;
+
+            if (tiempoAnimacion >= velocidadFrame) {
                 frameActual = (frameActual + 1) % 3;
                 tiempoAnimacion = 0.0f;
             }
         }
-        else if (estadoActual != ATACANDO) {
+        else {
             frameActual = 0;
         }
     }
