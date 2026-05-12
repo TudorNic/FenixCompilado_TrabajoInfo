@@ -21,8 +21,8 @@ public:
     // --- Asegúrate de que estas 4 estén aquí ---
     void comandoDisparoJugador1(float dx, float dy);
     void comandoDisparoJugador2(float dx, float dy);
-    void comandoEspecialJugador1(); // <--- Nueva
-    void comandoEspecialJugador2(); // <--- Nueva
+    void comandoEspecialJugador1();
+    void comandoEspecialJugador2();
 
     bool isTerminado() const { return combateTerminado; }
     Jugador* getGanador() const { return ganador; }

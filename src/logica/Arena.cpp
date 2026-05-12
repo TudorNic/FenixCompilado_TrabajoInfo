@@ -42,7 +42,6 @@ void Arena::comandoDisparoJugador2(float dx, float dy) {
     if (!combateTerminado) jugador2->atacar(proyectiles, jugador1, dx, dy, 2);
 }
 
-// --- FÍJATE EN EL Arena:: DELANTE DE CADA UNA ---
 void Arena::comandoEspecialJugador1() {
     if (!combateTerminado) jugador1->usarHabilidadEspecial();
 }
