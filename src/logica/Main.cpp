@@ -81,7 +81,7 @@ int main() {
 
     // --- SELECCIÓN DE JUGADORES ---
     Jugador* azul = new Defensa(1);
-    Jugador* rojo = new Entrenador();
+    Jugador* rojo = new Aficion();
     Arena arena(azul, rojo);
 
     //Inicializar IA
