@@ -5,7 +5,7 @@
 #include "Ranking.h"
 #include "PantallaModoJuego.h"
 
-int main()
+int main_MENU_VIEJO() 
 {
     sf::RenderWindow ventana(sf::VideoMode(800, 600), "Menu Archon");
     ventana.setFramerateLimit(60);
