@@ -20,19 +20,14 @@
 #include "Ranking.h"
 #include "PantallaModoJuego.h"
 
-// --- AJUSTE DE LÍMITES (Más cerrados para 800x600) ---
-const float L_IZQ = 60.f;
-const float L_DER = 740.f;
-const float L_SUP = 60.f;
-const float L_INF = 540.f;
-
 enum class Estado { MENU, INSTRUCCIONES, RANKING_PANTALLA, MODO_JUEGO, COMBATE };
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Archon Football - Fixed Logic");
+    // --- 1. CONFIGURACIÓN DE VENTANA ---
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Archon Football - Integracion Final");
     window.setFramerateLimit(60);
 
-    // --- CARGA DE MENÚS (Sergio) ---
+    // --- 2. INICIALIZACIÓN DE MENÚS ---
     Ranking ranking("../../../assets/texto/ranking.txt");
     ranking.cargar();
 
@@ -45,21 +40,26 @@ int main() {
     PantallaRanking pRank(window, ranking, "../../../assets/fonts/Bungee-Regular.ttf");
     PantallaModoJuego pModo(window, "../../../assets/fonts/Bungee-Regular.ttf");
 
-    // --- RECURSOS ---
+    // --- 3. RECURSOS DE COMBATE ---
     sf::Texture texC, texB;
     if (!texC.loadFromFile("campo.png") || !texB.loadFromFile("assets/proyectil/balon_proyectil.png")) return -1;
+
+    float anchoCampo = (float)texC.getSize().x;
+    float altoCampo = (float)texC.getSize().y;
 
     Jugador* azul = nullptr, * rojo = nullptr;
     Arena* arena = nullptr;
     ControladorIA* ia = nullptr;
-    bool vsIA = true;
+    bool esModoIA = true;
 
     std::vector<sf::Texture> walkA(3), walkR(3), atkA(3), atkR(3);
     sf::Sprite sprA, sprR, sprC(texC), sprB(texB);
     sprB.setOrigin(10, 10);
 
-    sf::RectangleShape hpBA(sf::Vector2f(60, 7)), hpFA(sf::Vector2f(60, 7));
-    sf::RectangleShape hpBR(sf::Vector2f(60, 7)), hpFR(sf::Vector2f(60, 7));
+    // --- INICIALIZACIÓN BARRAS DE VIDA (Las que faltaban) ---
+    float anchoB = 60.0f; float altoB = 7.0f;
+    sf::RectangleShape hpBA(sf::Vector2f(anchoB, altoB)), hpFA(sf::Vector2f(anchoB, altoB));
+    sf::RectangleShape hpBR(sf::Vector2f(anchoB, altoB)), hpFR(sf::Vector2f(anchoB, altoB));
     hpBA.setFillColor(sf::Color(50, 50, 50)); hpFA.setFillColor(sf::Color::Green);
     hpBR.setFillColor(sf::Color(50, 50, 50)); hpFR.setFillColor(sf::Color::Green);
 
@@ -67,7 +67,8 @@ int main() {
     Estado estadoActual = Estado::MENU;
     sf::Vector2f uDirA(1.f, 0.f), uDirR(-1.f, 0.f);
     float mirA = 1.0f, mirR = -1.0f;
-    bool final = false;
+    float offY = 40.0f;
+    bool partidaFinalizada = false;
 
     while (window.isOpen()) {
         float dt = clock.restart().asSeconds();
@@ -89,11 +90,11 @@ int main() {
             pModo.procesarEventos(); pModo.actualizar(); pModo.dibujar();
             if (pModo.debeVolverAlMenu()) { pModo.reiniciarVolver(); estadoActual = Estado::MENU; }
             if (pModo.estaOpcionConfirmada()) {
-                vsIA = (pModo.obtenerOpcionConfirmada() == PantallaModoJuego::JUGADOR_VS_IA);
-
+                esModoIA = (pModo.obtenerOpcionConfirmada() == PantallaModoJuego::JUGADOR_VS_IA);
                 if (azul) delete azul; if (rojo) delete rojo; if (arena) delete arena; if (ia) delete ia;
+
                 azul = new Defensa(1); rojo = new Aficion(); arena = new Arena(azul, rojo);
-                if (vsIA) { ia = new ControladorIA(rojo, azul, arena); ia->setDificultad(DificultadIA::DIFICIL); }
+                if (esModoIA) { ia = new ControladorIA(rojo, azul, arena); ia->setDificultad(DificultadIA::DIFICIL); }
 
                 std::string cA = azul->getNombreClase(), cR = rojo->getNombreClase();
                 for (int i = 0; i < 3; i++) {
@@ -102,11 +103,9 @@ int main() {
                     atkA[i].loadFromFile("assets/players/blue/" + cA + "/atack/sprite_" + cA + "_blue_atack-" + std::to_string(i + 1) + ".png");
                     atkR[i].loadFromFile("assets/players/red/" + cR + "/atack/sprite_" + cR + "_red_atack-" + std::to_string(i + 1) + ".png");
                 }
-                // IMPORTANTE: Fijo el origen al centro del frame (32x32 para sprites de 64x64)
-                sprA.setOrigin(32, 32); sprR.setOrigin(32, 32);
-                azul->setPosicion(200, 300); rojo->setPosicion(600, 300);
-
-                estadoActual = Estado::COMBATE; final = false; pModo.reiniciarConfirmacion();
+                azul->setPosicion(anchoCampo * 0.2f, altoCampo * 0.5f);
+                rojo->setPosicion(anchoCampo * 0.8f, altoCampo * 0.5f);
+                estadoActual = Estado::COMBATE; partidaFinalizada = false; pModo.reiniciarConfirmacion();
             }
             break;
 
@@ -114,8 +113,8 @@ int main() {
             sf::Event ev;
             while (window.pollEvent(ev)) { if (ev.type == sf::Event::Closed) window.close(); }
 
-            if (!final) {
-                // Control Azul
+            if (!partidaFinalizada) {
+                // --- MOVIMIENTO AZUL (Límites ceñidos al campo azul) ---
                 sf::Vector2f mA(0.f, 0.f);
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) mA.y -= 1;
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) mA.y += 1;
@@ -127,13 +126,15 @@ int main() {
                     float mag = std::sqrt(mA.x * mA.x + mA.y * mA.y);
                     uDirA = { mA.x / mag, mA.y / mag };
                     if (mA.x != 0) mirA = (mA.x > 0) ? 1.0f : -1.0f;
-                    azul->setPosicion(std::clamp(azul->getHitbox().x + uDirA.x * 350.f * dt, L_IZQ, L_DER - azul->getHitbox().ancho),
-                        std::clamp(azul->getHitbox().y + uDirA.y * 350.f * dt, L_SUP, L_INF - azul->getHitbox().alto));
+                    // Clamp usando anchoCampo y altoCampo para no entrar en lo negro
+                    azul->setPosicion(
+                        std::clamp(azul->getHitbox().x + uDirA.x * 350.f * dt, 25.f, anchoCampo - 25.f - azul->getHitbox().ancho),
+                        std::clamp(azul->getHitbox().y + uDirA.y * 350.f * dt, 25.f, altoCampo - 25.f - azul->getHitbox().alto)
+                    );
                 }
                 else if (azul->getEstado() != ATACANDO) azul->setEstado(QUIETO);
 
-                // Control Rojo (IA o P2)
-                if (vsIA) ia->actualizar(dt);
+                if (esModoIA) ia->actualizar(dt);
                 else {
                     sf::Vector2f mR(0.f, 0.f);
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) mR.y -= 1;
@@ -145,8 +146,8 @@ int main() {
                         float mag = std::sqrt(mR.x * mR.x + mR.y * mR.y);
                         uDirR = { mR.x / mag, mR.y / mag };
                         if (mR.x != 0) mirR = (mR.x > 0) ? 1.0f : -1.0f;
-                        rojo->setPosicion(std::clamp(rojo->getHitbox().x + uDirR.x * 350.f * dt, L_IZQ, L_DER - rojo->getHitbox().ancho),
-                            std::clamp(rojo->getHitbox().y + uDirR.y * 350.f * dt, L_SUP, L_INF - rojo->getHitbox().alto));
+                        rojo->setPosicion(std::clamp(rojo->getHitbox().x + uDirR.x * 350.f * dt, 25.f, anchoCampo - 25.f - rojo->getHitbox().ancho),
+                            std::clamp(rojo->getHitbox().y + uDirR.y * 350.f * dt, 25.f, altoCampo - 25.f - rojo->getHitbox().alto));
                     }
                     else if (rojo->getEstado() != ATACANDO) rojo->setEstado(QUIETO);
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)) arena->comandoDisparoJugador2(uDirR.x, uDirR.y);
@@ -154,35 +155,42 @@ int main() {
 
                 arena->actualizar(dt); azul->actualizar(dt); rojo->actualizar(dt);
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) arena->comandoDisparoJugador1(uDirA.x, uDirA.y);
-                if (azul->estaMuerto() || rojo->estaMuerto()) final = true;
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) arena->comandoEspecialJugador1();
+                if (azul->estaMuerto() || rojo->estaMuerto()) partidaFinalizada = true;
             }
 
             window.clear(); window.draw(sprC);
 
-            // Centrado matemático del Sprite sobre la Hitbox
-            // Usamos: Hitbox.x + (Hitbox.ancho / 2)
+            float cAX = azul->getHitbox().x + azul->getHitbox().ancho / 2;
+            float cRX = rojo->getHitbox().x + rojo->getHitbox().ancho / 2;
+
             sprA.setTexture((azul->getEstado() == ATACANDO) ? atkA[azul->getFrameActual()] : walkA[azul->getFrameActual()]);
+            sprA.setOrigin(sprA.getLocalBounds().width / 2, sprA.getLocalBounds().height / 2);
             sprA.setScale(3.0f * mirA, 3.0f);
-            sprA.setPosition(azul->getHitbox().x + (azul->getHitbox().ancho / 2.0f), azul->getHitbox().y + (azul->getHitbox().alto / 2.0f));
+            sprA.setPosition(cAX, azul->getHitbox().y + azul->getHitbox().alto / 2 + offY);
             window.draw(sprA);
 
             sprR.setTexture((rojo->getEstado() == ATACANDO) ? atkR[rojo->getFrameActual()] : walkR[rojo->getFrameActual()]);
+            sprR.setOrigin(sprR.getLocalBounds().width / 2, sprR.getLocalBounds().height / 2);
             sprR.setScale(3.0f * mirR, 3.0f);
-            sprR.setPosition(rojo->getHitbox().x + (rojo->getHitbox().ancho / 2.0f), rojo->getHitbox().y + (rojo->getHitbox().alto / 2.0f));
+            sprR.setPosition(cRX, rojo->getHitbox().y + rojo->getHitbox().alto / 2 + offY);
             window.draw(sprR);
 
-            // UI y Proyectiles
-            hpFA.setSize(sf::Vector2f(60.f * ((float)azul->getVidaActual() / azul->getVidaMaxima()), 7.f));
-            hpBA.setPosition(azul->getHitbox().x, azul->getHitbox().y - 15); hpFA.setPosition(azul->getHitbox().x, azul->getHitbox().y - 15);
+            // Dibujar UI (Posicionada igual que en tu versión segura)
+            hpFA.setSize(sf::Vector2f(anchoB * ((float)azul->getVidaActual() / azul->getVidaMaxima()), altoB));
+            hpBA.setPosition(cAX - anchoB / 2, azul->getHitbox().y - 20);
+            hpFA.setPosition(cAX - anchoB / 2, azul->getHitbox().y - 20);
             window.draw(hpBA); window.draw(hpFA);
-            hpFR.setSize(sf::Vector2f(60.f * ((float)rojo->getVidaActual() / rojo->getVidaMaxima()), 7.f));
-            hpBR.setPosition(rojo->getHitbox().x, rojo->getHitbox().y - 15); hpFR.setPosition(rojo->getHitbox().x, rojo->getHitbox().y - 15);
+
+            hpFR.setSize(sf::Vector2f(anchoB * ((float)rojo->getVidaActual() / rojo->getVidaMaxima()), altoB));
+            hpBR.setPosition(cRX - anchoB / 2, rojo->getHitbox().y - 20);
+            hpFR.setPosition(cRX - anchoB / 2, rojo->getHitbox().y - 20);
             window.draw(hpBR); window.draw(hpFR);
 
             for (auto& p : arena->getProyectiles()) { sprB.setPosition(p.getHitbox().x + 10, p.getHitbox().y + 10); window.draw(sprB); }
             window.display();
 
-            if (final) { sf::sleep(sf::seconds(1.2f)); estadoActual = Estado::MENU; final = false; }
+            if (partidaFinalizada) { sf::sleep(sf::seconds(1.5f)); estadoActual = Estado::MENU; partidaFinalizada = false; }
             break;
         }
     }
