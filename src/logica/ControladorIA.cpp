@@ -222,8 +222,8 @@ void ControladorIA::actualizar(float deltaTime) {
         float nuevaX = hBot.x + (dirX * velocidadReal * deltaTime);
         float nuevaY = hBot.y + (dirY * velocidadReal * deltaTime);
 
-        float limiteAncho = 1280.0f;
-        float limiteAlto = 720.0f;
+        float limiteAncho = 600.0f;
+        float limiteAlto = 560.0f;
         float margen = 25.0f;
 
         nuevaX = std::clamp(nuevaX, margen, limiteAncho - margen - hBot.ancho);
