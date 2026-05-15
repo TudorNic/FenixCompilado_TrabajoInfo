@@ -85,8 +85,11 @@ public:
     float getDanoAtaque()const { return danoAtaque; }
     bool puedeUsarEspecial() const { return tiempoEspecialActual <= 0.0f; }
     void reiniciarEspecial() { tiempoEspecialActual = cooldownEspecial; }
-    int getBando() const { return bando; }
     int getRadio() const { return radio; }
     int getX() const { return pos_x; }
     int getY() const { return pos_y; }
+    int getBando() const {
+        if (this == nullptr) return 0;
+        return bando;
+    }
 };

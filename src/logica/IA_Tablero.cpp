@@ -70,12 +70,6 @@ void IATablero::ejecutarTurno(Tablero& tablero) {
                 mejor = mejoresMovimientos[rand() % mejoresMovimientos.size()];
             }
         }
-        if (dificultad == DificultadTablero::FACIL && mejoresMovimientos.size() > 1) {
-            if (rand() % 100 < 30) {
-                int indiceAleatorio = rand() % mejoresMovimientos.size();
-                mejor = mejoresMovimientos[indiceAleatorio];
-            }
-        }
 
         lastOrigenX = mejor.xOrigen;
         lastOrigenY = mejor.yOrigen;
@@ -100,9 +94,9 @@ int IATablero::calcularPuntuacion(Tablero& tablero, int x, int y, Jugador* p) {
         switch (dificultad) {
         case DificultadTablero::FACIL:
             puntuacion += (rand() % 40);
-            if (bandoIA == 2) puntuacion += (y * 3);
-            else puntuacion += ((8 - y) * 3);
-            puntuacion += factorCentro * 2;
+            if (bandoIA == 2) puntuacion += (y * 3.0f);
+            else puntuacion += ((8 - y) * 3.0f);
+            puntuacion += factorCentro * 2.0f;
             break;
 
         case DificultadTablero::NORMAL:

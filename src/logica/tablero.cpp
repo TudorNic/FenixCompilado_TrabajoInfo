@@ -227,7 +227,9 @@ bool Tablero::mover_Pieza(int dest_x, int dest_y) {
 }
 
 bool Tablero::Verificar_Movimiento(int x1, int y1, int x2, int y2) {
-
+	if (x1 < 0 || x1 >= 9 || y1 < 0 || y1 >= 9 || x2 < 0 || x2 >= 9 || y2 < 0 || y2 >= 9) {
+		return false;
+	}
 	Jugador* p = casillas[x1][y1];
 
 	if (p == nullptr) return false;
@@ -247,7 +249,7 @@ bool Tablero::Verificar_Movimiento(int x1, int y1, int x2, int y2) {
 
 	if(casillas[x2][y2] != nullptr)
 	{
-		if (casillas[x2][y2]->getBando() == p->getBando()) 
+		if (casillas[x2][y2]->getBando() == casillas[x1][y1]->getBando())
 		{
 			return false;
 		}
@@ -338,30 +340,31 @@ bool Tablero::Ejecutar_combate(Jugador* atacante, Jugador* defensor) {
 
 	float Dano_Modificado=defensor->getDanoAtaque();
 	float Velocidad_Modificada = defensor->getVelocidad();;
+	if (defensor == nullptr) return true;
 
 	if (Turno_Actual == 1) {
 		if (defensor->getY() == 2 || defensor->getY() == 6) 
 		{
-			Velocidad_Modificada=defensor->getVelocidad() * 1.3;
-			Dano_Modificado = defensor->getDanoAtaque() * 0.7;
+			Velocidad_Modificada=defensor->getVelocidad() * 1.3f;
+			Dano_Modificado = defensor->getDanoAtaque() * 0.7f;
 		}
 		else if (defensor->getY() == 4)
 		{
-			defensor->getVelocidad() * 0.7;
-			Dano_Modificado = defensor->getDanoAtaque() * 1.3;
+			Velocidad_Modificada = defensor->getVelocidad() * 0.7f;
+			Dano_Modificado = defensor->getDanoAtaque() * 1.3f;
 		}
 	}
 
-	if (Turno_Actual == 2) {
+	else if (Turno_Actual == 2) {
 		if (defensor->getY() == 2 || defensor->getY() == 6)
 		{
-			defensor->getVelocidad() * 0.7;
-			Dano_Modificado = defensor->getDanoAtaque() * 1.3;
+			Velocidad_Modificada = defensor->getVelocidad() * 0.7f;
+			Dano_Modificado = defensor->getDanoAtaque() * 1.3f;
 		}
 		else if (defensor->getY() == 4)
 		{
-			defensor->getVelocidad() * 1.3;
-			Dano_Modificado = defensor->getDanoAtaque() * 0.7;
+			Velocidad_Modificada = defensor->getVelocidad() * 1.3f;
+			Dano_Modificado = defensor->getDanoAtaque() * 0.7f;
 		}
 	}
 
