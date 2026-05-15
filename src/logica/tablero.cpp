@@ -6,15 +6,20 @@
 #include "Centrocampista.h"
 #include "Jugador.h"
 #include "Aficion.h"
+#include"math.h"
 #include <iostream>
 
 Tablero::Tablero() : Turno_Actual(1), Fase_Ciclo(0) {
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
 			casillas[i][j] = nullptr;
+			matrizEfectos[i][j] = 0;
 		}
 	}
 	Inicializar_Campo();
+	Inicializar_Partida();
+	pieza_Seleccionada = nullptr;
+
 }
 
 void Tablero::Inicializar_Campo() {
@@ -23,77 +28,121 @@ void Tablero::Inicializar_Campo() {
 	posicion[2] = { 4,8 }; //Punto de poder porteria inferior
 	posicion[3] = { 0,4 }; //Punto de poder banda izquierda
 	posicion[4] = { 8,4 }; //Punto de poder banda derecha
+	oscilarTerreno(Turno_Actual);
+
+	for (int i = 0; i < 5; i++) {
+		matrizEfectos[posicion[i].x][posicion[i].y] = 3;
+	}
 }
 
 void Tablero::Inicializar_Partida() {
 	
 	//Bando 1
-	casillas[0][4] = new Entrenador(1);
-	casillas[0][4]->establecer_Posicion(0, 4);
+	casillas[4][8] = new Entrenador(1);
+	casillas[4][8]->establecer_Posicion(4, 8);
 
-	casillas[0][3] = new Defensa(1);
-	casillas[0][3]->establecer_Posicion(0, 3);
-	casillas[0][5] = new Defensa(1);
-	casillas[0][5]->establecer_Posicion(0, 5);
+	casillas[3][8] = new Defensa(1);
+	casillas[3][8]->establecer_Posicion(3, 8);
+	casillas[5][8] = new Defensa(1);
+	casillas[5][8]->establecer_Posicion(5, 8);
 
-	casillas[0][1] = new Centrocampista(1);
-	casillas[0][1]->establecer_Posicion(0, 1);
-	casillas[0][2] = new Centrocampista(1);
-	casillas[0][2]->establecer_Posicion(0, 2);
-	casillas[0][6] = new Centrocampista(1);
-	casillas[0][6]->establecer_Posicion(0, 6);
-	casillas[0][7] = new Centrocampista(1);
-	casillas[0][7]->establecer_Posicion(0, 7);
+	casillas[1][8] = new Centrocampista(1);
+	casillas[1][8]->establecer_Posicion(1, 8);
+	casillas[2][8] = new Centrocampista(1);
+	casillas[2][8]->establecer_Posicion(2, 8);
+	casillas[6][8] = new Centrocampista(1);
+	casillas[6][8]->establecer_Posicion(6, 8);
+	casillas[7][8] = new Centrocampista(1);
+	casillas[7][8]->establecer_Posicion(7, 8);
 
-	casillas[0][0] = new Lateral(1);
-	casillas[0][0]->establecer_Posicion(0, 0);
 	casillas[0][8] = new Lateral(1);
 	casillas[0][8]->establecer_Posicion(0, 8);
-
-	casillas[1][0] = new Delantero(1);
-	casillas[1][0]->establecer_Posicion(1, 0);
-	casillas[1][8] = new Delantero(1);
-	casillas[1][8]->establecer_Posicion(1, 8);
-
-	//Bando 2
-	casillas[8][4] = new Entrenador(2);
-	casillas[8][4]->establecer_Posicion(8, 4);
-
-	casillas[8][3] = new Defensa(2);
-	casillas[8][3]->establecer_Posicion(8, 3);
-	casillas[8][5] = new Defensa(2);
-	casillas[8][5]->establecer_Posicion(8, 5);
-
-	casillas[8][1] = new Centrocampista(2);
-	casillas[8][1]->establecer_Posicion(8, 1);
-	casillas[8][2] = new Centrocampista(2);
-	casillas[8][2]->establecer_Posicion(8, 2);
-	casillas[8][6] = new Centrocampista(2);
-	casillas[8][6]->establecer_Posicion(8, 6);
-	casillas[8][7] = new Centrocampista(2);
-	casillas[8][7]->establecer_Posicion(8, 7);
-
-	casillas[8][0] = new Lateral(2);
-	casillas[8][0]->establecer_Posicion(8, 0);
-	casillas[8][8] = new Lateral(2);
+	casillas[8][8] = new Lateral(1);
 	casillas[8][8]->establecer_Posicion(8, 8);
 
-	casillas[7][0] = new Delantero(2);
+	casillas[0][7] = new Delantero(1);
+	casillas[0][7]->establecer_Posicion(0, 7);
+	casillas[8][7] = new Delantero(1);
+	casillas[8][7]->establecer_Posicion(8, 7);
+
+	//Bando 2
+	casillas[4][0] = new Entrenador(2);
+	casillas[4][0]->establecer_Posicion(4, 0);
+
+	casillas[3][0] = new Defensa(2);
+	casillas[3][0]->establecer_Posicion(3, 0);
+	casillas[5][0] = new Defensa(2);
+	casillas[5][0]->establecer_Posicion(5, 0);
+
+	casillas[1][0] = new Centrocampista(2);
+	casillas[1][0]->establecer_Posicion(1, 0);
+	casillas[2][0] = new Centrocampista(2);
+	casillas[2][0]->establecer_Posicion(2, 0);
+	casillas[6][0] = new Centrocampista(2);
+	casillas[6][0]->establecer_Posicion(6, 0);
+	casillas[7][0] = new Centrocampista(2);
 	casillas[7][0]->establecer_Posicion(7, 0);
-	casillas[7][8] = new Delantero(2);
-	casillas[7][8]->establecer_Posicion(7, 8);
+
+	casillas[0][0] = new Lateral(2);
+	casillas[0][0]->establecer_Posicion(0, 0);
+	casillas[8][0] = new Lateral(2);
+	casillas[8][0]->establecer_Posicion(8, 0);
+
+	casillas[0][1] = new Delantero(2);
+	casillas[0][1]->establecer_Posicion(0, 1);
+	casillas[8][1] = new Delantero(2);
+	casillas[8][1]->establecer_Posicion(8, 1);
 
 	//Bando 1 y 2 aficion
 	for(int i=1;i<8;i++)
 	{
-		casillas[i][1] = new Aficion(1);
-		casillas[i][1]->establecer_Posicion(i, 1);
-
-		casillas[i][7] = new Aficion(2);
+		casillas[i][7] = new Aficion(1);
 		casillas[i][7]->establecer_Posicion(i, 7);
+
+		casillas[i][1] = new Aficion(2);
+		casillas[i][1]->establecer_Posicion(i, 1);
 	}
 
 
+}
+
+struct Coordenada { int x, y; };
+Coordenada casillasCambiantes[27] = {
+
+	{0,3}, {1,3}, {2,3}, {3,3}, {4,3}, {5,3}, {6,3}, {7,3}, {8,3},
+	{0,4}, {1,4}, {2,4}, {3,4}, {4,4}, {5,4}, {6,4}, {7,4}, {8,4},
+	{0,5}, {1,5}, {2,5}, {3,5}, {4,5}, {5,5}, {6,5}, {7,5}, {8,5}
+};
+
+void Tablero::oscilarTerreno(int turno_actual) {
+
+	int fase = turno_actual % 2;
+
+	if (fase == 0) 
+	{
+		for (int c = 0; c < 9; c++) 
+		{
+			matrizEfectos[c][3] = 1;
+			matrizEfectos[c][4] = 2;
+			matrizEfectos[c][5] = 1;
+		}
+	}
+	else
+	{
+		for (int c = 0; c < 9; c++)
+		{
+			matrizEfectos[c][3] = 2;
+			matrizEfectos[c][4] = 1;
+			matrizEfectos[c][5] = 2;
+		}
+	}
+}
+
+int Tablero::getEfecto_Casilla(int x, int y) {
+	if (x >= 0 && x < 9 && y >= 0 && y < 9) {
+		return matrizEfectos[x][y];
+	}
+	return 0;
 }
 
 bool Tablero::seleccionar_Pieza(int x, int y) {
@@ -206,9 +255,11 @@ bool Tablero::Verificar_Movimiento(int x1, int y1, int x2, int y2) {
 void Tablero::Avanzar_Turno() {
 	if (Turno_Actual == 1) {
 		Turno_Actual = 2;
+		oscilarTerreno(2);
 	}
 	else {
 		Turno_Actual = 1;
+		oscilarTerreno(1);
 	}
 	std::cout << " TURNO DEL EQUIPO " << Turno_Actual << std::endl;
 }
@@ -260,20 +311,5 @@ Tablero::~Tablero() {
 				casillas[i][j] = nullptr;
 			}
 		}
-	}
-}
-
-//Borrar no enviar
-void Tablero::mostrarTableroprueba() {
-	for (int i = 0; i < 9; i++) {
-		for (int j = 0; j < 9; j++) {
-			if (casillas[i][j] == nullptr) {
-				std::cout << " . "; // Espacio vacío
-			}
-			else {
-				std::cout << " " << casillas[i][j]->getNombreClase()[0]<<" ";
-			}
-		}
-		std::cout << std::endl;
 	}
 }

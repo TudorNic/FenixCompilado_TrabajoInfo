@@ -39,6 +39,9 @@
     <ClCompile Include="..\..\logica\IA_Tablero.cpp">
       <Filter>Logica</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\graficos\tablerografico.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\logica\Arena.h">
@@ -88,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="..\..\logica\IA_Tablero.h">
       <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\graficos\tablerografico.h">
+      <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
