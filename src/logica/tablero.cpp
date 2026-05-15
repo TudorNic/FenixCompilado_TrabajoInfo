@@ -175,7 +175,6 @@ void Tablero::deseleccionar_Pieza() {
 bool Tablero::mover_Pieza(int dest_x, int dest_y) {
 
 	if (pieza_Seleccionada == nullptr) {
-		std::cout << "Error: No hay ninguna pieza seleccionada" << std::endl;
 		return false;
 	}
 
@@ -184,14 +183,32 @@ bool Tablero::mover_Pieza(int dest_x, int dest_y) {
 
 	if (Verificar_Movimiento(orig_x, orig_y, dest_x, dest_y)) 
 	{
+		bool Resultado_Batalla = true;
 		
-		if (casillas[dest_x][dest_y] != nullptr) {
-			// LLamada al combate que debe devolver un ganador 
-		}
-
-		if (casillas[dest_x][dest_y] == nullptr /*&& La llamada al combate devuleve victoria para el atacante,el defesnor se elimina dentro de la funcion */)
+		if (casillas[dest_x][dest_y] != nullptr) 
 		{
 
+			Resultado_Batalla=Ejecutar_combate(this->pieza_Seleccionada, casillas[dest_x][dest_y]);
+
+			if (Resultado_Batalla)
+			{
+				delete casillas[dest_x][dest_y];
+				casillas[dest_x][dest_y] = nullptr;
+			}
+			else
+				{
+					delete casillas[orig_x][orig_y];
+					casillas[orig_x][orig_y] = nullptr;
+					Avanzar_Turno();
+					deseleccionar_Pieza();
+
+					int ganador = Comprobar_Ganador();
+				
+				}
+		}
+
+		if (casillas[dest_x][dest_y] == nullptr)
+		{
 			casillas[dest_x][dest_y] = pieza_Seleccionada;
 
 			casillas[orig_x][orig_y] = nullptr;
@@ -202,32 +219,14 @@ bool Tablero::mover_Pieza(int dest_x, int dest_y) {
 
 			deseleccionar_Pieza();
 
+			int ganador = Comprobar_Ganador();
 			return true;
-		}
-		else {
-			if (false/*La llamada al combate devuelve derrota para el atacante*/) 
-			{
-				delete casillas[orig_x][orig_y];
-				casillas[orig_x][orig_y] = nullptr;
-				Avanzar_Turno();
-				deseleccionar_Pieza();
-			}
-
 		}
 	}
 	return false;
 }
 
 bool Tablero::Verificar_Movimiento(int x1, int y1, int x2, int y2) {
-
-	if (x2 < 0 || x2>8 || y2 < 0 || y2>8) {
-		return false;
-	} //Se comprueba que el movimiento este en los limites del campo
-
-
-	if (x1 == x2 && y1 == y2) {
-		return false;
-	} //Se impide que el destino sea el mismo que el origen
 
 	Jugador* p = casillas[x1][y1];
 
@@ -239,15 +238,16 @@ bool Tablero::Verificar_Movimiento(int x1, int y1, int x2, int y2) {
 
 	int distancia = std::max(diffX, diffY);
 
-	if (distancia > p->getRadio()) //Se impide el movimiento si la distancia es mayor que el radio permitido
+	if (distancia > p->getRadio())
 	{ 
+		std::cout << "Error: Distancia no permitida" << std::endl;
 		
 		return false;
 	}
 
 	if(casillas[x2][y2] != nullptr)
 	{
-		if (casillas[x2][y2]->getBando() == p->getBando()) //Se impide que un aliado pise a otro
+		if (casillas[x2][y2]->getBando() == p->getBando()) 
 		{
 			return false;
 		}
@@ -283,10 +283,7 @@ int Tablero::Comprobar_Ganador() {
 			}
 		}
 	}
-	if (piezas_1 == 0) return 2;
-	if (piezas_2 == 0) return 1;
-
-
+	
 	int puntos_Poder1 = 0;
 	int puntos_Poder2 = 0;
 
@@ -300,8 +297,25 @@ int Tablero::Comprobar_Ganador() {
 		}
 	}
 
-	if (puntos_Poder1 == 5) return 1;
-	if (puntos_Poder2 == 5) return 2;
+	
+	if (puntos_Poder1 == 5) {
+		std::cout << "GANADOR: BANDO 1 (Puntos de Poder)" << std::endl; 
+		return 1;
+	}
+	if (puntos_Poder2 == 5) {
+		std::cout << "GANADOR: BANDO 2 (Puntos de Poder)" << std::endl;
+		return 2;
+	}
+
+
+	if (piezas_1 > 0 && piezas_2 == 0) {
+		std::cout << "GANADOR: BANDO 1 (Exterminio)" << std::endl;
+		return 1;
+	}
+	if (piezas_2 > 0 && piezas_1 == 0) {
+		std::cout << "GANADOR: BANDO 2 (Exterminio)" << std::endl;
+		return 2;
+	}
 
 	return 0; 
 	
@@ -312,7 +326,7 @@ Tablero::~Tablero() {
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
 			if (casillas[i][j] != nullptr) {
-				delete casillas[i][j]; // Liberamos el metal
+				delete casillas[i][j];
 				casillas[i][j] = nullptr;
 			}
 		}
@@ -320,6 +334,38 @@ Tablero::~Tablero() {
 }
 
 
-int Tablero::Ejecutar_combate(Jugador* atacante, Jugador* defensor) {
-	return 1;
+bool Tablero::Ejecutar_combate(Jugador* atacante, Jugador* defensor) {
+
+	float Dano_Modificado=defensor->getDanoAtaque();
+	float Velocidad_Modificada = defensor->getVelocidad();;
+
+	if (Turno_Actual == 1) {
+		if (defensor->getY() == 2 || defensor->getY() == 6) 
+		{
+			Velocidad_Modificada=defensor->getVelocidad() * 1.3;
+			Dano_Modificado = defensor->getDanoAtaque() * 0.7;
+		}
+		else if (defensor->getY() == 4)
+		{
+			defensor->getVelocidad() * 0.7;
+			Dano_Modificado = defensor->getDanoAtaque() * 1.3;
+		}
+	}
+
+	if (Turno_Actual == 2) {
+		if (defensor->getY() == 2 || defensor->getY() == 6)
+		{
+			defensor->getVelocidad() * 0.7;
+			Dano_Modificado = defensor->getDanoAtaque() * 1.3;
+		}
+		else if (defensor->getY() == 4)
+		{
+			defensor->getVelocidad() * 1.3;
+			Dano_Modificado = defensor->getDanoAtaque() * 0.7;
+		}
+	}
+
+	if (Dano_Modificado > atacante->getDanoAtaque())
+		return false;
+	else return true;
 }

@@ -32,7 +32,6 @@
     <ClInclude Include="..\..\logica\Aficion.h" />
     <ClInclude Include="..\..\logica\Arena.h" />
     <ClInclude Include="..\..\logica\Centrocampista.h" />
-    <ClInclude Include="..\..\logica\Centrocampistas.h" />
     <ClInclude Include="..\..\logica\ControladorIA.h" />
     <ClInclude Include="..\..\logica\Defensa.h" />
     <ClInclude Include="..\..\logica\Delantero.h" />
@@ -40,9 +39,7 @@
     <ClInclude Include="..\..\logica\IA_Tablero.h" />
     <ClInclude Include="..\..\logica\Jugador.h" />
     <ClInclude Include="..\..\logica\Lateral.h" />
-    <ClInclude Include="..\..\logica\Laterales.h" />
     <ClInclude Include="..\..\logica\Pieza.h" />
-    <ClInclude Include="..\..\logica\Portero.h" />
     <ClInclude Include="..\..\logica\Proyectil.h" />
     <ClInclude Include="..\..\logica\tablero.h" />
   </ItemGroup>

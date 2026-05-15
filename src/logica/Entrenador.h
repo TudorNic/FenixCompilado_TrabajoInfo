@@ -5,7 +5,7 @@ class Entrenador : public Jugador {
 private:
     int cargasMagia = 2;
 public:
-    Entrenador(int equipo) : Jugador(80, 3.0f, 20, 1.0f,1,equipo) { hitbox.ancho = 45.f; hitbox.alto = 90.f; }
+    Entrenador(int equipo) : Jugador(80, 3.0f, 200, 1.0f,3,equipo) { hitbox.ancho = 45.f; hitbox.alto = 90.f; }
     std::string getNombreClase() const override { return "entrenador"; }
     void atacar(std::vector<Proyectil>& proy, Jugador* op, float dx, float dy, int id) override {
         if (!puedeAtacar()) return;

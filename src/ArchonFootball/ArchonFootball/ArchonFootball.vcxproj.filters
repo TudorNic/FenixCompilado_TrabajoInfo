@@ -80,15 +80,6 @@
     <ClInclude Include="..\..\logica\tablero.h">
       <Filter>Logica</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\logica\Centrocampistas.h">
-      <Filter>Logica</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\logica\Laterales.h">
-      <Filter>Logica</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\logica\Portero.h">
-      <Filter>Logica</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\logica\IA_Tablero.h">
       <Filter>Logica</Filter>
     </ClInclude>

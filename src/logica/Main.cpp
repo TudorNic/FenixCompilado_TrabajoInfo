@@ -179,15 +179,17 @@ int main()
         }
         window.display();
     }
-    return 0;*/
+    return 0; */
 
 
-
-    // 1. Creamos la ventana
+/******************************
+Apertura del tablero y juego
+*******************************/
+    
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Prueba");
     window.setFramerateLimit(60);
 
-    // 2. Instanciamos la Lógica y los Gráficos
+    
     Tablero logica;
     TableroGrafico graficos(1.74f);
 
