@@ -23,8 +23,6 @@ public:
 
 	~Tablero();
 
-	void mostrarTableroprueba();
-
 	void Inicializar_Campo();
 
 	void Inicializar_Partida();
@@ -41,7 +39,7 @@ public:
 
 	void Avanzar_Turno();
 
-	//int Ejecutar_combate(Jugador* atacante, Jugador* defensor);
+	int Ejecutar_combate(Jugador* atacante, Jugador* defensor);
 
 	bool Verificar_Movimiento(int x1, int y1, int x2, int y2);
 

@@ -7,6 +7,7 @@
 #include "Jugador.h"
 #include "Aficion.h"
 #include"math.h"
+#include<algorithm>
 #include <iostream>
 
 Tablero::Tablero() : Turno_Actual(1), Fase_Ciclo(0) {
@@ -122,18 +123,18 @@ void Tablero::oscilarTerreno(int turno_actual) {
 	{
 		for (int c = 0; c < 9; c++) 
 		{
-			matrizEfectos[c][3] = 1;
+			matrizEfectos[c][2] = 1;
 			matrizEfectos[c][4] = 2;
-			matrizEfectos[c][5] = 1;
+			matrizEfectos[c][6] = 1;
 		}
 	}
 	else
 	{
 		for (int c = 0; c < 9; c++)
 		{
-			matrizEfectos[c][3] = 2;
+			matrizEfectos[c][2] = 2;
 			matrizEfectos[c][4] = 1;
-			matrizEfectos[c][5] = 2;
+			matrizEfectos[c][6] = 2;
 		}
 	}
 }
@@ -232,7 +233,11 @@ bool Tablero::Verificar_Movimiento(int x1, int y1, int x2, int y2) {
 
 	if (p == nullptr) return false;
 
-	int distancia = abs(x2 - x1) + abs(y2 - y1); 
+
+	int diffX = abs(x2 - x1);
+	int diffY = abs(y2 - y1);
+
+	int distancia = std::max(diffX, diffY);
 
 	if (distancia > p->getRadio()) //Se impide el movimiento si la distancia es mayor que el radio permitido
 	{ 
@@ -312,4 +317,9 @@ Tablero::~Tablero() {
 			}
 		}
 	}
+}
+
+
+int Tablero::Ejecutar_combate(Jugador* atacante, Jugador* defensor) {
+	return 1;
 }

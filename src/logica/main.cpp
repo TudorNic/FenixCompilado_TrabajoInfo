@@ -69,19 +69,25 @@ int main() {
 #include "Aficion.h"
 #include "Entrenador.h"
 #include "ControladorIA.h"
+#include"tablero.h"
+#include"../graficos/tablerografico.h"
 
-int main() {
+int main()
+{
+
+    /*
     sf::Texture texC, texB;
     if (!texC.loadFromFile("campo.png") || !texB.loadFromFile("assets/proyectil/balon_proyectil.png")) return -1;
 
     float ancho = (float)texC.getSize().x;
     float alto = (float)texC.getSize().y;
     sf::RenderWindow window(sf::VideoMode((int)ancho, (int)alto), "Archon Football - Dynamic Sprites");
+
     window.setFramerateLimit(60);
 
     // --- SELECCIÓN DE JUGADORES ---
     Jugador* azul = new Defensa(1);
-    Jugador* rojo = new Entrenador();
+    Jugador* rojo = new Entrenador(2);
     Arena arena(azul, rojo);
 
     //Inicializar IA
@@ -135,7 +141,7 @@ int main() {
 
         // Acciones (Solo controles del Azul)
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) arena.comandoDisparoJugador1(mirA, 0.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) arena.comandoEspecialJugador1(); // Especial Azul  
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) arena.comandoEspecialJugador1(); // Especial Azul
 
         ia.actualizar(dt);
 
@@ -172,6 +178,51 @@ int main() {
             window.draw(sprB);
         }
         window.display();
+    }
+    return 0;*/
+
+
+
+    // 1. Creamos la ventana
+    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Prueba");
+    window.setFramerateLimit(60);
+
+    // 2. Instanciamos la Lógica y los Gráficos
+    Tablero logica;
+    TableroGrafico graficos(1.74f);
+
+    // 3. Cargamos el metal  texturas
+    graficos.cargarTexturas();
+
+    // 4. BUCLE DE JUEGO 
+    while (window.isOpen()) 
+    {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+
+                    // Calculamos la casilla (sin centrado)
+                    int clicX = event.mouseButton.x / (64 * graficos.getEscala());
+                    int clicY = event.mouseButton.y / (64 * graficos.getEscala());
+
+                    // Llamamos a tu función de la imagen image_6941fa.png
+                    if(!logica.mover_Pieza(clicX, clicY)) {
+                        logica.seleccionar_Pieza(clicX, clicY);
+                    }
+                   
+                }
+            }
+        }
+            
+                window.clear();
+                graficos.dibujar(window, logica);
+
+                window.display();
+   
     }
     return 0;
 }

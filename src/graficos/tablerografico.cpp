@@ -45,6 +45,21 @@ void TableroGrafico::dibujar(sf::RenderWindow& window, Tablero& logica) {
         {
             spriteTile.setColor(sf::Color::White);
             spriteTile.setTexture(texGrass);
+            
+            int efecto = logica.getEfecto_Casilla(col, fila);
+
+           
+            if (efecto == 1) {
+             
+                spriteTile.setColor(sf::Color(255, 215, 0, 110));
+            }
+            else if (efecto == 2) {
+       
+                spriteTile.setColor(sf::Color(255, 215, 50, 180));
+       
+            }
+            
+
             spriteTile.setPosition(col * TAM_TILE * escala, fila * TAM_TILE * escala);
             spriteTile.setScale(escala, escala);
             window.draw(spriteTile);
@@ -71,15 +86,15 @@ void TableroGrafico::dibujar(sf::RenderWindow& window, Tablero& logica) {
    
     }
 
-    for (int f = 0; f < 9; f++) {
-        for (int c = 0; c < 9; c++) {
+    for (int x = 0; x < 9; x++) {
+        for (int y = 0; y < 9; y++) {
             // Obtenemos el puntero de esa casilla
-            Jugador* j = logica.getCasilla(f, c);
+            Jugador* j = logica.getCasilla(x, y);
 
             // ¡IMPORTANTE! Solo dibujamos si la casilla NO está vacía
             if (j != nullptr) {
 
-                dibujarEntidades(window, *j,f,c); // Pasamos el jugador (desreferenciado)
+                dibujarEntidades(window, *j,x,y); // Pasamos el jugador (desreferenciado)
             }
         }
     }
@@ -117,48 +132,21 @@ void TableroGrafico::dibujarEntidades(sf::RenderWindow& window, Jugador& j,int c
     int x= col;
     int y= fila;
     int bando = j.getBando() - 1;
-    int tipoVisual;
+    std::string nombre = j.getNombreClase(); // Invocamos el polimorfismo
+    int tipoVisual = 5; // Valor por defecto
 
-    if (y == 0 || y == 8)
-    { // Usamos 'y' para las filas de atrás
-        if (x == 4)
-        {
-            tipoVisual = 0; dibujarPieza(window, tipoVisual, bando, x, y);
-        }         // Entrenador
-        else
-            if (x == 3 || x == 5)
-            {
-                tipoVisual = 1;
-                dibujarPieza(window, tipoVisual, bando, x, y);
+    // Traducción directa de Clase a Textura
+    if (nombre == "Entrenador")     tipoVisual = 0;
+    else if (nombre == "Defensa")   tipoVisual = 1;
+    else if (nombre == "Delantero") tipoVisual = 2;
+    else if (nombre == "Centrocampista") tipoVisual = 3;
+    else if (nombre == "Lateral")   tipoVisual = 4;
+    else if (nombre == "Aficion")   tipoVisual = 5;
 
-            }// Defensa
-            else
-                if (x == 2 || x == 6 || x == 1 || x == 7)
-                {
-                    tipoVisual = 3;
-                    dibujarPieza(window, tipoVisual, bando, x, y);
-                } // Centrocampista
-                else
-                    if (x == 0 || x == 8)
-                    {
-                        tipoVisual = 4; 
-                        dibujarPieza(window, tipoVisual, bando, x, y);
+    // ¡DIBUJO GARANTIZADO!
+    // Al estar fuera de cualquier IF de posición, se dibujará SIEMPRE
+    dibujarPieza(window, tipoVisual, bando, col, fila);
 
-                    }// laterales
-
-    }
-    else 
-        if (y == 1 || y == 7) 
-        {
-            if(x==0 || x==8) {
-                tipoVisual = 2;
-                dibujarPieza(window, tipoVisual, bando, x, y);
-            }
-            else if(x >= 1 && x<=7) {
-                tipoVisual = 5;
-                dibujarPieza(window, tipoVisual, bando, x, y);
-            }
-        }
 }
          
     
