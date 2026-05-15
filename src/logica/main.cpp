@@ -62,6 +62,8 @@ int main() {
 #include <vector>
 #include <cmath>
 #include <algorithm>
+#include <ctime>
+#include "IA_Tablero.h"
 #include "Arena.h"
 #include "Defensa.h"
 #include "Delantero.h"
@@ -74,7 +76,7 @@ int main() {
 
 int main()
 {
-
+    srand(time(NULL));
     /*
     sf::Texture texC, texB;
     if (!texC.loadFromFile("campo.png") || !texB.loadFromFile("assets/proyectil/balon_proyectil.png")) return -1;
@@ -191,7 +193,11 @@ Apertura del tablero y juego
 
     
     Tablero logica;
+    logica.Inicializar_Partida();
     TableroGrafico graficos(1.74f);
+
+    IATablero cerebroIA(2);
+    cerebroIA.setDificultad(DificultadTablero::DIFICIL);
 
     // 3. Cargamos el metal  texturas
     graficos.cargarTexturas();
@@ -203,23 +209,26 @@ Apertura del tablero y juego
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
+            if (logica.getTurnoActual() == 1) {
+                if (event.type == sf::Event::MouseButtonPressed) {
+                    if (event.mouseButton.button == sf::Mouse::Left) {
 
-            if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
+                        int clicX = event.mouseButton.x / (64 * graficos.getEscala());
+                        int clicY = event.mouseButton.y / (64 * graficos.getEscala());
 
-                    // Calculamos la casilla (sin centrado)
-                    int clicX = event.mouseButton.x / (64 * graficos.getEscala());
-                    int clicY = event.mouseButton.y / (64 * graficos.getEscala());
+                        if (!logica.mover_Pieza(clicX, clicY)) {
+                            logica.seleccionar_Pieza(clicX, clicY);
+                        }
 
-                    // Llamamos a tu función de la imagen image_6941fa.png
-                    if(!logica.mover_Pieza(clicX, clicY)) {
-                        logica.seleccionar_Pieza(clicX, clicY);
                     }
-                   
                 }
             }
         }
-            
+        if (logica.getTurnoActual() == 2) {
+            sf::sleep(sf::milliseconds(500));
+            cerebroIA.ejecutarTurno(logica);
+        }
+
                 window.clear();
                 graficos.dibujar(window, logica);
 

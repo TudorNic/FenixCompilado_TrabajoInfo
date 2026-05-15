@@ -4,7 +4,7 @@
 class Centrocampista : public Jugador {
 public:
     // Stats: 75 Vida, 3.5f Velocidad, 18 Daño, 0.8f Recarga
-    Centrocampista(int equipo) : Jugador(75, 3.5f, 18, 0.8f,1,equipo) {
+    Centrocampista(int equipo) : Jugador(75, 3.5f, 18, 0.8f,2,equipo) {
         hitbox.ancho = 45.0f;
         hitbox.alto = 90.0f;
     }
