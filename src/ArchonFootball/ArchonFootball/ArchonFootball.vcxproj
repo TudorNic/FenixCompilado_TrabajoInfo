@@ -137,12 +137,12 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\include;C:\Users\hugoc\source\repos\FenixCompilado_TrabajoInfo\external\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\jorge\OneDrive\Escritorio\EG1\SFML-2.6.1\SFML-2.6.1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\lib;C:\Users\hugoc\source\repos\FenixCompilado_TrabajoInfo\external\SFML\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\jorge\OneDrive\Escritorio\EG1\SFML-2.6.1\SFML-2.6.1\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -155,12 +155,12 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\include;C:\Users\hugoc\source\repos\FenixCompilado_TrabajoInfo\external\SFML\include;$(ProjectDir)external\SFML\include\SFML</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\jorge\OneDrive\Escritorio\EG1\SFML-2.6.1\SFML-2.6.1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\lib;C:\Users\hugoc\source\repos\FenixCompilado_TrabajoInfo\external\SFML\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\jorge\OneDrive\Escritorio\EG1\SFML-2.6.1\SFML-2.6.1\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

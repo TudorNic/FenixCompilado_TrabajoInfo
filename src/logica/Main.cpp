@@ -1,6 +1,3 @@
-
-
-
 /*
 ******************************
 PRUEBAS IA DE TABLERO
@@ -71,8 +68,8 @@ int main() {
 #include "Aficion.h"
 #include "Entrenador.h"
 #include "ControladorIA.h"
-#include"tablero.h"
-#include"../graficos/tablerografico.h"
+#include "tablero.h"
+#include "../graficos/tablerografico.h"
 
 int main()
 {
@@ -137,13 +134,14 @@ int main()
         if (vA.x != 0 || vA.y != 0) {
             float len = std::sqrt(vA.x * vA.x + vA.y * vA.y);
             float miVelocidad = azul->getVelocidad();
-            azul->setPosicion(std::clamp(azul->getHitbox().x + (vA.x / len) * miVelocidad * dt, L, ancho - L - azul->getHitbox().ancho),
+            // Límite X capado a 600.f para cuando reactivéis la arena
+            azul->setPosicion(std::clamp(azul->getHitbox().x + (vA.x / len) * miVelocidad * dt, L, 600.f - L - azul->getHitbox().ancho),
                 std::clamp(azul->getHitbox().y + (vA.y / len) * miVelocidad * dt, L, alto - L - azul->getHitbox().alto));
         }
 
         // Acciones (Solo controles del Azul)
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) arena.comandoDisparoJugador1(mirA, 0.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) arena.comandoEspecialJugador1(); // Especial Azul
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) arena.comandoEspecialJugador1();
 
         ia.actualizar(dt);
 
@@ -163,7 +161,7 @@ int main()
         sprR.setPosition(cRX, rojo->getHitbox().y + rojo->getHitbox().alto / 2 + offY);
         window.draw(sprA); window.draw(sprR);
 
-        // Barras de Vida (Color dinámico para Entrenador)
+        // Barras de Vida
         hpFA.setSize(sf::Vector2f(anchoB * ((float)azul->getVidaActual() / azul->getVidaMaxima()), altoB));
         hpFA.setFillColor(azul->getNombreClase() == "entrenador" ? sf::Color::Cyan : sf::Color::Green);
         hpBA.setPosition(cAX - anchoB / 2, azul->getHitbox().y - 20);
@@ -184,26 +182,25 @@ int main()
     return 0; */
 
 
-/******************************
-Apertura del tablero y juego
-*******************************/
-    
+    /******************************
+    Apertura del tablero y juego
+    *******************************/
+
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Prueba");
     window.setFramerateLimit(60);
 
-    
     Tablero logica;
-    logica.Inicializar_Partida();
+    logica.Inicializar_Partida(); 
     TableroGrafico graficos(1.74f);
 
     IATablero cerebroIA(2);
     cerebroIA.setDificultad(DificultadTablero::DIFICIL);
 
-    // 3. Cargamos el metal  texturas
+    // Cargamos texturas del tablero
     graficos.cargarTexturas();
 
-    // 4. BUCLE DE JUEGO 
-    while (window.isOpen()) 
+    // BUCLE DE JUEGO 
+    while (window.isOpen())
     {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -219,7 +216,6 @@ Apertura del tablero y juego
                         if (!logica.mover_Pieza(clicX, clicY)) {
                             logica.seleccionar_Pieza(clicX, clicY);
                         }
-
                     }
                 }
             }
@@ -229,11 +225,9 @@ Apertura del tablero y juego
             cerebroIA.ejecutarTurno(logica);
         }
 
-                window.clear();
-                graficos.dibujar(window, logica);
-
-                window.display();
-   
+        window.clear();
+        graficos.dibujar(window, logica);
+        window.display();
     }
     return 0;
 }
