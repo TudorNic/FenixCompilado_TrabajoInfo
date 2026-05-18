@@ -18,6 +18,54 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\audio\SonidoMenu.cpp" />
+    <ClCompile Include="..\..\graficos\PantallaInstrucciones.cpp" />
+    <ClCompile Include="..\..\graficos\PantallaMenu.cpp" />
+    <ClCompile Include="..\..\graficos\PantallaModoJuego.cpp" />
+    <ClCompile Include="..\..\graficos\PantallaRanking.cpp" />
+    <ClCompile Include="..\..\graficos\PelotasAnimadas.cpp" />
+    <ClCompile Include="..\..\graficos\tablerografico.cpp" />
+    <ClCompile Include="..\..\logica\Arena.cpp" />
+    <ClCompile Include="..\..\logica\ControladorIA.cpp" />
+    <ClCompile Include="..\..\logica\IA_Tablero.cpp" />
+    <ClCompile Include="..\..\logica\main.cpp" />
+    <ClCompile Include="..\..\logica\Menu.cpp" />
+    <ClCompile Include="..\..\logica\Piezas.cpp" />
+    <ClCompile Include="..\..\logica\Ranking.cpp" />
+    <ClCompile Include="..\..\logica\tablero.cpp" />
+    <ClCompile Include="main_menu.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\audio\SonidoMenu.h" />
+    <ClInclude Include="..\..\graficos\PantallaInstrucciones.h" />
+    <ClInclude Include="..\..\graficos\PantallaMenu.h" />
+    <ClInclude Include="..\..\graficos\PantallaModoJuego.h" />
+    <ClInclude Include="..\..\graficos\PantallaRanking.h" />
+    <ClInclude Include="..\..\graficos\PelotasAnimadas.h" />
+    <ClInclude Include="..\..\graficos\tablerografico.h" />
+    <ClInclude Include="..\..\logica\Aficion.h" />
+    <ClInclude Include="..\..\logica\Arena.h" />
+    <ClInclude Include="..\..\logica\Centrocampista.h" />
+    <ClInclude Include="..\..\logica\Centrocampistas.h" />
+    <ClInclude Include="..\..\logica\ControladorIA.h" />
+    <ClInclude Include="..\..\logica\Defensa.h" />
+    <ClInclude Include="..\..\logica\Delantero.h" />
+    <ClInclude Include="..\..\logica\Entrenador.h" />
+    <ClInclude Include="..\..\logica\IA_Tablero.h" />
+    <ClInclude Include="..\..\logica\Jugador.h" />
+    <ClInclude Include="..\..\logica\Lateral.h" />
+    <ClInclude Include="..\..\logica\Laterales.h" />
+    <ClInclude Include="..\..\logica\Menu.h" />
+    <ClInclude Include="..\..\logica\Pieza.h" />
+    <ClInclude Include="..\..\logica\Portero.h" />
+    <ClInclude Include="..\..\logica\Proyectil.h" />
+    <ClInclude Include="..\..\logica\Ranking.h" />
+    <ClInclude Include="..\..\logica\tablero.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\logica\campo.png" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -70,10 +118,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)..\..\..\external\SFML\include</ExternalIncludePath>
-    <LibraryWPath>$(WindowsSDK_MetadataPath);$(ProjectDir)..\..\..\external\SFML\include</LibraryWPath>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -109,15 +153,14 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\include;$(ProjectDir);$(ProjectDir)..\..\audio;$(ProjectDir)..\..\graficos;$(ProjectDir)..\..\logica;C:\Users\jorge\OneDrive\Escritorio\EG1\SFML-2.6.1\SFML-2.6.1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);C:\librerias trabajo infor\SFML-3.0.2\lib\sfml-graphics-d.lib;C:\librerias trabajo infor\SFML-3.0.2\lib\sfml-window-d.lib;C:\librerias trabajo infor\SFML-3.0.2\lib\sfml-system-d.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\lib;C:\Users\jorge\OneDrive\Escritorio\EG1\SFML-2.6.1\SFML-2.6.1\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-audio-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>xcopy /Y /D "$(ProjectDir)..\..\..\external\SFML\bin\*.dll" "$(OutDir)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -128,15 +171,15 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\include;$(ProjectDir);$(ProjectDir)..\..\audio;$(ProjectDir)..\..\graficos;$(ProjectDir)..\..\logica;C:\Users\jorge\OneDrive\Escritorio\EG1\SFML-2.6.1\SFML-2.6.1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\lib;C:\Users\jorge\OneDrive\Escritorio\EG1\SFML-2.6.1\SFML-2.6.1\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-audio-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="main_prueba_SFML_local.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

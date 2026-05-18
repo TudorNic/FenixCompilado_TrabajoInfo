@@ -13,10 +13,143 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Logica">
+      <UniqueIdentifier>{ae8b10ee-48c1-4565-8cdb-336b49842f22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graficos">
+      <UniqueIdentifier>{7dba4691-7748-498c-9480-faf302c5131e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main_prueba_SFML_local.cpp">
-      <Filter>Archivos de encabezado</Filter>
+    <ClCompile Include="..\..\logica\Arena.cpp">
+      <Filter>Logica</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\logica\main.cpp">
+      <Filter>Logica</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\logica\ControladorIA.cpp">
+      <Filter>Logica</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\logica\Piezas.cpp">
+      <Filter>Logica</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\logica\tablero.cpp">
+      <Filter>Logica</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\logica\IA_Tablero.cpp">
+      <Filter>Logica</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\logica\Menu.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\logica\Ranking.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\graficos\PantallaInstrucciones.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\graficos\PantallaMenu.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\graficos\PantallaModoJuego.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\graficos\PantallaRanking.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\graficos\PelotasAnimadas.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\audio\SonidoMenu.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="main_menu.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\graficos\tablerografico.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\logica\Arena.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Delantero.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Jugador.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Aficion.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Defensa.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Entrenador.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Lateral.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Centrocampista.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Proyectil.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\ControladorIA.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Pieza.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\tablero.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Centrocampistas.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Laterales.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Portero.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\IA_Tablero.h">
+      <Filter>Logica</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Menu.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\logica\Ranking.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\graficos\PantallaInstrucciones.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\graficos\PantallaMenu.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\graficos\PantallaModoJuego.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\graficos\PantallaRanking.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\graficos\PelotasAnimadas.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\audio\SonidoMenu.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\graficos\tablerografico.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\logica\campo.png">
+      <Filter>Logica</Filter>
+    </Image>
   </ItemGroup>
 </Project>
