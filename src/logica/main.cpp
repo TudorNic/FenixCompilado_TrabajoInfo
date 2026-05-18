@@ -93,7 +93,7 @@ int main() {
                 esModoIA = (pModo.obtenerOpcionConfirmada() == PantallaModoJuego::JUGADOR_VS_IA);
                 if (azul) delete azul; if (rojo) delete rojo; if (arena) delete arena; if (ia) delete ia;
 
-                azul = new Defensa(1); rojo = new Aficion(); arena = new Arena(azul, rojo);
+                azul = new Defensa(1); rojo = new Aficion(1); arena = new Arena(azul, rojo);
                 if (esModoIA) { ia = new ControladorIA(rojo, azul, arena); ia->setDificultad(DificultadIA::DIFICIL); }
 
                 std::string cA = azul->getNombreClase(), cR = rojo->getNombreClase();
