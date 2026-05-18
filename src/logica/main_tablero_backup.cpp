@@ -71,7 +71,7 @@ int main() {
 #include "tablero.h"
 #include "../graficos/tablerografico.h"
 
-int main()
+int main_tablero_antiguo() 
 {
     srand(time(NULL));
     /*

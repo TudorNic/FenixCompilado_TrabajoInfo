@@ -23,7 +23,7 @@
     <ClCompile Include="..\..\logica\Arena.cpp" />
     <ClCompile Include="..\..\logica\ControladorIA.cpp" />
     <ClCompile Include="..\..\logica\IA_Tablero.cpp" />
-    <ClCompile Include="..\..\logica\main.cpp" />
+    <ClCompile Include="..\..\logica\main_tablero_backup.cpp" />
     <ClCompile Include="..\..\logica\Piezas.cpp" />
     <ClCompile Include="..\..\logica\tablero.cpp" />
   </ItemGroup>
