@@ -2,9 +2,9 @@
 #include "Jugador.h"
 #include "Pieza.h"
 #include <iostream>
-class Delantero : public Jugador,public Pieza {
+class Delantero : public Jugador{
 public:
-    Delantero(int bando) : Jugador(50, 5.0f, 15, 0.5f), Pieza("Delantero", 120, 10, 0.5, 1, Forma_Movimiento::Tierra, bando) {
+    Delantero(int equipo) : Jugador(50, 5.0f, 15, 0.5f,3,equipo) {
         hitbox.ancho = 40.f;
         hitbox.alto = 80.f; }
 
