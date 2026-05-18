@@ -18,6 +18,34 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\graficos\tablerografico.cpp" />
+    <ClCompile Include="..\..\logica\Arena.cpp" />
+    <ClCompile Include="..\..\logica\ControladorIA.cpp" />
+    <ClCompile Include="..\..\logica\IA_Tablero.cpp" />
+    <ClCompile Include="..\..\logica\main.cpp" />
+    <ClCompile Include="..\..\logica\Piezas.cpp" />
+    <ClCompile Include="..\..\logica\tablero.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\graficos\tablerografico.h" />
+    <ClInclude Include="..\..\logica\Aficion.h" />
+    <ClInclude Include="..\..\logica\Arena.h" />
+    <ClInclude Include="..\..\logica\Centrocampista.h" />
+    <ClInclude Include="..\..\logica\ControladorIA.h" />
+    <ClInclude Include="..\..\logica\Defensa.h" />
+    <ClInclude Include="..\..\logica\Delantero.h" />
+    <ClInclude Include="..\..\logica\Entrenador.h" />
+    <ClInclude Include="..\..\logica\IA_Tablero.h" />
+    <ClInclude Include="..\..\logica\Jugador.h" />
+    <ClInclude Include="..\..\logica\Lateral.h" />
+    <ClInclude Include="..\..\logica\Pieza.h" />
+    <ClInclude Include="..\..\logica\Proyectil.h" />
+    <ClInclude Include="..\..\logica\tablero.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\logica\campo.png" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -70,6 +98,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(VC_ExecutablePath_x64);$(CommonExecutablePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -105,18 +137,14 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\logica;$(ProjectDir)..\..\graficos;$(ProjectDir)..\..\audio;$(ProjectDir)..\..\..\external\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\include;C:\Users\hugoc\source\repos\FenixCompilado_TrabajoInfo\external\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\jorge\OneDrive\Escritorio\EG1\SFML-2.6.1\SFML-2.6.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\lib;C:\Users\hugoc\source\repos\FenixCompilado_TrabajoInfo\external\SFML\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib;</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>
-      </Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -127,39 +155,15 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\logica;$(ProjectDir)..\..\graficos;$(ProjectDir)..\..\..\external\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\include;C:\Users\hugoc\source\repos\FenixCompilado_TrabajoInfo\external\SFML\include;$(ProjectDir)external\SFML\include\SFML</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\external\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\tudor\Desktop\FenixCompilado_TrabajoInfo\external\SFML\lib;C:\Users\hugoc\source\repos\FenixCompilado_TrabajoInfo\external\SFML\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib;</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>xcopy /Y /D "$(ProjectDir)..\..\..\external\SFML\bin\*.dll" "$(OutDir)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\audio\SonidoMenu.h" />
-    <ClInclude Include="..\..\graficos\PantallaInstrucciones.h" />
-    <ClInclude Include="..\..\graficos\PantallaMenu.h" />
-    <ClInclude Include="..\..\graficos\PantallaModoJuego.h" />
-    <ClInclude Include="..\..\graficos\PantallaRanking.h" />
-    <ClInclude Include="..\..\graficos\PelotasAnimadas.h" />
-    <ClInclude Include="..\..\logica\Menu.h" />
-    <ClInclude Include="..\..\logica\Ranking.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\audio\SonidoMenu.cpp" />
-    <ClCompile Include="..\..\graficos\PantallaInstrucciones.cpp" />
-    <ClCompile Include="..\..\graficos\PantallaMenu.cpp" />
-    <ClCompile Include="..\..\graficos\PantallaModoJuego.cpp" />
-    <ClCompile Include="..\..\graficos\PantallaRanking.cpp" />
-    <ClCompile Include="..\..\graficos\PelotasAnimadas.cpp" />
-    <ClCompile Include="..\..\logica\Menu.cpp" />
-    <ClCompile Include="..\..\logica\Ranking.cpp" />
-    <ClCompile Include="main_menu.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

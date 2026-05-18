@@ -1,0 +1,55 @@
+#pragma once
+#include<vector>
+
+class Jugador;
+
+class Tablero {
+	Jugador* casillas[9][9]; //Tablero
+	int matrizEfectos[9][9];
+	Jugador* pieza_Seleccionada;
+
+	int Turno_Actual;
+
+	int Fase_Ciclo;
+
+	struct Puntos_Poder {
+		int x, y;
+	};
+
+	Puntos_Poder posicion[5];
+
+public:
+	Tablero();
+
+	~Tablero();
+
+	void Inicializar_Campo();
+
+	void Inicializar_Partida();
+
+	void oscilarTerreno(int Turno);
+
+	int getEfecto_Casilla(int x, int y);
+
+	bool seleccionar_Pieza(int x, int y);
+
+	void deseleccionar_Pieza();
+
+	bool mover_Pieza(int dest_x, int dest_y);
+
+	void Avanzar_Turno();
+
+	bool Ejecutar_combate(Jugador* atacante, Jugador* defensor);
+
+	bool Verificar_Movimiento(int x1, int y1, int x2, int y2);
+
+	int Comprobar_Ganador();
+
+	Puntos_Poder getPuntoPoder(int i) {
+		return posicion[i];
+	}
+
+	Jugador* getCasilla(int x, int y) { return casillas[x][y]; }
+
+	int getTurnoActual() const { return Turno_Actual; }
+};
