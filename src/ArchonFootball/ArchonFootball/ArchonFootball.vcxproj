@@ -25,6 +25,7 @@
     <ClCompile Include="..\..\graficos\PantallaModoJuego.cpp" />
     <ClCompile Include="..\..\graficos\PantallaRanking.cpp" />
     <ClCompile Include="..\..\graficos\PelotasAnimadas.cpp" />
+    <ClCompile Include="..\..\graficos\tablerografico.cpp" />
     <ClCompile Include="..\..\logica\Arena.cpp" />
     <ClCompile Include="..\..\logica\ControladorIA.cpp" />
     <ClCompile Include="..\..\logica\IA_Tablero.cpp" />
@@ -42,6 +43,7 @@
     <ClInclude Include="..\..\graficos\PantallaModoJuego.h" />
     <ClInclude Include="..\..\graficos\PantallaRanking.h" />
     <ClInclude Include="..\..\graficos\PelotasAnimadas.h" />
+    <ClInclude Include="..\..\graficos\tablerografico.h" />
     <ClInclude Include="..\..\logica\Aficion.h" />
     <ClInclude Include="..\..\logica\Arena.h" />
     <ClInclude Include="..\..\logica\Centrocampista.h" />

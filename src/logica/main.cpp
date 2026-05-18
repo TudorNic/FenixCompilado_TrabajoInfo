@@ -3,196 +3,337 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
+#include <ctime>
 
-// Includes de Combate
+// Componentes estratégicos del Tablero
+#include "tablero.h"
+#include "../graficos/tablerografico.h"
+#include "IA_Tablero.h"
+
+// Componentes tácticos de la Arena de Combate
 #include "Arena.h"
+#include "ControladorIA.h"
+#include "Jugador.h"
 #include "Defensa.h"
 #include "Delantero.h"
 #include "Lateral.h"
 #include "Aficion.h"
 #include "Entrenador.h"
-#include "ControladorIA.h"
+#include "Centrocampista.h"
 
-// Includes de Menú
-#include "PantallaMenu.h"
-#include "PantallaInstrucciones.h"
-#include "PantallaRanking.h"
-#include "Ranking.h"
-#include "PantallaModoJuego.h"
+enum class EstadoJuego {
+    MENU,
+    TABLERO,
+    COMBATE
+};
 
-enum class Estado { MENU, INSTRUCCIONES, RANKING_PANTALLA, MODO_JUEGO, COMBATE };
+// Función auxiliar para instanciar dinámicamente los luchadores en la arena
+Jugador* crearLuchadorArena(std::string nombre, int bando) {
+    if (nombre == "defensa" || nombre == "Defensa")                 return new Defensa(bando);
+    if (nombre == "delantero" || nombre == "Delantero")             return new Delantero(bando);
+    if (nombre == "centrocampista" || nombre == "Centrocampista")   return new Centrocampista(bando);
+    if (nombre == "lateral" || nombre == "Lateral")                 return new Lateral(bando);
+    if (nombre == "entrenador" || nombre == "Entrenador")           return new Entrenador(bando);
+    return new Aficion(bando);
+}
 
-int main() {
-    // --- 1. CONFIGURACIÓN DE VENTANA ---
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Archon Football - Integracion Final");
+// Generador de rutas de texturas para el combate 2D
+std::string obtenerRutaSpriteArena(std::string nombre, int bando) {
+    std::string equipo = (bando == 1) ? "blue" : "red";
+    std::string nomLower = nombre;
+    std::transform(nomLower.begin(), nomLower.end(), nomLower.begin(), ::tolower);
+
+    if (nomLower == "delantero" && bando == 1) return "assets/players/blue/delantero/atack/sprite_delantero_blue_atack_1.png";
+    if (nomLower == "aficion" && bando == 2)   return "assets/players/red/aficion/atack/sprite_aficion_red_atack_1.png";
+    if (nomLower == "lateral" || nomLower == "portero") {
+        return "assets/players/" + equipo + "/portero/atack/sprite_portero_" + equipo + "_atack-1.png";
+    }
+    return "assets/players/" + equipo + "/" + nomLower + "/atack/sprite_" + nomLower + "_" + equipo + "_atack-1.png";
+}
+
+int main()
+{
+    srand(static_cast<unsigned int>(time(NULL)));
+
+    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Archon Football - Solución Integrada");
     window.setFramerateLimit(60);
 
-    // --- 2. INICIALIZACIÓN DE MENÚS ---
-    Ranking ranking("../../../assets/texto/ranking.txt");
-    ranking.cargar();
-
-    PantallaMenu pMenu(window, "../../../assets/fonts/Bungee-Regular.ttf", "../../../assets/images/menu/fondo_haram.png",
-        "../../../assets/images/menu/pelota_futbol.png", "../../../assets/audio/menu/mover_opcion.mp3",
-        "../../../assets/audio/menu/confirmar_opcion.mp3", "../../../assets/audio/menu/salir_menu.mp3",
-        "../../../assets/audio/menu/musica_haram_fondo_menu.mp3");
-
-    PantallaInstrucciones pInstr(window, "../../../assets/fonts/Bungee-Regular.ttf");
-    PantallaRanking pRank(window, ranking, "../../../assets/fonts/Bungee-Regular.ttf");
-    PantallaModoJuego pModo(window, "../../../assets/fonts/Bungee-Regular.ttf");
-
-    // --- 3. RECURSOS DE COMBATE ---
-    sf::Texture texC, texB;
-    if (!texC.loadFromFile("campo.png") || !texB.loadFromFile("assets/proyectil/balon_proyectil.png")) return -1;
-
-    float anchoCampo = (float)texC.getSize().x;
-    float altoCampo = (float)texC.getSize().y;
-
-    Jugador* azul = nullptr, * rojo = nullptr;
-    Arena* arena = nullptr;
-    ControladorIA* ia = nullptr;
-    bool esModoIA = true;
-
-    std::vector<sf::Texture> walkA(3), walkR(3), atkA(3), atkR(3);
-    sf::Sprite sprA, sprR, sprC(texC), sprB(texB);
-    sprB.setOrigin(10, 10);
-
-    // --- INICIALIZACIÓN BARRAS DE VIDA (Las que faltaban) ---
-    float anchoB = 60.0f; float altoB = 7.0f;
-    sf::RectangleShape hpBA(sf::Vector2f(anchoB, altoB)), hpFA(sf::Vector2f(anchoB, altoB));
-    sf::RectangleShape hpBR(sf::Vector2f(anchoB, altoB)), hpFR(sf::Vector2f(anchoB, altoB));
-    hpBA.setFillColor(sf::Color(50, 50, 50)); hpFA.setFillColor(sf::Color::Green);
-    hpBR.setFillColor(sf::Color(50, 50, 50)); hpFR.setFillColor(sf::Color::Green);
-
+    EstadoJuego estadoActual = EstadoJuego::MENU;
     sf::Clock clock;
-    Estado estadoActual = Estado::MENU;
-    sf::Vector2f uDirA(1.f, 0.f), uDirR(-1.f, 0.f);
-    float mirA = 1.0f, mirR = -1.0f;
-    float offY = 40.0f;
-    bool partidaFinalizada = false;
 
-    while (window.isOpen()) {
+    // --- CONFIGURACIÓN DEL MENÚ VISUAL INTEGRADO NATIVO ---
+    sf::Font fuenteMenu;
+    sf::Texture texFondoMenu;
+    sf::Sprite sprFondoMenu;
+    bool menuCargadoCorrectamente = true;
+
+    if (!fuenteMenu.loadFromFile("../../../assets/fonts/Bungee-Regular.ttf") ||
+        !texFondoMenu.loadFromFile("../../../assets/images/menu/fondo_haram.png")) {
+        std::cerr << "Aviso: Error cargando recursos del menú, usando modo texto" << std::endl;
+        menuCargadoCorrectamente = false;
+    }
+    if (menuCargadoCorrectamente) {
+        sprFondoMenu.setTexture(texFondoMenu);
+        sprFondoMenu.setScale(1000.f / texFondoMenu.getSize().x, 1000.f / texFondoMenu.getSize().y);
+    }
+
+    sf::Text txtTitulo("ARCHON FOOTBALL", fuenteMenu, 65);
+    txtTitulo.setFillColor(sf::Color::White);
+    txtTitulo.setPosition(500.f - txtTitulo.getGlobalBounds().width / 2.f, 150.f);
+
+    sf::Text txtJugar("JUGAR", fuenteMenu, 40);
+    sf::Text txtSalir("SALIR", fuenteMenu, 40);
+    int opcionSeleccionadaMenu = 0; // Variable corregida para evitar el error C2065
+
+    // --- INICIALIZACIÓN DEL TABLERO TÁCTICO ---
+    Tablero logicaTablero;
+    TableroGrafico graficosTablero(1.74f);
+    graficosTablero.cargarTexturas();
+
+    IATablero cerebroIATablero(2);
+    cerebroIATablero.setDificultad(DificultadTablero::DIFICIL);
+
+    int origenX = -1, origenY = -1;
+    int combateDestX = -1, combateDestY = -1;
+
+    // Variables de orientación de la Arena
+    float dirDisparoX = 1.0f;
+    float dirDisparoY = 0.0f;
+    std::string claseJugadorActual = "";
+
+    // Mecánicas específicas para la Afición (Segada)
+    bool segadaActiva = false;
+    float segadaTimer = 0.0f;
+    sf::Vector2f dirSegada(0.f, 0.f);
+
+    // Variables dinámicas de la Arena
+    Jugador* jugadorAzul = nullptr;
+    Jugador* jugadorRojo = nullptr;
+    Arena* arenaCombate = nullptr;
+    ControladorIA* iaArena = nullptr;
+
+    sf::Texture texLuchadorAzul, texLuchadorRojo;
+    sf::Sprite sprLuchadorAzul, sprLuchadorRojo;
+
+    sf::Texture texCampo, texBalon;
+    if (!texCampo.loadFromFile("campo.png") || !texBalon.loadFromFile("assets/proyectil/balon_proyectil.png")) {
+        std::cerr << "Error cargando assets de la arena" << std::endl;
+        return -1;
+    }
+    sf::Sprite sprCampo(texCampo), sprBalon(texBalon);
+    sprBalon.setOrigin(10, 10);
+
+    while (window.isOpen())
+    {
         float dt = clock.restart().asSeconds();
+        sf::Event event;
 
-        switch (estadoActual) {
-        case Estado::MENU:
-            pMenu.procesarEventos(); pMenu.actualizar(); pMenu.dibujar();
-            if (pMenu.estaOpcionConfirmada()) {
-                Menu::Opcion op = pMenu.obtenerOpcionConfirmada();
-                if (op == Menu::SALIR) window.close();
-                else if (op == Menu::INSTRUCCIONES) estadoActual = Estado::INSTRUCCIONES;
-                else if (op == Menu::RANKING) estadoActual = Estado::RANKING_PANTALLA;
-                else if (op == Menu::JUGAR) estadoActual = Estado::MODO_JUEGO;
-                pMenu.reiniciarConfirmacion();
-            }
-            break;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
 
-        case Estado::MODO_JUEGO:
-            pModo.procesarEventos(); pModo.actualizar(); pModo.dibujar();
-            if (pModo.debeVolverAlMenu()) { pModo.reiniciarVolver(); estadoActual = Estado::MENU; }
-            if (pModo.estaOpcionConfirmada()) {
-                esModoIA = (pModo.obtenerOpcionConfirmada() == PantallaModoJuego::JUGADOR_VS_IA);
-                if (azul) delete azul; if (rojo) delete rojo; if (arena) delete arena; if (ia) delete ia;
-
-                azul = new Defensa(1); rojo = new Aficion(1); arena = new Arena(azul, rojo);
-                if (esModoIA) { ia = new ControladorIA(rojo, azul, arena); ia->setDificultad(DificultadIA::DIFICIL); }
-
-                std::string cA = azul->getNombreClase(), cR = rojo->getNombreClase();
-                for (int i = 0; i < 3; i++) {
-                    walkA[i].loadFromFile("assets/players/blue/" + cA + "/walk/sprite_" + cA + "_blue_walk-" + std::to_string(i + 1) + ".png");
-                    walkR[i].loadFromFile("assets/players/red/" + cR + "/walk/sprite_" + cR + "_red_walk-" + std::to_string(i + 1) + ".png");
-                    atkA[i].loadFromFile("assets/players/blue/" + cA + "/atack/sprite_" + cA + "_blue_atack-" + std::to_string(i + 1) + ".png");
-                    atkR[i].loadFromFile("assets/players/red/" + cR + "/atack/sprite_" + cR + "_red_atack-" + std::to_string(i + 1) + ".png");
+            switch (estadoActual)
+            {
+            case EstadoJuego::MENU:
+                if (event.type == sf::Event::KeyPressed) {
+                    if (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::W) {
+                        opcionSeleccionadaMenu = 0;
+                    }
+                    if (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::S) {
+                        opcionSeleccionadaMenu = 1;
+                    }
+                    if (event.key.code == sf::Keyboard::Enter) {
+                        if (opcionSeleccionadaMenu == 0) estadoActual = EstadoJuego::TABLERO;
+                        else window.close();
+                    }
                 }
-                azul->setPosicion(anchoCampo * 0.2f, altoCampo * 0.5f);
-                rojo->setPosicion(anchoCampo * 0.8f, altoCampo * 0.5f);
-                estadoActual = Estado::COMBATE; partidaFinalizada = false; pModo.reiniciarConfirmacion();
+                break;
+
+            case EstadoJuego::TABLERO:
+                if (logicaTablero.getTurnoActual() == 1) {
+                    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                        int clicX = event.mouseButton.x / (64 * graficosTablero.getEscala());
+                        int clicY = event.mouseButton.y / (64 * graficosTablero.getEscala());
+
+                        if (!logicaTablero.mover_Pieza(clicX, clicY)) {
+                            logicaTablero.seleccionar_Pieza(clicX, clicY);
+                        }
+                    }
+                }
+                break;
+
+            case EstadoJuego::COMBATE:
+                if (event.type == sf::Event::KeyPressed) {
+                    if (event.key.code == sf::Keyboard::Space) {
+                        std::string claseLower = claseJugadorActual;
+                        std::transform(claseLower.begin(), claseLower.end(), claseLower.begin(), ::tolower);
+
+                        // Si es Afición: realiza segada deslizante y NO dispara proyectiles
+                        if (claseLower == "aficion") {
+                            if (!segadaActiva) {
+                                segadaActiva = true;
+                                segadaTimer = 0.25f;
+                                dirSegada = sf::Vector2f(dirDisparoX, dirDisparoY);
+                                sprLuchadorAzul.setRotation(65.f);
+                            }
+                        }
+                        else {
+                            // Las demás clases disparan el balón de fútbol
+                            arenaCombate->comandoDisparoJugador1(dirDisparoX, dirDisparoY);
+                        }
+                    }
+                    if (event.key.code == sf::Keyboard::E) arenaCombate->comandoEspecialJugador1();
+                }
+                break;
             }
+        }
+
+        window.clear();
+
+        switch (estadoActual)
+        {
+        case EstadoJuego::MENU:
+            if (menuCargadoCorrectamente) {
+                window.draw(sprFondoMenu);
+            }
+            else {
+                window.clear(sf::Color(25, 45, 25));
+            }
+
+            // Iluminación dinámica de la opción seleccionada (Corregido)
+            txtJugar.setFillColor(opcionSeleccionadaMenu == 0 ? sf::Color::Yellow : sf::Color::White);
+            txtSalir.setFillColor(opcionSeleccionadaMenu == 1 ? sf::Color::Yellow : sf::Color::White);
+
+            txtJugar.setPosition(500.f - txtJugar.getGlobalBounds().width / 2.f, 450.f);
+            txtSalir.setPosition(500.f - txtSalir.getGlobalBounds().width / 2.f, 550.f);
+
+            window.draw(txtTitulo);
+            window.draw(txtJugar);
+            window.draw(txtSalir);
             break;
 
-        case Estado::COMBATE:
-            sf::Event ev;
-            while (window.pollEvent(ev)) { if (ev.type == sf::Event::Closed) window.close(); }
+        case EstadoJuego::TABLERO:
+            if (logicaTablero.getTurnoActual() == 2) {
+                sf::sleep(sf::milliseconds(400));
+                cerebroIATablero.ejecutarTurno(logicaTablero);
+            }
 
-            if (!partidaFinalizada) {
-                // --- MOVIMIENTO AZUL (Límites ceñidos al campo azul) ---
-                sf::Vector2f mA(0.f, 0.f);
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) mA.y -= 1;
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) mA.y += 1;
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) mA.x -= 1;
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) mA.x += 1;
+            if (logicaTablero.getCombatePendiente()) {
+                origenX = logicaTablero.getCOrigX();
+                origenY = logicaTablero.getCOrigY();
+                combateDestX = logicaTablero.getCDestX();
+                combateDestY = logicaTablero.getCDestY();
 
-                if (mA.x != 0 || mA.y != 0) {
-                    azul->setEstado(CAMINANDO);
-                    float mag = std::sqrt(mA.x * mA.x + mA.y * mA.y);
-                    uDirA = { mA.x / mag, mA.y / mag };
-                    if (mA.x != 0) mirA = (mA.x > 0) ? 1.0f : -1.0f;
-                    // Clamp usando anchoCampo y altoCampo para no entrar en lo negro
-                    azul->setPosicion(
-                        std::clamp(azul->getHitbox().x + uDirA.x * 350.f * dt, 25.f, anchoCampo - 25.f - azul->getHitbox().ancho),
-                        std::clamp(azul->getHitbox().y + uDirA.y * 350.f * dt, 25.f, altoCampo - 25.f - azul->getHitbox().alto)
+                Jugador* atacante = logicaTablero.getCasilla(origenX, origenY);
+                Jugador* defensor = logicaTablero.getCasilla(combateDestX, combateDestY);
+
+                if (atacante != nullptr && defensor != nullptr) {
+                    claseJugadorActual = atacante->getNombreClase();
+
+                    jugadorAzul = crearLuchadorArena(atacante->getNombreClase(), atacante->getBando());
+                    jugadorRojo = crearLuchadorArena(defensor->getNombreClase(), defensor->getBando());
+
+                    arenaCombate = new Arena(jugadorAzul, jugadorRojo);
+                    iaArena = new ControladorIA(jugadorRojo, jugadorAzul, arenaCombate);
+
+                    jugadorAzul->setPosicion(150.f, 280.f);
+                    jugadorRojo->setPosicion(500.f, 280.f);
+
+                    texLuchadorAzul.loadFromFile(obtenerRutaSpriteArena(atacante->getNombreClase(), atacante->getBando()));
+                    texLuchadorRojo.loadFromFile(obtenerRutaSpriteArena(defensor->getNombreClase(), defensor->getBando()));
+                    sprLuchadorAzul.setTexture(texLuchadorAzul);
+                    sprLuchadorRojo.setTexture(texLuchadorRojo);
+
+                    sprLuchadorAzul.setRotation(0.f);
+                    segadaActiva = false;
+
+                    dirDisparoX = 1.0f; dirDisparoY = 0.0f;
+
+                    logicaTablero.resetearCombatePendiente();
+                    estadoActual = EstadoJuego::COMBATE;
+                }
+            }
+
+            graficosTablero.dibujar(window, logicaTablero);
+            break;
+
+        case EstadoJuego::COMBATE:
+            if (segadaActiva) {
+                segadaTimer -= dt;
+                float velocidadSegada = 520.f;
+
+                float nuevaX = jugadorAzul->getHitbox().x + (dirSegada.x * velocidadSegada * dt);
+                float nuevaY = jugadorAzul->getHitbox().y + (dirSegada.y * velocidadSegada * dt);
+
+                nuevaX = std::clamp(nuevaX, 25.f, 600.f - 25.f - jugadorAzul->getHitbox().ancho);
+                nuevaY = std::clamp(nuevaY, 25.f, 560.f - 25.f - jugadorAzul->getHitbox().alto);
+                jugadorAzul->setPosicion(nuevaX, nuevaY);
+
+                if (segadaTimer <= 0.0f) {
+                    segadaActiva = false;
+                    sprLuchadorAzul.setRotation(0.f);
+                }
+            }
+            else {
+                sf::Vector2f vA(0.f, 0.f);
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) vA.y -= 1;
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) vA.y += 1;
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) vA.x -= 1;
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) vA.x += 1;
+
+                if (vA.x != 0 || vA.y != 0) {
+                    float len = std::sqrt(vA.x * vA.x + vA.y * vA.y);
+                    dirDisparoX = vA.x / len;
+                    dirDisparoY = vA.y / len;
+
+                    float miVel = jugadorAzul->getVelocidad();
+                    jugadorAzul->setPosicion(
+                        std::clamp(jugadorAzul->getHitbox().x + (vA.x / len) * miVel * 100.f * dt, 25.f, 600.f - 25.f - jugadorAzul->getHitbox().ancho),
+                        std::clamp(jugadorAzul->getHitbox().y + (vA.y / len) * miVel * 100.f * dt, 25.f, 560.f - 25.f - jugadorAzul->getHitbox().alto)
                     );
                 }
-                else if (azul->getEstado() != ATACANDO) azul->setEstado(QUIETO);
-
-                if (esModoIA) ia->actualizar(dt);
-                else {
-                    sf::Vector2f mR(0.f, 0.f);
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) mR.y -= 1;
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) mR.y += 1;
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) mR.x -= 1;
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) mR.x += 1;
-                    if (mR.x != 0 || mR.y != 0) {
-                        rojo->setEstado(CAMINANDO);
-                        float mag = std::sqrt(mR.x * mR.x + mR.y * mR.y);
-                        uDirR = { mR.x / mag, mR.y / mag };
-                        if (mR.x != 0) mirR = (mR.x > 0) ? 1.0f : -1.0f;
-                        rojo->setPosicion(std::clamp(rojo->getHitbox().x + uDirR.x * 350.f * dt, 25.f, anchoCampo - 25.f - rojo->getHitbox().ancho),
-                            std::clamp(rojo->getHitbox().y + uDirR.y * 350.f * dt, 25.f, altoCampo - 25.f - rojo->getHitbox().alto));
-                    }
-                    else if (rojo->getEstado() != ATACANDO) rojo->setEstado(QUIETO);
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)) arena->comandoDisparoJugador2(uDirR.x, uDirR.y);
-                }
-
-                arena->actualizar(dt); azul->actualizar(dt); rojo->actualizar(dt);
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) arena->comandoDisparoJugador1(uDirA.x, uDirA.y);
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) arena->comandoEspecialJugador1();
-                if (azul->estaMuerto() || rojo->estaMuerto()) partidaFinalizada = true;
             }
 
-            window.clear(); window.draw(sprC);
+            iaArena->actualizar(dt);
+            arenaCombate->actualizar(dt);
+            jugadorAzul->actualizar(dt);
+            jugadorRojo->actualizar(dt);
 
-            float cAX = azul->getHitbox().x + azul->getHitbox().ancho / 2;
-            float cRX = rojo->getHitbox().x + rojo->getHitbox().ancho / 2;
+            window.draw(sprCampo);
 
-            sprA.setTexture((azul->getEstado() == ATACANDO) ? atkA[azul->getFrameActual()] : walkA[azul->getFrameActual()]);
-            sprA.setOrigin(sprA.getLocalBounds().width / 2, sprA.getLocalBounds().height / 2);
-            sprA.setScale(3.0f * mirA, 3.0f);
-            sprA.setPosition(cAX, azul->getHitbox().y + azul->getHitbox().alto / 2 + offY);
-            window.draw(sprA);
+            // Proporciones visuales equilibradas y nítidas
+            sprLuchadorAzul.setScale(3.0f, 3.0f);
+            sprLuchadorRojo.setScale(3.0f, 3.0f);
+            sprBalon.setScale(0.8f, 0.8f);
 
-            sprR.setTexture((rojo->getEstado() == ATACANDO) ? atkR[rojo->getFrameActual()] : walkR[rojo->getFrameActual()]);
-            sprR.setOrigin(sprR.getLocalBounds().width / 2, sprR.getLocalBounds().height / 2);
-            sprR.setScale(3.0f * mirR, 3.0f);
-            sprR.setPosition(cRX, rojo->getHitbox().y + rojo->getHitbox().alto / 2 + offY);
-            window.draw(sprR);
+            sprLuchadorAzul.setPosition(jugadorAzul->getHitbox().x, jugadorAzul->getHitbox().y);
+            sprLuchadorRojo.setPosition(jugadorRojo->getHitbox().x, jugadorRojo->getHitbox().y);
+            window.draw(sprLuchadorAzul);
+            window.draw(sprLuchadorRojo);
 
-            // Dibujar UI (Posicionada igual que en tu versión segura)
-            hpFA.setSize(sf::Vector2f(anchoB * ((float)azul->getVidaActual() / azul->getVidaMaxima()), altoB));
-            hpBA.setPosition(cAX - anchoB / 2, azul->getHitbox().y - 20);
-            hpFA.setPosition(cAX - anchoB / 2, azul->getHitbox().y - 20);
-            window.draw(hpBA); window.draw(hpFA);
+            for (auto& p : arenaCombate->getProyectiles()) {
+                if (p.isActivo()) {
+                    sprBalon.setPosition(p.getHitbox().x + 10, p.getHitbox().y + 10);
+                    window.draw(sprBalon);
+                }
+            }
 
-            hpFR.setSize(sf::Vector2f(anchoB * ((float)rojo->getVidaActual() / rojo->getVidaMaxima()), altoB));
-            hpBR.setPosition(cRX - anchoB / 2, rojo->getHitbox().y - 20);
-            hpFR.setPosition(cRX - anchoB / 2, rojo->getHitbox().y - 20);
-            window.draw(hpBR); window.draw(hpFR);
+            if (arenaCombate->isTerminado() || jugadorAzul->estaMuerto() || jugadorRojo->estaMuerto()) {
+                int bandoGanador = (jugadorAzul->estaMuerto()) ? 2 : 1;
 
-            for (auto& p : arena->getProyectiles()) { sprB.setPosition(p.getHitbox().x + 10, p.getHitbox().y + 10); window.draw(sprB); }
-            window.display();
+                logicaTablero.aplicar_Resultado_Combate(origenX, origenY, combateDestX, combateDestY, bandoGanador);
 
-            if (partidaFinalizada) { sf::sleep(sf::seconds(1.5f)); estadoActual = Estado::MENU; partidaFinalizada = false; }
+                delete arenaCombate; delete iaArena; delete jugadorAzul; delete jugadorRojo;
+                arenaCombate = nullptr;
+
+                estadoActual = EstadoJuego::TABLERO;
+            }
             break;
         }
+
+        window.display();
     }
+
     return 0;
 }
