@@ -306,7 +306,7 @@ Tablero::~Tablero() {
 	}
 }
 
-// Lógica de simulación de Hugo antigua (se mantiene por si vuestro profesor os la pide)
+// Lógica de simulación de Hugo antigua (se mantiene por si se pide)
 bool Tablero::Ejecutar_combate(Jugador* atacante, Jugador* defensor) {
 	if (defensor == nullptr) return true;
 

@@ -28,6 +28,7 @@
 #include "PantallaInstrucciones.h"
 #include "PantallaRanking.h"
 #include "Ranking.h"
+#include "PantallaDificultadIA.h"
 
 //Sonido
 #include "SonidoJuego.h"
@@ -37,6 +38,7 @@ enum class EstadoJuego {
     INSTRUCCIONES,
     RANKING_PANTALLA,
     MODO_JUEGO,
+    DIFICULTAD_IA,
     TABLERO,
     COMBATE
 };
@@ -61,7 +63,7 @@ std::string obtenerRutaSpriteArena(std::string nombre, int bando) {
     std::transform(nomLower.begin(), nomLower.end(), nomLower.begin(), ::tolower);
 
     if (nomLower.find("delan") != std::string::npos && bando == 1) return "assets/players/blue/delantero/atack/sprite_delantero_blue_atack_1.png";
-    if (nomLower.find("afic") != std::string::npos && bando == 2)   return "assets/players/red/aficion/atack/sprite_aficion_red_atack-1.png";
+    if (nomLower.find("afic") != std::string::npos && bando == 2)   return "assets/players/red/aficion/atack/sprite_aficion_red_atack_1.png";
 
     if (nomLower.find("later") != std::string::npos || nomLower.find("porte") != std::string::npos) {
         return "assets/players/" + equipo + "/portero/atack/sprite_portero_" + equipo + "_atack-1.png";
@@ -108,7 +110,15 @@ int main()
     PantallaModoJuego pantallaModoJuego(
         window,
         "../../../assets/fonts/Bungee-Regular.ttf",
-		"../../../assets/images/menu/fondo_haram.png"
+		"../../../assets/images/menu/fondo_haram.png",
+        "../../../assets/audio/menu/mover_opcion.mp3"
+    );
+
+    PantallaDificultadIA pantallaDificultadIA(
+        window,
+        "../../../assets/fonts/Bungee-Regular.ttf",
+        "../../../assets/images/menu/fondo_haram.png",
+        "../../../assets/audio/menu/mover_opcion.mp3"
     );
 
     PantallaInstrucciones pantallaInstrucciones(
@@ -221,14 +231,7 @@ int main()
                 {
                     esModoPvP = false;
 
-                    // De momento la dificultad sigue fija.
-                    // Cuando haga PantallaDificultadIA, aqui ira el paso intermedio.
-                    cerebroIATablero.setDificultad(DificultadTablero::DIFICIL);
-                   
-                    pantallaMenu.detenerMusicaMenu();
-                    sonidoJuego.reproducirAmbienteTablero();
-
-                    estadoActual = EstadoJuego::TABLERO;
+                    estadoActual = EstadoJuego::DIFICULTAD_IA;
                 }
                 else if (modo == PantallaModoJuego::JUGADOR_VS_JUGADOR)
                 {
@@ -241,6 +244,46 @@ int main()
                 }
 
                 pantallaModoJuego.reiniciarConfirmacion();
+            }
+
+            continue;
+        }
+
+        if (estadoActual == EstadoJuego::DIFICULTAD_IA)
+        {
+            pantallaDificultadIA.procesarEventos();
+            pantallaDificultadIA.actualizar();
+            pantallaDificultadIA.dibujar();
+
+            if (pantallaDificultadIA.debeVolverAlModoJuego())
+            {
+                pantallaDificultadIA.reiniciarVolver();
+                estadoActual = EstadoJuego::MODO_JUEGO;
+            }
+
+            if (pantallaDificultadIA.estaOpcionConfirmada())
+            {
+                PantallaDificultadIA::Dificultad dificultad = pantallaDificultadIA.obtenerDificultadConfirmada();
+
+                if (dificultad == PantallaDificultadIA::FACIL)
+                {
+                    cerebroIATablero.setDificultad(DificultadTablero::FACIL);
+                }
+                else if (dificultad == PantallaDificultadIA::NORMAL)
+                {
+                    cerebroIATablero.setDificultad(DificultadTablero::NORMAL);
+                }
+                else if (dificultad == PantallaDificultadIA::DIFICIL)
+                {
+                    cerebroIATablero.setDificultad(DificultadTablero::DIFICIL);
+                }
+
+                pantallaMenu.detenerMusicaMenu();
+                sonidoJuego.reproducirAmbienteTablero();
+
+                estadoActual = EstadoJuego::TABLERO;
+
+                pantallaDificultadIA.reiniciarConfirmacion();
             }
 
             continue;

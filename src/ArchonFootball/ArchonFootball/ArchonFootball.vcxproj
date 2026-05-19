@@ -37,10 +37,12 @@
     <ClCompile Include="..\..\logica\tablero.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="main_menu.cpp" />
+    <ClCompile Include="PantallaDificultadIA.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\audio\SonidoJuego.h" />
     <ClInclude Include="..\..\audio\SonidoMenu.h" />
+    <ClInclude Include="..\..\graficos\PantallaDificultadIA.h" />
     <ClInclude Include="..\..\graficos\PantallaInstrucciones.h" />
     <ClInclude Include="..\..\graficos\PantallaMenu.h" />
     <ClInclude Include="..\..\graficos\PantallaModoJuego.h" />

@@ -2,16 +2,16 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include <optional>
 #include <string>
 
-class PantallaModoJuego
+class PantallaDificultadIA
 {
 public:
-    enum OpcionModo
+    enum Dificultad
     {
-        JUGADOR_VS_IA = 0,
-        JUGADOR_VS_JUGADOR = 1
+        FACIL = 0,
+        NORMAL = 1,
+        DIFICIL = 2
     };
 
 private:
@@ -19,7 +19,7 @@ private:
 
     sf::Font fuente;
     sf::Text titulo;
-    sf::Text opcionesTexto[2];
+    sf::Text opcionesTexto[3];
     sf::Text textoVolver;
 
     sf::Texture texturaFondo;
@@ -30,20 +30,23 @@ private:
 
     int opcionSeleccionada;
     bool opcionConfirmada;
-    bool volverAlMenu;
+    bool volverAlModoJuego;
 
 public:
-    PantallaModoJuego(sf::RenderWindow& v, const std::string& rutaFuente, const std::string& rutaFondo, const std::string& rutaMover);
+    PantallaDificultadIA(sf::RenderWindow& v,
+        const std::string& rutaFuente,
+        const std::string& rutaFondo,
+        const std::string& rutaMover);
 
     void procesarEventos();
     void actualizar();
     void dibujar();
 
     bool estaOpcionConfirmada() const;
-    OpcionModo obtenerOpcionConfirmada() const;
+    Dificultad obtenerDificultadConfirmada() const;
     void reiniciarConfirmacion();
 
-    bool debeVolverAlMenu() const;
+    bool debeVolverAlModoJuego() const;
     void reiniciarVolver();
 
 private:
@@ -52,3 +55,4 @@ private:
     void moverArriba();
     void moverAbajo();
 };
+

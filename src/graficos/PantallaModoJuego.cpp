@@ -8,7 +8,7 @@ void centrarTextoModo(sf::Text& texto, float y)
     texto.setPosition(500.f, y);
 }
 
-PantallaModoJuego::PantallaModoJuego(sf::RenderWindow& v, const std::string& rutaFuente, const std::string& rutaFondo)
+PantallaModoJuego::PantallaModoJuego(sf::RenderWindow& v, const std::string& rutaFuente, const std::string& rutaFondo, const std::string& rutaMover)
     : ventana(v),
     opcionSeleccionada(0),
     opcionConfirmada(false),
@@ -23,6 +23,10 @@ PantallaModoJuego::PantallaModoJuego(sf::RenderWindow& v, const std::string& rut
     {
         throw std::runtime_error("No se pudo cargar el fondo del modo de juego.");
     }
+    if (!bufferMover.loadFromFile(rutaMover))
+    {
+        throw std::runtime_error("No se pudo cargar el sonido de mover opcion en modo juego.");
+    }
 
 	titulo.setFont(fuente);
     opcionesTexto[0].setFont(fuente);
@@ -30,6 +34,9 @@ PantallaModoJuego::PantallaModoJuego(sf::RenderWindow& v, const std::string& rut
     textoVolver.setFont(fuente);
 
     fondo.setTexture(texturaFondo, true);
+
+    sonidoMover.setBuffer(bufferMover);
+    sonidoMover.setVolume(35.f);
 
     sf::Vector2u sizeVentana = ventana.getSize();
     sf::Vector2u sizeImagen = texturaFondo.getSize();
@@ -59,10 +66,12 @@ void PantallaModoJuego::procesarEventos()
             if (evento.key.code == sf::Keyboard::Up || evento.key.code == sf::Keyboard::W)
             {
                 moverArriba();
+                sonidoMover.play();
             }
             else if (evento.key.code == sf::Keyboard::Down || evento.key.code == sf::Keyboard::S)
             {
                 moverAbajo();
+                sonidoMover.play();
             }
             else if (evento.key.code == sf::Keyboard::Return)
             {
