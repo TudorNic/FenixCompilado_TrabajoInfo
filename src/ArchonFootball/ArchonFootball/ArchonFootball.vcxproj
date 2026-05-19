@@ -34,6 +34,7 @@
     <ClCompile Include="..\..\logica\Piezas.cpp" />
     <ClCompile Include="..\..\logica\Ranking.cpp" />
     <ClCompile Include="..\..\logica\tablero.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="main_menu.cpp" />
   </ItemGroup>
   <ItemGroup>
