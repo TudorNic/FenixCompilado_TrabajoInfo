@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\audio\SonidoJuego.cpp" />
     <ClCompile Include="..\..\audio\SonidoMenu.cpp" />
     <ClCompile Include="..\..\graficos\PantallaInstrucciones.cpp" />
     <ClCompile Include="..\..\graficos\PantallaMenu.cpp" />
@@ -38,6 +39,7 @@
     <ClCompile Include="main_menu.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\audio\SonidoJuego.h" />
     <ClInclude Include="..\..\audio\SonidoMenu.h" />
     <ClInclude Include="..\..\graficos\PantallaInstrucciones.h" />
     <ClInclude Include="..\..\graficos\PantallaMenu.h" />

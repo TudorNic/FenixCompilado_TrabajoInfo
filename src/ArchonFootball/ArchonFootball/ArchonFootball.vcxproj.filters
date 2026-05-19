@@ -72,6 +72,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\audio\SonidoJuego.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\logica\Arena.h">
@@ -148,6 +151,9 @@
     </ClInclude>
     <ClInclude Include="..\..\graficos\tablerografico.h">
       <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\audio\SonidoJuego.h">
+      <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,13 @@
 #include "PantallaInstrucciones.h"
 #include <stdexcept>
 
+static void centrarTextoInstrucciones(sf::Text& texto, float y)
+{
+    sf::FloatRect bounds = texto.getLocalBounds();
+    texto.setOrigin(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
+    texto.setPosition(500.f, y);
+}
+
 PantallaInstrucciones::PantallaInstrucciones(sf::RenderWindow& v, const std::string& rutaFuente)
     : ventana(v),
     volverAlMenu(false),
@@ -67,9 +74,9 @@ void PantallaInstrucciones::dibujar()
 {
     ventana.clear(sf::Color(20, 20, 20));
 
-    titulo.setPosition({ 180.f, 40.f + desplazamientoVertical });
-    textoInstrucciones.setPosition({ 60.f, 120.f + desplazamientoVertical });
-    textoVolver.setPosition({ 220.f, 560.f });
+    centrarTextoInstrucciones(titulo, 90.f + desplazamientoVertical);
+    textoInstrucciones.setPosition(160.f, 170.f + desplazamientoVertical);
+    centrarTextoInstrucciones(textoVolver, 930.f);
 
     ventana.draw(titulo);
     ventana.draw(textoInstrucciones);
@@ -93,8 +100,7 @@ void PantallaInstrucciones::inicializarTextos()
     titulo.setString("INSTRUCCIONES");
     titulo.setCharacterSize(38);
     titulo.setFillColor(sf::Color::White);
-    titulo.setPosition({ 180.f, 60.f });
-
+    centrarTextoInstrucciones(titulo, 90.f);
     textoInstrucciones.setString(
         
 "En la opcion Jugar puedes elegir entre enfrentarte a la IA\n"
@@ -127,12 +133,12 @@ void PantallaInstrucciones::inicializarTextos()
 "Prueba distintas estrategias y descubre por ti mismo las\n"
 "habilidades de cada pieza."
     );
-    textoInstrucciones.setCharacterSize(15);
+    textoInstrucciones.setCharacterSize(17);
     textoInstrucciones.setFillColor(sf::Color(220, 220, 220));
-    textoInstrucciones.setPosition({ 40.f, 160.f });
+    textoInstrucciones.setPosition({ 160.f, 170.f });
 
     textoVolver.setString("Pulsa ESC para volver");
     textoVolver.setCharacterSize(18);
     textoVolver.setFillColor(sf::Color::Yellow);
-    textoVolver.setPosition({ 240.f, 520.f });
+    centrarTextoInstrucciones(textoVolver, 930.f);
 }

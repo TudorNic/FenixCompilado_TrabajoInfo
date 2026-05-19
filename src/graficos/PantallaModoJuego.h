@@ -21,12 +21,15 @@ private:
     sf::Text opcionesTexto[2];
     sf::Text textoVolver;
 
+    sf::Texture texturaFondo;
+    sf::Sprite fondo;
+
     int opcionSeleccionada;
     bool opcionConfirmada;
     bool volverAlMenu;
 
 public:
-    PantallaModoJuego(sf::RenderWindow& v, const std::string& rutaFuente);
+    PantallaModoJuego(sf::RenderWindow& v, const std::string& rutaFuente, const std::string& rutaFondo);
 
     void procesarEventos();
     void actualizar();

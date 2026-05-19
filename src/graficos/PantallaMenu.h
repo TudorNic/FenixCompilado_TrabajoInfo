@@ -34,6 +34,7 @@ public:
     void procesarEventos();
     void actualizar();
     void dibujar();
+	void detenerMusicaMenu();
 
     Menu& obtenerMenu();
     bool estaOpcionConfirmada() const;
