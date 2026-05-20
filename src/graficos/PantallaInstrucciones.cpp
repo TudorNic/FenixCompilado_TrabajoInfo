@@ -131,7 +131,16 @@ void PantallaInstrucciones::inicializarTextos()
 "es lo que marca la diferencia.\n\n"
 
 "Prueba distintas estrategias y descubre por ti mismo las\n"
-"habilidades de cada pieza."
+"habilidades de cada pieza.\n\n"
+
+"Controles:\n"
+"- Mover arriba: W o Flecha Arriba\n"
+"- Mover abajo: S o Flecha Abajo\n"
+"- Mover izquierda: A o Flecha Izquierda\n"
+"- Mover derecha: D o Flecha Derecha\n"
+"-Disparo/ataque: Barra espaciadora/ctrl\n"
+"- Confirmar: Enter\n"
+"- Cancelar: ESC\n"
     );
     textoInstrucciones.setCharacterSize(17);
     textoInstrucciones.setFillColor(sf::Color(220, 220, 220));

@@ -139,14 +139,14 @@ void PantallaMenu::inicializarTextos()
     titulo.setString("ARCHON FOOTBALL");
     titulo.setCharacterSize(80);
     titulo.setFillColor(sf::Color::White);
-    centrarTexto(titulo, 140.f);
+    centrarTexto(titulo, 145.f);
 
     for (int i = 0; i < menu.obtenerNumeroOpciones(); i++)
     {
         opcionesTexto[i].setString(obtenerTextoOpcion(i));
-        opcionesTexto[i].setCharacterSize(30);
+        opcionesTexto[i].setCharacterSize(50);
         opcionesTexto[i].setFillColor(sf::Color::Black);
-        centrarTexto(opcionesTexto[i], 260.f + i * 70.f);
+        centrarTexto(opcionesTexto[i], 300.f + i * 75.f);
     }
 }
 
@@ -157,14 +157,14 @@ void PantallaMenu::actualizarAspectoOpciones()
         if (i == menu.obtenerIndiceSeleccionado())
         {
             opcionesTexto[i].setFillColor(sf::Color::Yellow);
-            opcionesTexto[i].setScale({ 2.0f, 2.0f });
+            opcionesTexto[i].setScale({ 1.18f, 1.18f });
         }
         else
         {
             opcionesTexto[i].setFillColor(sf::Color::Black);
             opcionesTexto[i].setScale({ 1.f, 1.f });
         }
-        centrarTexto(opcionesTexto[i], 260.f + i * 70.f);
+        centrarTexto(opcionesTexto[i], 300.f + i *115.f);
     }
 }
 
@@ -225,8 +225,10 @@ void PantallaMenu::seleccionarOpcionConRaton(sf::Vector2i posicionRaton)
         if (opcionesTexto[i].getGlobalBounds().contains(posicion))
         {
             menu.seleccionarOpcion(i);
+            sonidoMenu.reproducirMover();
             break;
         }
+        
     }
 }
 

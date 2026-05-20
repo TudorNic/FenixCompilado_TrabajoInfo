@@ -82,6 +82,7 @@ void PantallaModoJuego::procesarEventos()
                 volverAlMenu = true;
             }
         }
+        manejarRaton(evento);
     }
 }
 
@@ -132,26 +133,22 @@ void PantallaModoJuego::reiniciarVolver()
 void PantallaModoJuego::inicializarTextos()
 {
     titulo.setString("SELECCIONA EL MODO DE JUEGO");
-    titulo.setCharacterSize(28);
+    titulo.setCharacterSize(50);
     titulo.setFillColor(sf::Color::White);
-    titulo.setPosition({ 120.f, 80.f });
     centrarTextoModo(titulo, 180.f);
 
     opcionesTexto[0].setString("Jugador vs IA");
-    opcionesTexto[0].setCharacterSize(30);
-    opcionesTexto[0].setPosition({ 250.f, 220.f });
-    centrarTextoModo(opcionesTexto[0], 340.f);
+    opcionesTexto[0].setCharacterSize(36);
+    centrarTextoModo(opcionesTexto[0], 360.f);
 
 
     opcionesTexto[1].setString("Jugador vs Jugador");
-    opcionesTexto[1].setCharacterSize(30);
-    opcionesTexto[1].setPosition({ 210.f, 300.f });
-    centrarTextoModo(opcionesTexto[1], 430.f);
+    opcionesTexto[1].setCharacterSize(36);
+    centrarTextoModo(opcionesTexto[1], 560.f);
 
     textoVolver.setString("Pulsa ESC para volver al menu");
     textoVolver.setCharacterSize(18);
     textoVolver.setFillColor(sf::Color::Yellow);
-    textoVolver.setPosition({ 220.f, 520.f });
     centrarTextoModo(textoVolver, 850.f);
 
 }
@@ -163,16 +160,16 @@ void PantallaModoJuego::actualizarAspectoOpciones()
         if (i == opcionSeleccionada)
         {
             opcionesTexto[i].setFillColor(sf::Color::Yellow);
-            opcionesTexto[i].setScale({ 1.12f, 1.12f });
+            opcionesTexto[i].setScale({ 1.15f, 1.15f });
         }
         else
         {
-            opcionesTexto[i].setFillColor(sf::Color(220, 220, 220));
+            opcionesTexto[i].setFillColor(sf::Color::Black);
             opcionesTexto[i].setScale({ 1.f, 1.f });
         }
     }
-    centrarTextoModo(opcionesTexto[0], 340.f);
-    centrarTextoModo(opcionesTexto[1], 430.f);
+    centrarTextoModo(opcionesTexto[0], 360.f);
+    centrarTextoModo(opcionesTexto[1], 460.f);
 }
 
 void PantallaModoJuego::moverArriba()
@@ -188,5 +185,44 @@ void PantallaModoJuego::moverAbajo()
     if (opcionSeleccionada < 1)
     {
         opcionSeleccionada++;
+    }
+}
+
+void PantallaModoJuego::manejarRaton(const sf::Event& evento)
+{
+    if (evento.type == sf::Event::MouseMoved)
+    {
+        seleccionarOpcionConRaton(sf::Vector2i(evento.mouseMove.x, evento.mouseMove.y));
+    }
+
+    if (evento.type == sf::Event::MouseButtonPressed)
+    {
+        if (evento.mouseButton.button == sf::Mouse::Left)
+        {
+            seleccionarOpcionConRaton(sf::Vector2i(evento.mouseButton.x, evento.mouseButton.y));
+            opcionConfirmada = true;
+        }
+    }
+}
+
+void PantallaModoJuego::seleccionarOpcionConRaton(sf::Vector2i posicionRaton)
+{
+    sf::Vector2f posicion(
+        static_cast<float>(posicionRaton.x),
+        static_cast<float>(posicionRaton.y)
+    );
+
+    for (int i = 0; i < 2; i++)
+    {
+        if (opcionesTexto[i].getGlobalBounds().contains(posicion))
+        {
+            if (opcionSeleccionada != i)
+            {
+                opcionSeleccionada = i;
+                sonidoMover.play();
+            }
+
+            break;
+        }
     }
 }

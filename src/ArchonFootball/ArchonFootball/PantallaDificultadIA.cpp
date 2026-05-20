@@ -87,6 +87,7 @@ void PantallaDificultadIA::procesarEventos()
                 volverAlModoJuego = true;
             }
         }
+        manejarRaton(evento);
     }
 }
 
@@ -137,21 +138,21 @@ void PantallaDificultadIA::reiniciarVolver()
 void PantallaDificultadIA::inicializarTextos()
 {
     titulo.setString("SELECCIONA DIFICULTAD");
-    titulo.setCharacterSize(36);
+    titulo.setCharacterSize(50);
     titulo.setFillColor(sf::Color::White);
     centrarTextoDificultad(titulo, 180.f);
 
     opcionesTexto[0].setString("Facil");
-    opcionesTexto[0].setCharacterSize(34);
+    opcionesTexto[0].setCharacterSize(36);
     centrarTextoDificultad(opcionesTexto[0], 340.f);
 
     opcionesTexto[1].setString("Normal");
-    opcionesTexto[1].setCharacterSize(34);
-    centrarTextoDificultad(opcionesTexto[1], 430.f);
+    opcionesTexto[1].setCharacterSize(36);
+    centrarTextoDificultad(opcionesTexto[1], 530.f);
 
     opcionesTexto[2].setString("Dificil");
-    opcionesTexto[2].setCharacterSize(34);
-    centrarTextoDificultad(opcionesTexto[2], 520.f);
+    opcionesTexto[2].setCharacterSize(36);
+    centrarTextoDificultad(opcionesTexto[2], 720.f);
 
     textoVolver.setString("Pulsa ESC para volver");
     textoVolver.setCharacterSize(20);
@@ -193,5 +194,44 @@ void PantallaDificultadIA::moverAbajo()
     if (opcionSeleccionada < 2)
     {
         opcionSeleccionada++;
+    }
+}
+
+void PantallaDificultadIA::manejarRaton(const sf::Event& evento)
+{
+    if (evento.type == sf::Event::MouseMoved)
+    {
+        seleccionarOpcionConRaton(sf::Vector2i(evento.mouseMove.x, evento.mouseMove.y));
+    }
+
+    if (evento.type == sf::Event::MouseButtonPressed)
+    {
+        if (evento.mouseButton.button == sf::Mouse::Left)
+        {
+            seleccionarOpcionConRaton(sf::Vector2i(evento.mouseButton.x, evento.mouseButton.y));
+            opcionConfirmada = true;
+        }
+    }
+}
+
+void PantallaDificultadIA::seleccionarOpcionConRaton(sf::Vector2i posicionRaton)
+{
+    sf::Vector2f posicion(
+        static_cast<float>(posicionRaton.x),
+        static_cast<float>(posicionRaton.y)
+    );
+
+    for (int i = 0; i < 3; i++)
+    {
+        if (opcionesTexto[i].getGlobalBounds().contains(posicion))
+        {
+            if (opcionSeleccionada != i)
+            {
+                opcionSeleccionada = i;
+                sonidoMover.play();
+            }
+
+            break;
+        }
     }
 }

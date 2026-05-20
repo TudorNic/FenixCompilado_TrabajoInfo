@@ -54,5 +54,8 @@ private:
     void actualizarAspectoOpciones();
     void moverArriba();
     void moverAbajo();
+
+    void manejarRaton(const sf::Event& evento);
+    void seleccionarOpcionConRaton(sf::Vector2i posicionRaton);
 };
 
