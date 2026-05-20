@@ -45,9 +45,6 @@
     <ClCompile Include="..\..\logica\Ranking.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\graficos\PantallaInstrucciones.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\graficos\PantallaMenu.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
@@ -68,6 +65,18 @@
     </ClCompile>
     <ClCompile Include="..\..\graficos\tablerografico.cpp">
       <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\audio\SonidoJuego.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\graficos\PantallaInstrucciones.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="PantallaDificultadIA.cpp">
+      <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -125,9 +134,6 @@
     <ClInclude Include="..\..\logica\Ranking.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\graficos\PantallaInstrucciones.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\graficos\PantallaMenu.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -145,6 +151,15 @@
     </ClInclude>
     <ClInclude Include="..\..\graficos\tablerografico.h">
       <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\audio\SonidoJuego.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\graficos\PantallaInstrucciones.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\graficos\PantallaDificultadIA.h">
+      <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

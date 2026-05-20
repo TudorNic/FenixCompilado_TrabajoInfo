@@ -1,6 +1,13 @@
 #include "PantallaMenu.h"
 #include <stdexcept>
 
+void centrarTexto(sf::Text& texto, float y)
+{
+    sf::FloatRect bounds = texto.getLocalBounds();
+    texto.setOrigin(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
+    texto.setPosition(500.f, y);
+}
+
 PantallaMenu::PantallaMenu(sf::RenderWindow& v, const std::string& rutaFuente, const std::string& rutaCampo, 
     const std::string& rutaPelota,const std::string& rutaMover, const std::string& rutaConfirmar,
     const std::string& rutaSalir, const std::string& rutaMusica)
@@ -82,6 +89,11 @@ void PantallaMenu::actualizar()
     actualizarAspectoOpciones();
 }
 
+void PantallaMenu::detenerMusicaMenu()
+{
+    sonidoMenu.detenerMusica();
+}
+
 void PantallaMenu::dibujar()
 {
     ventana.clear();
@@ -125,16 +137,16 @@ void PantallaMenu::reiniciarConfirmacion()
 void PantallaMenu::inicializarTextos()
 {
     titulo.setString("ARCHON FOOTBALL");
-    titulo.setCharacterSize(42);
+    titulo.setCharacterSize(80);
     titulo.setFillColor(sf::Color::White);
-    titulo.setPosition({ 220.f, 80.f });
+    centrarTexto(titulo, 145.f);
 
     for (int i = 0; i < menu.obtenerNumeroOpciones(); i++)
     {
         opcionesTexto[i].setString(obtenerTextoOpcion(i));
-        opcionesTexto[i].setCharacterSize(30);
-        opcionesTexto[i].setPosition( 280.f, 200.f + i * 70.f );
+        opcionesTexto[i].setCharacterSize(50);
         opcionesTexto[i].setFillColor(sf::Color::Black);
+        centrarTexto(opcionesTexto[i], 300.f + i * 75.f);
     }
 }
 
@@ -145,13 +157,14 @@ void PantallaMenu::actualizarAspectoOpciones()
         if (i == menu.obtenerIndiceSeleccionado())
         {
             opcionesTexto[i].setFillColor(sf::Color::Yellow);
-            opcionesTexto[i].setScale({ 1.15f, 1.15f });
+            opcionesTexto[i].setScale({ 1.18f, 1.18f });
         }
         else
         {
             opcionesTexto[i].setFillColor(sf::Color::Black);
             opcionesTexto[i].setScale({ 1.f, 1.f });
         }
+        centrarTexto(opcionesTexto[i], 300.f + i *115.f);
     }
 }
 
@@ -212,8 +225,10 @@ void PantallaMenu::seleccionarOpcionConRaton(sf::Vector2i posicionRaton)
         if (opcionesTexto[i].getGlobalBounds().contains(posicion))
         {
             menu.seleccionarOpcion(i);
+            sonidoMenu.reproducirMover();
             break;
         }
+        
     }
 }
 

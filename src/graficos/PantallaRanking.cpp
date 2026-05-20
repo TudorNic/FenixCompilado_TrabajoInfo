@@ -3,6 +3,13 @@
 #include <sstream> //Para construir textos como si estuvieramos escribiendo un flujo
 #include <iomanip> //PAra dar formato a textos y números
 
+static void centrarTextoRanking(sf::Text& texto, float y)
+{
+    sf::FloatRect bounds = texto.getLocalBounds();
+    texto.setOrigin(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
+    texto.setPosition(500.f, y);
+}
+
 PantallaRanking::PantallaRanking(sf::RenderWindow& v, Ranking& r, const std::string& rutaFuente)
     : ventana(v),
     ranking(r),
@@ -73,23 +80,23 @@ void PantallaRanking::reiniciarVolver()
 void PantallaRanking::inicializarTextos()
 {
     titulo.setString("RANKING");
-    titulo.setCharacterSize(34);
+    titulo.setCharacterSize(42);
     titulo.setFillColor(sf::Color::White);
-    titulo.setPosition({ 260.f, 40.f });
+    centrarTextoRanking(titulo, 100.f);
 
     subtitulo.setString("Clasificacion general");
-    subtitulo.setCharacterSize(20);
+    subtitulo.setCharacterSize(22);
     subtitulo.setFillColor(sf::Color::Yellow);
-    subtitulo.setPosition({ 220.f, 95.f });
+    centrarTextoRanking(subtitulo, 160.f);
 
-    rankingTexto.setCharacterSize(18);
+    rankingTexto.setCharacterSize(22);
     rankingTexto.setFillColor(sf::Color(220, 220, 220));
-    rankingTexto.setPosition({ 70.f, 170.f });
+    rankingTexto.setPosition({ 190.f, 260.f });
 
     textoVolver.setString("Pulsa ESC para volver al menu");
     textoVolver.setCharacterSize(18);
     textoVolver.setFillColor(sf::Color::Yellow);
-    textoVolver.setPosition({ 220.f, 520.f });
+    centrarTextoRanking(textoVolver, 900.f);
 }
 
 void PantallaRanking::actualizarTextoRanking()

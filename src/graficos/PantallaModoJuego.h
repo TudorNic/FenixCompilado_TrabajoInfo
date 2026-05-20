@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <optional>
 #include <string>
 
@@ -21,12 +22,18 @@ private:
     sf::Text opcionesTexto[2];
     sf::Text textoVolver;
 
+    sf::Texture texturaFondo;
+    sf::Sprite fondo;
+
+    sf::SoundBuffer bufferMover;
+    sf::Sound sonidoMover;
+
     int opcionSeleccionada;
     bool opcionConfirmada;
     bool volverAlMenu;
 
 public:
-    PantallaModoJuego(sf::RenderWindow& v, const std::string& rutaFuente);
+    PantallaModoJuego(sf::RenderWindow& v, const std::string& rutaFuente, const std::string& rutaFondo, const std::string& rutaMover);
 
     void procesarEventos();
     void actualizar();
@@ -44,4 +51,6 @@ private:
     void actualizarAspectoOpciones();
     void moverArriba();
     void moverAbajo();
+    void manejarRaton(const sf::Event& evento);
+    void seleccionarOpcionConRaton(sf::Vector2i posicionRaton);
 };

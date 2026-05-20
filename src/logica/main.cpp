@@ -22,11 +22,23 @@
 #include "Entrenador.h"
 #include "Centrocampista.h"
 
+//Componentes correspondientes a la pantalla del menu
+#include "PantallaMenu.h"
+#include "PantallaModoJuego.h"
+#include "PantallaInstrucciones.h"
+#include "PantallaRanking.h"
+#include "Ranking.h"
+#include "PantallaDificultadIA.h"
+
+//Sonido
+#include "SonidoJuego.h"
+
 enum class EstadoJuego {
     MENU,
     INSTRUCCIONES,
     RANKING_PANTALLA,
     MODO_JUEGO,
+    DIFICULTAD_IA,
     TABLERO,
     COMBATE
 };
@@ -75,47 +87,55 @@ int main()
 
     EstadoJuego estadoActual = EstadoJuego::MENU;
     sf::Clock clock;
+ 
+        // --- RANKING ---
 
-    // --- AUDIO NATIVO ---
-    sf::Music musicaMenu;
-    sf::SoundBuffer bufMover, bufConfirmar;
-    sf::Sound sndMover, sndConfirmar;
+    Ranking ranking("../../../assets/texto/ranking.txt");
+    ranking.cargar();
 
-    if (musicaMenu.openFromFile("../../../assets/audio/menu/musica_haram_fondo_menu.mp3")) {
-        musicaMenu.setLoop(true);
-        musicaMenu.setVolume(35.f);
-        musicaMenu.play();
-    }
-    if (bufMover.loadFromFile("../../../assets/audio/menu/mover_opcion.mp3"))       sndMover.setBuffer(bufMover);
-    if (bufConfirmar.loadFromFile("../../../assets/audio/menu/confirmar_opcion.mp3")) sndConfirmar.setBuffer(bufConfirmar);
+    
+    // --- PANTALLAS DE MENU ---
+ 
+    PantallaMenu pantallaMenu(
+        window,
+        "../../../assets/fonts/Bungee-Regular.ttf",
+        "../../../assets/images/menu/fondo_haram.png",
+        "../../../assets/images/menu/pelota_futbol.png",
+        "../../../assets/audio/menu/mover_opcion.mp3",
+        "../../../assets/audio/menu/confirmar_opcion.mp3",
+        "../../../assets/audio/menu/salir_menu.mp3",
+        "../../../assets/audio/menu/musica_haram_fondo_menu.mp3"
+    );
 
-    // --- FUENTES Y FONDOS ---
-    sf::Font fuenteMenu;
-    sf::Texture texFondoMenu;
-    sf::Sprite sprFondoMenu;
-    bool recursosCargados = true;
+    PantallaModoJuego pantallaModoJuego(
+        window,
+        "../../../assets/fonts/Bungee-Regular.ttf",
+		"../../../assets/images/menu/fondo_haram.png",
+        "../../../assets/audio/menu/mover_opcion.mp3"
+    );
 
-    if (!fuenteMenu.loadFromFile("../../../assets/fonts/Bungee-Regular.ttf") ||
-        !texFondoMenu.loadFromFile("../../../assets/images/menu/fondo_haram.png")) {
-        recursosCargados = false;
-    }
-    if (recursosCargados) {
-        sprFondoMenu.setTexture(texFondoMenu);
-        sprFondoMenu.setScale(1000.f / texFondoMenu.getSize().x, 1000.f / texFondoMenu.getSize().y);
-    }
+    PantallaDificultadIA pantallaDificultadIA(
+        window,
+        "../../../assets/fonts/Bungee-Regular.ttf",
+        "../../../assets/images/menu/fondo_haram.png",
+        "../../../assets/audio/menu/mover_opcion.mp3"
+    );
 
-    sf::Text txtTitulo("ARCHON FOOTBALL", fuenteMenu, 60);
-    txtTitulo.setPosition(500.f - txtTitulo.getGlobalBounds().width / 2.f, 100.f);
+    PantallaInstrucciones pantallaInstrucciones(
+        window,
+        "../../../assets/fonts/Bungee-Regular.ttf"
+    );
 
-    sf::Text opcionesMenu[4];
-    std::string nombresOpciones[4] = { "JUGAR", "RANKING", "INSTRUCCIONES", "SALIR" };
-    int idxMenuPrincipal = 0;
-
-    sf::Text txtSubTitulo("SELECCIONA MODO DE JUEGO", fuenteMenu, 40);
-    sf::Text opcionesModo[2];
-    std::string nombresModos[2] = { "JUGADOR VS IA", "JUGADOR VS JUGADOR" };
-    int idxModoJuego = 0;
-    bool esModoPvP = false;
+    PantallaRanking pantallaRanking(
+        window,
+        ranking,
+        "../../../assets/fonts/Bungee-Regular.ttf"
+    );
+    //Sonido juego
+    SonidoJuego sonidoJuego(
+        "../../../assets/audio/tablero/Sonido_ambiente_estadio.mp3",
+        "../../../assets/audio/tablero/Silbato_arbitro.mp3"
+    );
 
     // --- TABLERO TÁCTICO ---
     Tablero logicaTablero;
@@ -124,6 +144,8 @@ int main()
 
     IATablero cerebroIATablero(2);
     cerebroIATablero.setDificultad(DificultadTablero::DIFICIL);
+
+	bool esModoPvP = false;
 
     int origenX = -1, origenY = -1;
     int combateDestX = -1, combateDestY = -1;
@@ -153,6 +175,152 @@ int main()
     while (window.isOpen())
     {
         float dt = clock.restart().asSeconds();
+
+        // --- PANTALLAS DEL MENU CON LAS CLASES ---
+
+        if (estadoActual == EstadoJuego::MENU)
+        {
+            pantallaMenu.procesarEventos();
+            pantallaMenu.actualizar();
+            pantallaMenu.dibujar();
+
+            if (pantallaMenu.estaOpcionConfirmada())
+            {
+                Menu::Opcion opcion = pantallaMenu.obtenerOpcionConfirmada();
+
+                if (opcion == Menu::JUGAR)
+                {
+                    estadoActual = EstadoJuego::MODO_JUEGO;
+                }
+                else if (opcion == Menu::RANKING)
+                {
+                    estadoActual = EstadoJuego::RANKING_PANTALLA;
+                }
+                else if (opcion == Menu::INSTRUCCIONES)
+                {
+                    estadoActual = EstadoJuego::INSTRUCCIONES;
+                }
+                else if (opcion == Menu::SALIR)
+                {
+                    window.close();
+                }
+
+                pantallaMenu.reiniciarConfirmacion();
+            }
+
+            continue;
+        }
+
+        if (estadoActual == EstadoJuego::MODO_JUEGO)
+        {
+            pantallaModoJuego.procesarEventos();
+            pantallaModoJuego.actualizar();
+            pantallaModoJuego.dibujar();
+
+            if (pantallaModoJuego.debeVolverAlMenu())
+            {
+                pantallaModoJuego.reiniciarVolver();
+                estadoActual = EstadoJuego::MENU;
+            }
+
+            if (pantallaModoJuego.estaOpcionConfirmada())
+            {
+                PantallaModoJuego::OpcionModo modo = pantallaModoJuego.obtenerOpcionConfirmada();
+
+                if (modo == PantallaModoJuego::JUGADOR_VS_IA)
+                {
+                    esModoPvP = false;
+
+                    estadoActual = EstadoJuego::DIFICULTAD_IA;
+                }
+                else if (modo == PantallaModoJuego::JUGADOR_VS_JUGADOR)
+                {
+                    esModoPvP = true;
+                    
+					pantallaMenu.detenerMusicaMenu();
+                    sonidoJuego.reproducirAmbienteTablero();
+
+                    estadoActual = EstadoJuego::TABLERO;
+                }
+
+                pantallaModoJuego.reiniciarConfirmacion();
+            }
+
+            continue;
+        }
+
+        if (estadoActual == EstadoJuego::DIFICULTAD_IA)
+        {
+            pantallaDificultadIA.procesarEventos();
+            pantallaDificultadIA.actualizar();
+            pantallaDificultadIA.dibujar();
+
+            if (pantallaDificultadIA.debeVolverAlModoJuego())
+            {
+                pantallaDificultadIA.reiniciarVolver();
+                estadoActual = EstadoJuego::MODO_JUEGO;
+            }
+
+            if (pantallaDificultadIA.estaOpcionConfirmada())
+            {
+                PantallaDificultadIA::Dificultad dificultad = pantallaDificultadIA.obtenerDificultadConfirmada();
+
+                if (dificultad == PantallaDificultadIA::FACIL)
+                {
+                    cerebroIATablero.setDificultad(DificultadTablero::FACIL);
+                }
+                else if (dificultad == PantallaDificultadIA::NORMAL)
+                {
+                    cerebroIATablero.setDificultad(DificultadTablero::NORMAL);
+                }
+                else if (dificultad == PantallaDificultadIA::DIFICIL)
+                {
+                    cerebroIATablero.setDificultad(DificultadTablero::DIFICIL);
+                }
+
+                pantallaMenu.detenerMusicaMenu();
+                sonidoJuego.reproducirAmbienteTablero();
+
+                estadoActual = EstadoJuego::TABLERO;
+
+                pantallaDificultadIA.reiniciarConfirmacion();
+            }
+
+            continue;
+        }
+
+        if (estadoActual == EstadoJuego::INSTRUCCIONES)
+        {
+            pantallaInstrucciones.procesarEventos();
+            pantallaInstrucciones.actualizar();
+            pantallaInstrucciones.dibujar();
+
+            if (pantallaInstrucciones.debeVolverAlMenu())
+            {
+                pantallaInstrucciones.reiniciarVolver();
+                estadoActual = EstadoJuego::MENU;
+            }
+
+            continue;
+        }
+
+        if (estadoActual == EstadoJuego::RANKING_PANTALLA)
+        {
+            pantallaRanking.procesarEventos();
+            pantallaRanking.actualizar();
+            pantallaRanking.dibujar();
+
+            if (pantallaRanking.debeVolverAlMenu())
+            {
+                pantallaRanking.reiniciarVolver();
+                estadoActual = EstadoJuego::MENU;
+            }
+
+            continue;
+        }
+
+        // --- EVENTOS DEL JUEGO REAL: TABLERO Y COMBATE ---
+
         sf::Event event;
 
         while (window.pollEvent(event))
@@ -160,144 +328,61 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            if (estadoActual == EstadoJuego::MENU) {
-                if (event.type == sf::Event::KeyPressed) {
-                    if (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::W) {
-                        idxMenuPrincipal = (idxMenuPrincipal - 1 + 4) % 4; sndMover.play();
-                    }
-                    if (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::S) {
-                        idxMenuPrincipal = (idxMenuPrincipal + 1) % 4; sndMover.play();
-                    }
-                    if (event.key.code == sf::Keyboard::Enter) {
-                        sndConfirmar.play();
-                        if (idxMenuPrincipal == 0)      estadoActual = EstadoJuego::MODO_JUEGO;
-                        else if (idxMenuPrincipal == 1) estadoActual = EstadoJuego::RANKING_PANTALLA;
-                        else if (idxMenuPrincipal == 2) estadoActual = EstadoJuego::INSTRUCCIONES;
-                        else window.close();
-                    }
-                }
-            }
-            else if (estadoActual == EstadoJuego::MODO_JUEGO) {
-                if (event.type == sf::Event::KeyPressed) {
-                    if (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::W) {
-                        idxModoJuego = 0; sndMover.play();
-                    }
-                    if (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::S) {
-                        idxModoJuego = 1; sndMover.play();
-                    }
-                    if (event.key.code == sf::Keyboard::Escape) {
-                        estadoActual = EstadoJuego::MENU;
-                    }
-                    if (event.key.code == sf::Keyboard::Enter) {
-                        sndConfirmar.play();
-                        esModoPvP = (idxModoJuego == 1);
-                        musicaMenu.stop();
-                        estadoActual = EstadoJuego::TABLERO;
-                    }
-                }
-            }
-            else if (estadoActual == EstadoJuego::INSTRUCCIONES || estadoActual == EstadoJuego::RANKING_PANTALLA) {
-                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-                    estadoActual = EstadoJuego::MENU;
-                }
-            }
-            else {
-                switch (estadoActual)
+            if (estadoActual == EstadoJuego::TABLERO)
+            {
+                if (logicaTablero.getTurnoActual() == 1 || (logicaTablero.getTurnoActual() == 2 && esModoPvP))
                 {
-                case EstadoJuego::TABLERO:
-                    if (logicaTablero.getTurnoActual() == 1 || (logicaTablero.getTurnoActual() == 2 && esModoPvP)) {
-                        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                            int clicX = event.mouseButton.x / (64 * graficosTablero.getEscala());
-                            int clicY = event.mouseButton.y / (64 * graficosTablero.getEscala());
+                    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+                    {
+                        int clicX = static_cast<int>(event.mouseButton.x / (64 * graficosTablero.getEscala()));
+                        int clicY = static_cast<int>(event.mouseButton.y / (64 * graficosTablero.getEscala()));
 
-                            if (!logicaTablero.mover_Pieza(clicX, clicY)) {
-                                logicaTablero.seleccionar_Pieza(clicX, clicY);
-                            }
+                        if (!logicaTablero.mover_Pieza(clicX, clicY))
+                        {
+                            logicaTablero.seleccionar_Pieza(clicX, clicY);
                         }
                     }
-                    break;
-
-                case EstadoJuego::COMBATE:
-                    if (event.type == sf::Event::KeyPressed) {
-                        if (event.key.code == sf::Keyboard::Space) {
-                            std::string claseLower = claseJugadorActual;
-                            std::transform(claseLower.begin(), claseLower.end(), claseLower.begin(), ::tolower);
-
-                            if (claseLower.find("afic") != std::string::npos) {
-                                if (!segadaActiva) {
-                                    segadaActiva = true; segadaTimer = 0.25f;
-                                    dirSegada = sf::Vector2f(dirDisparoX1, dirDisparoY1);
-                                    sprLuchadorAzul.setRotation(65.f);
-                                }
-                            }
-                            else {
-                                arenaCombate->comandoDisparoJugador1(dirDisparoX1, dirDisparoY1);
-                            }
-                        }
-                        if (event.key.code == sf::Keyboard::E) arenaCombate->comandoEspecialJugador1();
-
-                        if (esModoPvP && event.key.code == sf::Keyboard::RControl) {
-                            if (jugadorRojo->getNombreClase().find("Afic") == std::string::npos && jugadorRojo->getNombreClase().find("afic") == std::string::npos) {
-                                arenaCombate->comandoDisparoJugador2(dirDisparoX2, dirDisparoY2);
-                            }
-                        }
-                        if (esModoPvP && event.key.code == sf::Keyboard::RShift) {
-                            arenaCombate->comandoEspecialJugador2();
-                        }
-                    }
-                    break;
                 }
+            }
+            else if (estadoActual == EstadoJuego::COMBATE) {
+                if (event.type == sf::Event::KeyPressed) {
+                    if (event.key.code == sf::Keyboard::Space) {
+                        std::string claseLower = claseJugadorActual;
+                        std::transform(claseLower.begin(), claseLower.end(), claseLower.begin(), ::tolower);
+
+                        if (claseLower.find("afic") != std::string::npos) {
+                            if (!segadaActiva) {
+                                segadaActiva = true; segadaTimer = 0.25f;
+                                dirSegada = sf::Vector2f(dirDisparoX1, dirDisparoY1);
+                                sprLuchadorAzul.setRotation(65.f);
+                            }
+                        }
+                        else {
+                            arenaCombate->comandoDisparoJugador1(dirDisparoX1, dirDisparoY1);
+                        }
+                    }
+                    if (event.key.code == sf::Keyboard::E) arenaCombate->comandoEspecialJugador1();
+
+                    if (esModoPvP && event.key.code == sf::Keyboard::RControl) {
+                        if (jugadorRojo->getNombreClase().find("Afic") == std::string::npos && jugadorRojo->getNombreClase().find("afic") == std::string::npos) {
+                            arenaCombate->comandoDisparoJugador2(dirDisparoX2, dirDisparoY2);
+                        }
+                    }
+                    if (esModoPvP && event.key.code == sf::Keyboard::RShift) {
+                        arenaCombate->comandoEspecialJugador2();
+                    }
+                }
+
+
             }
         }
 
+        // --- DIBUJADO Y ACTUALIZACION DEL JUEGO REAL ---
+
+        window.clear();
+
         switch (estadoActual)
         {
-        case EstadoJuego::MENU:
-            if (recursosCargados) window.draw(sprFondoMenu);
-            for (int i = 0; i < 4; i++) {
-                opcionesMenu[i].setFont(fuenteMenu);
-                opcionesMenu[i].setString(nombresOpciones[i]);
-                opcionesMenu[i].setCharacterSize(40);
-                opcionesMenu[i].setFillColor(idxMenuPrincipal == i ? sf::Color::Yellow : sf::Color::White);
-                opcionesMenu[i].setPosition(500.f - opcionesMenu[i].getGlobalBounds().width / 2.f, 350.f + i * 90.f);
-                window.draw(opcionesMenu[i]);
-            }
-            window.draw(txtTitulo);
-            break;
-
-        case EstadoJuego::MODO_JUEGO:
-            if (recursosCargados) window.draw(sprFondoMenu);
-            txtSubTitulo.setPosition(500.f - txtSubTitulo.getGlobalBounds().width / 2.f, 250.f);
-            window.draw(txtSubTitulo);
-            for (int i = 0; i < 2; i++) {
-                opcionesModo[i].setFont(fuenteMenu);
-                opcionesModo[i].setString(nombresModos[i]);
-                opcionesModo[i].setCharacterSize(38);
-                opcionesModo[i].setFillColor(idxModoJuego == i ? sf::Color::Yellow : sf::Color::White);
-                opcionesModo[i].setPosition(500.f - opcionesModo[i].getGlobalBounds().width / 2.f, 480.f + i * 100.f);
-                window.draw(opcionesModo[i]);
-            }
-            break;
-
-        case EstadoJuego::INSTRUCCIONES:
-            window.clear(sf::Color(15, 30, 15));
-            {
-                sf::Text tx("COMO JUGAR", fuenteMenu, 50);
-                tx.setPosition(500.f - tx.getGlobalBounds().width / 2.f, 100.f); window.draw(tx);
-                sf::Text body("P1 (AZUL): Mover con WASD\nAtacar/Segada con ESPACIO\nEspecial con tecla E\n\nP2 (ROJO en PvP): Mover con FLECHAS\nAtacar con CONTROL DERECHO\nEspecial con SHIFT DERECHO\n\nPresiona ESCAPE para volver.", fuenteMenu, 25);
-                body.setPosition(150.f, 300.f); window.draw(body);
-            }
-            break;
-
-        case EstadoJuego::RANKING_PANTALLA:
-            window.clear(sf::Color(25, 25, 35));
-            {
-                sf::Text tx("RANKING DE JUGADORES", fuenteMenu, 50);
-                tx.setPosition(500.f - tx.getGlobalBounds().width / 2.f, 100.f); window.draw(tx);
-                sf::Text body("1. JORGE - 1500 PTS\n2. TUDOR - 1200 PTS\n3. GABRI - 950 PTS\n4. HUGO - 800 PTS\n\nPresiona ESCAPE para salir.", fuenteMenu, 30);
-                body.setPosition(300.f, 350.f); window.draw(body);
-            }
-            break;
 
         case EstadoJuego::TABLERO:
             if (logicaTablero.getTurnoActual() == 2 && !esModoPvP) {
@@ -335,6 +420,7 @@ int main()
                     dirDisparoX2 = -1.0f; dirDisparoY2 = 0.0f;
 
                     logicaTablero.resetearCombatePendiente();
+                    sonidoJuego.reproducirEntradaCombate();
                     estadoActual = EstadoJuego::COMBATE;
                 }
             }
@@ -344,7 +430,14 @@ int main()
             break;
 
         case EstadoJuego::COMBATE:
+        {
             // --- ACTUALIZACIÓN JUGADOR 1 (LÍMITES TOTALMENTE COMPRIMIDOS AL ESTADIO AZUL) ---
+            if (arenaCombate == nullptr || jugadorAzul == nullptr || jugadorRojo == nullptr)
+            {
+                estadoActual = EstadoJuego::TABLERO;
+                break;
+            }
+
             if (segadaActiva) {
                 segadaTimer -= dt;
                 float velocidadSegada = 520.f;
@@ -375,6 +468,7 @@ int main()
                         std::clamp(jugadorAzul->getHitbox().x + (vA.x / len) * miVel * 100.f * dt, 25.f, 600.f - 25.f - jugadorAzul->getHitbox().ancho),
                         std::clamp(jugadorAzul->getHitbox().y + (vA.y / len) * miVel * 100.f * dt, 25.f, 560.f - 25.f - jugadorAzul->getHitbox().alto)
                     );
+
                 }
             }
 
@@ -393,12 +487,14 @@ int main()
                     float velRed = jugadorRojo->getVelocidad();
                     jugadorRojo->setPosicion(
                         std::clamp(jugadorRojo->getHitbox().x + (vR.x / len) * velRed * 100.f * dt, 25.f, 600.f - 25.f - jugadorRojo->getHitbox().ancho),
-                        std::clamp(jugadorRojo->getHitbox().y + (vR.y / len) * velRed * 100.f * dt, 25.f, 560.f - 25.f - jugadorRojo->getHitbox().alto)
-                    );
+                        std::clamp(jugadorRojo->getHitbox().y + (vR.y / len) * velRed * 100.f * dt, 25.f, 560.f - 25.f - jugadorRojo->getHitbox().alto));
                 }
             }
             else {
-                iaArena->actualizar(dt);
+                if (iaArena != nullptr)
+                {
+                    iaArena->actualizar(dt);
+                }
             }
 
             arenaCombate->actualizar(dt);
@@ -461,17 +557,28 @@ int main()
 
                 logicaTablero.aplicar_Resultado_Combate(origenX, origenY, combateDestX, combateDestY, bandoGanador);
 
-                if (!esModoPvP) delete iaArena;
+                if (!esModoPvP && iaArena != nullptr)
+                {
+                    delete iaArena;
+                    iaArena = nullptr;
+                }
+
+
                 delete arenaCombate; delete jugadorAzul; delete jugadorRojo;
                 arenaCombate = nullptr;
-
+                jugadorAzul = nullptr;
+                jugadorRojo = nullptr;
                 estadoActual = EstadoJuego::TABLERO;
             }
+
             break;
         }
+        default:
+            break;
 
+        }
         window.display();
-    }
 
+    }
     return 0;
 }
