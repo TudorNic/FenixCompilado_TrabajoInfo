@@ -2,6 +2,23 @@
 #include "direct.h"
 #include <iostream>
 
+bool cargarTextura(sf::Texture& textura, const std::string& ruta)
+{
+    if (!textura.loadFromFile(ruta))
+    {
+        std::cout << "ERROR cargando textura: " << ruta << std::endl;
+        return false;
+    }
+
+    std::cout << "Textura cargada correctamente: " << ruta << std::endl;
+    return true;
+
+   
+}
+
+
+
+
 TableroGrafico::TableroGrafico(float escalaDeseada) : escala(escalaDeseada) {
 }
 
@@ -26,8 +43,9 @@ void TableroGrafico::cargarTexturas() {
     texCentrocampista[1].loadFromFile("assets/players/red/centrocampista/atack/sprite_centrocampista_red_atack-1.png");
     texLateral[1].loadFromFile("assets/players/red/portero/atack/sprite_portero_red_atack-1.png");
    // texLateral[1].loadFromFile("assets/players/red/defensa/atack/sprite_defensa_red_atack-1.png");
-    texAficion[1].loadFromFile("assets/players/red/aficion/atack/sprite_aficion_red_atack-1.png");
-
+   // texAficion[1].loadFromFile("assets/players/red/aficion/atack/sprite_aficion_red_atack-1.png");
+    texAficion[1].loadFromFile("../../../assets/players/red/aficion/atack/sprite_aficion_red_atack-1.png");
+    //cargarTextura(texAficion[1], "../../../assets/players/red/aficion/atack/sprite_aficion_red_atack-1.png");
     spriteTile.setTexture(texGrass);
     spriteTile.setScale(escala, escala);
 }
