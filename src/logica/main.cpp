@@ -666,8 +666,12 @@ int main()
             bVidaAzul.setPosition(fBarraAzul.getPosition());
             bVidaAzul.setFillColor(sf::Color::Green); // P1 siempre es verde (tu aliado/tú)
 
-            window.draw(fBarraAzul); window.draw(bVidaAzul);
-
+           // window.draw(fBarraAzul); window.draw(bVidaAzul);
+            if (!jugadorAzul->estaMuerto())
+            {
+                window.draw(fBarraAzul);
+                window.draw(bVidaAzul);
+            }
             // 2. Barra Flotante P2 / IA (Centrada multiplicando vuestro ancho por 3.0f)
             float pctRojo = static_cast<float>(jugadorRojo->getVidaActual()) / static_cast<float>(jugadorRojo->getVidaMaxima());
             sf::RectangleShape fBarraRojo(sf::Vector2f(barWidth, 5.f));
@@ -680,7 +684,12 @@ int main()
             bVidaRojo.setPosition(fBarraRojo.getPosition());
             bVidaRojo.setFillColor(sf::Color::Red); // Enemigo/P2 siempre es rojo
 
-            window.draw(fBarraRojo); window.draw(bVidaRojo);
+           // window.draw(fBarraRojo); window.draw(bVidaRojo);
+            if (!jugadorRojo->estaMuerto())
+            {
+                window.draw(fBarraRojo);
+                window.draw(bVidaRojo);
+            }
 
             //ANTIGUO
             /*if (arenaCombate->isTerminado() || jugadorAzul->estaMuerto() || jugadorRojo->estaMuerto()) {
