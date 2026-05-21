@@ -616,6 +616,10 @@ int main()
             jugadorAzul->actualizar(dt);
             jugadorRojo->actualizar(dt);
 
+            //NUEVO PRUEBA
+            sf::View vistaCombate(sf::FloatRect(0.f, 0.f, 600.f, 560.f));
+            window.setView(vistaCombate);
+
             window.draw(sprCampo);
 
             sprLuchadorAzul.setScale(3.0f, 3.0f);
@@ -753,7 +757,7 @@ int main()
                     estadoActual = EstadoJuego::TABLERO;
                 }
             }
-
+            window.setView(window.getDefaultView());
             break;
         }
 
