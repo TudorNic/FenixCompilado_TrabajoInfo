@@ -40,6 +40,7 @@ enum class EstadoJuego {
     MODO_JUEGO,
     DIFICULTAD_IA,
     TABLERO,
+    PRE_COMBATE,
     COMBATE,
     FIN_PARTIDA
 };
@@ -89,12 +90,18 @@ int main()
     EstadoJuego estadoActual = EstadoJuego::MENU;
     sf::Clock clock;
 
-        //---FIN PARTIDA---
-    int equipoGanador = 0;
-
+        //---PANTALLA PRE COMBATE---
     sf::Font fuenteFin;
     fuenteFin.loadFromFile("../../../assets/fonts/Bungee-Regular.ttf");
+    float timerPreCombate = 3.0f;
+    sf::Text textoPreCombate;
+    textoPreCombate.setFont(fuenteFin);
+    textoPreCombate.setCharacterSize(60);
+    textoPreCombate.setFillColor(sf::Color::White);
+    textoPreCombate.setPosition(170.f, 250.f);
 
+        //---FIN PARTIDA---
+    int equipoGanador = 0;
     sf::Text textoFin;
     textoFin.setFont(fuenteFin);
     textoFin.setCharacterSize(36);
@@ -469,7 +476,9 @@ int main()
 
                     logicaTablero.resetearCombatePendiente();
                     sonidoJuego.reproducirEntradaCombate();
-                    estadoActual = EstadoJuego::COMBATE;
+                    //estadoActual = EstadoJuego::COMBATE;
+                    timerPreCombate = 3.0f;
+                    estadoActual = EstadoJuego::PRE_COMBATE;
                 }
             }
 
@@ -492,6 +501,40 @@ int main()
             graficosTablero.dibujar(window, logicaTablero);
             break;
         }
+
+        case EstadoJuego::PRE_COMBATE:
+        {
+            timerPreCombate -= dt;
+
+            int cuenta = static_cast<int>(std::ceil(timerPreCombate));
+
+            if (cuenta > 0)
+                textoPreCombate.setString("COMBATE EN " + std::to_string(cuenta));
+            else
+                textoPreCombate.setString("YA!");
+
+            sf::FloatRect bounds = textoPreCombate.getLocalBounds();
+
+            textoPreCombate.setOrigin(
+                bounds.left + bounds.width / 2.f,
+                bounds.top + bounds.height / 2.f
+            );
+
+            textoPreCombate.setPosition(
+                window.getSize().x / 2.f,
+                window.getSize().y / 2.f
+            );
+
+            window.clear(sf::Color(20, 20, 20));
+            window.draw(textoPreCombate);
+
+            if (timerPreCombate <= 0.0f)
+                estadoActual = EstadoJuego::COMBATE;
+
+            break;
+        }
+
+
 
         case EstadoJuego::COMBATE:
         {
