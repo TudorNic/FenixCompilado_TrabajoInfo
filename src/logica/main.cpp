@@ -183,8 +183,8 @@ int main()
     std::string claseJugadorActual = "";
 
     // Mecánica de Segada (Afición)
-    bool segadaActiva = false; float segadaTimer = 0.0f; sf::Vector2f dirSegada(0.f, 0.f);
-
+    bool segadaActiva = false; float segadaTimer = 0.0f; sf::Vector2f dirSegada(0.f, 0.f);bool segadaYaGolpeo = false;
+    bool segadaActivaP2 = false;float segadaTimerP2 = 0.0f; sf::Vector2f dirSegadaP2(0.f, 0.f);bool segadaYaGolpeoP2 = false;
     // Tiempo espera fin cada combate
     bool esperandoFinCombate = false;
     float timerFinCombate = 0.0f;
@@ -406,9 +406,10 @@ int main()
 
                         if (claseLower.find("afic") != std::string::npos) {
                             if (!segadaActiva) {
-                                segadaActiva = true; segadaTimer = 0.25f;
+                                segadaActiva = true; segadaTimer = 0.25f; segadaYaGolpeo = false;
                                 dirSegada = sf::Vector2f(dirDisparoX1, dirDisparoY1);
                                 sprLuchadorAzul.setRotation(65.f);
+                                
                             }
                         }
                         else {
@@ -417,8 +418,27 @@ int main()
                     }
                     if (event.key.code == sf::Keyboard::E) arenaCombate->comandoEspecialJugador1();
 
-                    if (esModoPvP && event.key.code == sf::Keyboard::RControl) {
+                    /*if (esModoPvP && event.key.code == sf::Keyboard::RControl) {
                         if (jugadorRojo->getNombreClase().find("Afic") == std::string::npos && jugadorRojo->getNombreClase().find("afic") == std::string::npos) {
+                            arenaCombate->comandoDisparoJugador2(dirDisparoX2, dirDisparoY2);
+                        }
+                    }*/
+                    if (esModoPvP && event.key.code == sf::Keyboard::RControl) {
+                        std::string claseRojo = jugadorRojo->getNombreClase();
+                        std::transform(claseRojo.begin(), claseRojo.end(), claseRojo.begin(), ::tolower);
+
+                        if (claseRojo.find("afic") != std::string::npos) {
+                            if (!segadaActivaP2) {
+                                segadaActivaP2 = true;
+                                segadaTimerP2 = 0.25f;
+                                segadaYaGolpeoP2 = false;
+
+                                dirSegadaP2 = sf::Vector2f(dirDisparoX2, dirDisparoY2);
+
+                                sprLuchadorRojo.setRotation(-65.f);
+                            }
+                        }
+                        else {
                             arenaCombate->comandoDisparoJugador2(dirDisparoX2, dirDisparoY2);
                         }
                     }
@@ -542,6 +562,7 @@ int main()
             const float LIMITE_MIN_Y = -25.f;
             const float LIMITE_MAX_X = 545.f;
             const float LIMITE_MAX_Y = 590.f;
+            
             // --- ACTUALIZACIÓN JUGADOR 1 (LÍMITES TOTALMENTE COMPRIMIDOS AL ESTADIO AZUL) ---
             if (arenaCombate == nullptr || jugadorAzul == nullptr || jugadorRojo == nullptr)
             {
@@ -566,6 +587,27 @@ int main()
                 if (segadaTimer <= 0.0f) {
                     segadaActiva = false; sprLuchadorAzul.setRotation(0.f);
                 }
+                ///DAÑO SEGADA
+                Hitbox hA = jugadorAzul->getHitbox();
+                Hitbox hR = jugadorRojo->getHitbox();
+
+                bool colisionSegada =
+                    hA.x < hR.x + hR.ancho &&
+                    hA.x + hA.ancho > hR.x &&
+                    hA.y < hR.y + hR.alto &&
+                    hA.y + hA.alto > hR.y;
+
+                if (colisionSegada && !segadaYaGolpeo)
+                {
+                    jugadorRojo->recibirDano(1);
+                    segadaYaGolpeo = true;
+                }
+
+                if (segadaTimer <= 0.0f) {
+                    segadaActiva = false;
+                    sprLuchadorAzul.setRotation(0.f);
+                }
+
             }
             else {
                 sf::Vector2f vA(0.f, 0.f);
@@ -588,7 +630,40 @@ int main()
             }
 
             // --- CORRECCIÓN INTEGRAL: LÍMITES CERRADOS PARA EL JUGADOR 2 / IA EN EL CAMPO AZUL ---
-            if (esModoPvP) {
+            if (segadaActivaP2) {
+                segadaTimerP2 -= dt;
+
+                float velocidadSegada = 520.f;
+
+                float nuevaX = jugadorRojo->getHitbox().x + (dirSegadaP2.x * velocidadSegada * dt);
+                float nuevaY = jugadorRojo->getHitbox().y + (dirSegadaP2.y * velocidadSegada * dt);
+
+                nuevaX = std::clamp(nuevaX, LIMITE_MIN_X, LIMITE_MAX_X - jugadorRojo->getHitbox().ancho);
+                nuevaY = std::clamp(nuevaY, LIMITE_MIN_Y, LIMITE_MAX_Y - jugadorRojo->getHitbox().alto);
+
+                jugadorRojo->setPosicion(nuevaX, nuevaY);
+
+                Hitbox hR = jugadorRojo->getHitbox();
+                Hitbox hA = jugadorAzul->getHitbox();
+
+                bool colisionSegadaP2 =
+                    hR.x < hA.x + hA.ancho &&
+                    hR.x + hR.ancho > hA.x &&
+                    hR.y < hA.y + hA.alto &&
+                    hR.y + hR.alto > hA.y;
+
+                if (colisionSegadaP2 && !segadaYaGolpeoP2)
+                {
+                    jugadorAzul->recibirDano(1);
+                    segadaYaGolpeoP2 = true;
+                }
+
+                if (segadaTimerP2 <= 0.0f) {
+                    segadaActivaP2 = false;
+                    sprLuchadorRojo.setRotation(0.f);
+                }
+            }
+            if (esModoPvP && !segadaActivaP2) {
                 sf::Vector2f vR(0.f, 0.f);
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))    vR.y -= 1;
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))  vR.y += 1;
@@ -616,10 +691,10 @@ int main()
             jugadorAzul->actualizar(dt);
             jugadorRojo->actualizar(dt);
 
-            //NUEVO PRUEBA
+            //NUEVO PARA QUE SE CAMBIE LA VISTA
             sf::View vistaCombate(sf::FloatRect(0.f, 0.f, 600.f, 560.f));
             window.setView(vistaCombate);
-
+            ///
             window.draw(sprCampo);
 
             sprLuchadorAzul.setScale(3.0f, 3.0f);
@@ -757,6 +832,7 @@ int main()
                     estadoActual = EstadoJuego::TABLERO;
                 }
             }
+            //PARA QUE VUELVA A LA VISTA NORMAL
             window.setView(window.getDefaultView());
             break;
         }
