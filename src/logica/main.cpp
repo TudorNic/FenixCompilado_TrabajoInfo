@@ -723,6 +723,9 @@ int main()
 
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
             {
+                logicaTablero = Tablero();
+                logicaTablero.Inicializar_Partida();
+
                 estadoActual = EstadoJuego::MENU;
                 equipoGanador = 0;
             }
