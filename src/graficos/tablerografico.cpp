@@ -45,7 +45,7 @@ void TableroGrafico::cargarTexturas() {
    // texLateral[1].loadFromFile("assets/players/red/defensa/atack/sprite_defensa_red_atack-1.png");
    // texAficion[1].loadFromFile("assets/players/red/aficion/atack/sprite_aficion_red_atack-1.png");
     texAficion[1].loadFromFile("../../../assets/players/red/aficion/atack/sprite_aficion_red_atack-1.png");
-    //cargarTextura(texAficion[1], "../../../assets/players/red/aficion/atack/sprite_aficion_red_atack-1.png");
+    
     spriteTile.setTexture(texGrass);
     spriteTile.setScale(escala, escala);
 }
@@ -84,14 +84,39 @@ void TableroGrafico::dibujar(sf::RenderWindow& window, Tablero& logica) {
 
     // Dibujar puntos de poder (Balones animados)
     for (int i = 0; i < 5; i++) {
-        int px = logica.getPuntoPoder(i).x;
+        /*int px = logica.getPuntoPoder(i).x;
         int py = logica.getPuntoPoder(i).y;
 
         spriteTile.setTexture(texPower);
         spriteTile.setScale(escala * 0.6f, escala * 0.6f);
         float offset = (64 * escala * (1.0f - 0.6f)) / 2.0f;
         spriteTile.setPosition((px * 64 * escala) + offset, (py * 64 * escala) + offset);
-        window.draw(spriteTile);
+        window.draw(spriteTile);*/
+
+        /////CAMBIOS NUEVOS VISUALES//////
+        // Dibujar puntos de poder
+        for (int i = 0; i < 5; i++) {
+            int px = logica.getPuntoPoder(i).x;
+            int py = logica.getPuntoPoder(i).y;
+
+            //float escalaPelota = 0.9f;
+            float escalaPelota = 1.0f;
+
+            spriteTile.setTexture(texPower);
+            spriteTile.setScale(escala * escalaPelota, escala * escalaPelota);
+
+            float tamCelda = 64.f * escala;
+            float tamPelota = 64.f * escala * escalaPelota;
+
+            float offset = (tamCelda - tamPelota) / 2.f;
+
+            spriteTile.setPosition(
+                (px * 64.f * escala) + offset,
+                (py * 64.f * escala) + offset
+            );
+
+            window.draw(spriteTile);
+        }
     }
 
     // Dibujar las piezas de los jugadores si la casilla contiene uno
@@ -113,7 +138,7 @@ void TableroGrafico::dibujarPieza(sf::RenderWindow& window, int tipo, int bando,
     else if (tipo == 4) spriteJugador.setTexture(texLateral[bando]);
     else if (tipo == 5) spriteJugador.setTexture(texAficion[bando]);
 
-    spriteJugador.setScale(escala, escala);
+    spriteJugador.setScale(escala*2.8f, escala*2.8f);
     float x = col * 64 * escala;
     float y = fila * 64 * escala;
     float tamCelda = 64.0f * escala;

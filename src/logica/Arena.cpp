@@ -23,7 +23,15 @@ void Arena::actualizar(float deltaTime) {
             proyectiles[i].desactivar();
         }
 
-        if (!proyectiles[i].isActivo() || proyectiles[i].getHitbox().x < -100 || proyectiles[i].getHitbox().x > 2500) {
+        /*if (!proyectiles[i].isActivo() || proyectiles[i].getHitbox().x < -100 || proyectiles[i].getHitbox().x > 2500) {
+            proyectiles.erase(proyectiles.begin() + i);
+        }*/
+        Hitbox hb = proyectiles[i].getHitbox();
+
+        if (!proyectiles[i].isActivo() ||
+            hb.x < 0 || hb.x > 560 ||
+            hb.y < 0 || hb.y > 560)
+        {
             proyectiles.erase(proyectiles.begin() + i);
         }
         else i++;

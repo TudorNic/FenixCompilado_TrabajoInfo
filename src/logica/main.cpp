@@ -40,7 +40,8 @@ enum class EstadoJuego {
     MODO_JUEGO,
     DIFICULTAD_IA,
     TABLERO,
-    COMBATE
+    COMBATE,
+    FIN_PARTIDA
 };
 
 // Función auxiliar robusta frente a acentos para instanciar luchadores
@@ -87,6 +88,26 @@ int main()
 
     EstadoJuego estadoActual = EstadoJuego::MENU;
     sf::Clock clock;
+
+        //---FIN PARTIDA---
+    int equipoGanador = 0;
+
+    sf::Font fuenteFin;
+    fuenteFin.loadFromFile("../../../assets/fonts/Bungee-Regular.ttf");
+
+    sf::Text textoFin;
+    textoFin.setFont(fuenteFin);
+    textoFin.setCharacterSize(36);
+    textoFin.setFillColor(sf::Color::White);
+    textoFin.setPosition(180.f, 380.f);
+
+    sf::Text textoVolverMenu;
+    textoVolverMenu.setFont(fuenteFin);
+    textoVolverMenu.setCharacterSize(22);
+    textoVolverMenu.setFillColor(sf::Color::Yellow);
+    textoVolverMenu.setString("Pulsa ENTER para volver al menu");
+    textoVolverMenu.setPosition(220.f, 480.f);
+
  
         // --- RANKING ---
 
@@ -157,6 +178,13 @@ int main()
     // Mecánica de Segada (Afición)
     bool segadaActiva = false; float segadaTimer = 0.0f; sf::Vector2f dirSegada(0.f, 0.f);
 
+    // Tiempo espera fin cada combate
+    bool esperandoFinCombate = false;
+    float timerFinCombate = 0.0f;
+    const float TIEMPO_ESPERA_FIN_COMBATE = 4.0f;
+    int bandoGanadorCombate = 0;
+
+
     // Arena de combate
     Jugador* jugadorAzul = nullptr; Jugador* jugadorRojo = nullptr;
     Arena* arenaCombate = nullptr; ControladorIA* iaArena = nullptr;
@@ -221,6 +249,25 @@ int main()
             {
                 pantallaModoJuego.reiniciarVolver();
                 estadoActual = EstadoJuego::MENU;
+
+                ////AÑADIDO PARA AL FINALIZAR PARTIDA REINICIAR
+                int equipoGanador = 0;
+
+                sf::Font fuenteFin;
+                fuenteFin.loadFromFile("../../../assets/fonts/Bungee-Regular.ttf");
+
+                sf::Text textoFin;
+                textoFin.setFont(fuenteFin);
+                textoFin.setCharacterSize(36);
+                textoFin.setFillColor(sf::Color::White);
+                textoFin.setPosition(180.f, 380.f);
+
+                sf::Text textoVolverMenu;
+                textoVolverMenu.setFont(fuenteFin);
+                textoVolverMenu.setCharacterSize(22);
+                textoVolverMenu.setFillColor(sf::Color::Yellow);
+                textoVolverMenu.setString("Pulsa ENTER para volver al menu");
+                textoVolverMenu.setPosition(220.f, 480.f);
             }
 
             if (pantallaModoJuego.estaOpcionConfirmada())
@@ -385,6 +432,7 @@ int main()
         {
 
         case EstadoJuego::TABLERO:
+        {
             if (logicaTablero.getTurnoActual() == 2 && !esModoPvP) {
                 sf::sleep(sf::milliseconds(400)); cerebroIATablero.ejecutarTurno(logicaTablero);
             }
@@ -425,12 +473,32 @@ int main()
                 }
             }
 
-            logicaTablero.Comprobar_Ganador();
+            /*logicaTablero.Comprobar_Ganador();
             graficosTablero.dibujar(window, logicaTablero);
             break;
+            */
+
+            //////
+            /////NUEVO 
+            int ganador = logicaTablero.Comprobar_Ganador();
+
+            if (ganador != 0)
+            {
+                equipoGanador = ganador;
+                estadoActual = EstadoJuego::FIN_PARTIDA;
+                break;
+            }
+
+            graficosTablero.dibujar(window, logicaTablero);
+            break;
+        }
 
         case EstadoJuego::COMBATE:
         {
+            const float LIMITE_MIN_X = -25.f;
+            const float LIMITE_MIN_Y = -25.f;
+            const float LIMITE_MAX_X = 545.f;
+            const float LIMITE_MAX_Y = 590.f;
             // --- ACTUALIZACIÓN JUGADOR 1 (LÍMITES TOTALMENTE COMPRIMIDOS AL ESTADIO AZUL) ---
             if (arenaCombate == nullptr || jugadorAzul == nullptr || jugadorRojo == nullptr)
             {
@@ -443,9 +511,13 @@ int main()
                 float velocidadSegada = 520.f;
                 float nuevaX = jugadorAzul->getHitbox().x + (dirSegada.x * velocidadSegada * dt);
                 float nuevaY = jugadorAzul->getHitbox().y + (dirSegada.y * velocidadSegada * dt);
-
-                nuevaX = std::clamp(nuevaX, 25.f, 600.f - 25.f - jugadorAzul->getHitbox().ancho);
-                nuevaY = std::clamp(nuevaY, 25.f, 560.f - 25.f - jugadorAzul->getHitbox().alto);
+                ///ANTIGUO
+                /*nuevaX = std::clamp(nuevaX, 25.f, 600.f - 25.f - jugadorAzul->getHitbox().ancho);
+                nuevaY = std::clamp(nuevaY, 25.f, 560.f - 25.f - jugadorAzul->getHitbox().alto);*/
+                //NUEVO
+                nuevaX = std::clamp(nuevaX,LIMITE_MIN_X,LIMITE_MAX_X - jugadorAzul->getHitbox().ancho);
+                nuevaY = std::clamp(nuevaY,LIMITE_MIN_Y,LIMITE_MAX_Y - jugadorAzul->getHitbox().alto);
+                ///FIN NUEVO
                 jugadorAzul->setPosicion(nuevaX, nuevaY);
 
                 if (segadaTimer <= 0.0f) {
@@ -465,8 +537,8 @@ int main()
 
                     float miVel = jugadorAzul->getVelocidad();
                     jugadorAzul->setPosicion(
-                        std::clamp(jugadorAzul->getHitbox().x + (vA.x / len) * miVel * 100.f * dt, 25.f, 600.f - 25.f - jugadorAzul->getHitbox().ancho),
-                        std::clamp(jugadorAzul->getHitbox().y + (vA.y / len) * miVel * 100.f * dt, 25.f, 560.f - 25.f - jugadorAzul->getHitbox().alto)
+                        std::clamp(jugadorAzul->getHitbox().x + (vA.x / len) * miVel * 100.f * dt, LIMITE_MIN_X, LIMITE_MAX_X - jugadorAzul->getHitbox().ancho),
+                        std::clamp(jugadorAzul->getHitbox().y + (vA.y / len) * miVel * 100.f * dt, LIMITE_MIN_Y, LIMITE_MAX_Y - jugadorAzul->getHitbox().alto)
                     );
 
                 }
@@ -486,8 +558,8 @@ int main()
 
                     float velRed = jugadorRojo->getVelocidad();
                     jugadorRojo->setPosicion(
-                        std::clamp(jugadorRojo->getHitbox().x + (vR.x / len) * velRed * 100.f * dt, 25.f, 600.f - 25.f - jugadorRojo->getHitbox().ancho),
-                        std::clamp(jugadorRojo->getHitbox().y + (vR.y / len) * velRed * 100.f * dt, 25.f, 560.f - 25.f - jugadorRojo->getHitbox().alto));
+                        std::clamp(jugadorRojo->getHitbox().x + (vR.x / len) * velRed * 100.f * dt, LIMITE_MIN_X, LIMITE_MAX_X - jugadorAzul->getHitbox().ancho),
+                        std::clamp(jugadorRojo->getHitbox().y + (vR.y / len) * velRed * 100.f * dt, LIMITE_MIN_Y, LIMITE_MAX_Y - jugadorAzul->getHitbox().alto));
                 }
             }
             else {
@@ -506,12 +578,27 @@ int main()
             sprLuchadorAzul.setScale(3.0f, 3.0f);
             sprLuchadorRojo.setScale(3.0f, 3.0f);
             sprBalon.setScale(0.8f, 0.8f);
-
-            sprLuchadorAzul.setPosition(jugadorAzul->getHitbox().x, jugadorAzul->getHitbox().y);
+            //ANTIGUO
+            /*sprLuchadorAzul.setPosition(jugadorAzul->getHitbox().x, jugadorAzul->getHitbox().y);
             sprLuchadorRojo.setPosition(jugadorRojo->getHitbox().x, jugadorRojo->getHitbox().y);
             window.draw(sprLuchadorAzul);
-            window.draw(sprLuchadorRojo);
+            window.draw(sprLuchadorRojo);*/
 
+            //NUEVO
+            sprLuchadorAzul.setPosition(jugadorAzul->getHitbox().x, jugadorAzul->getHitbox().y);
+            sprLuchadorRojo.setPosition(jugadorRojo->getHitbox().x, jugadorRojo->getHitbox().y);
+
+            if (!jugadorAzul->estaMuerto())
+            {
+                window.draw(sprLuchadorAzul);
+            }
+
+            if (!jugadorRojo->estaMuerto())
+            {
+                window.draw(sprLuchadorRojo);
+            }
+
+            //
             for (auto& p : arenaCombate->getProyectiles()) {
                 if (p.isActivo()) {
                     sprBalon.setPosition(p.getHitbox().x + 10, p.getHitbox().y + 10);
@@ -552,7 +639,8 @@ int main()
 
             window.draw(fBarraRojo); window.draw(bVidaRojo);
 
-            if (arenaCombate->isTerminado() || jugadorAzul->estaMuerto() || jugadorRojo->estaMuerto()) {
+            //ANTIGUO
+            /*if (arenaCombate->isTerminado() || jugadorAzul->estaMuerto() || jugadorRojo->estaMuerto()) {
                 int bandoGanador = (jugadorAzul->estaMuerto()) ? 2 : 1;
 
                 logicaTablero.aplicar_Resultado_Combate(origenX, origenY, combateDestX, combateDestY, bandoGanador);
@@ -569,10 +657,79 @@ int main()
                 jugadorAzul = nullptr;
                 jugadorRojo = nullptr;
                 estadoActual = EstadoJuego::TABLERO;
+            }*/
+
+            //NUEVO
+            if (!esperandoFinCombate &&
+                (arenaCombate->isTerminado() || jugadorAzul->estaMuerto() || jugadorRojo->estaMuerto()))
+            {
+                esperandoFinCombate = true;
+                timerFinCombate = TIEMPO_ESPERA_FIN_COMBATE;
+                bandoGanadorCombate = (jugadorAzul->estaMuerto()) ? 2 : 1;
+            }
+
+            if (esperandoFinCombate)
+            {
+                timerFinCombate -= dt;
+
+                if (timerFinCombate <= 0.0f)
+                {
+                    logicaTablero.aplicar_Resultado_Combate(
+                        origenX, origenY,
+                        combateDestX, combateDestY,
+                        bandoGanadorCombate
+                    );
+
+                    if (!esModoPvP && iaArena != nullptr)
+                    {
+                        delete iaArena;
+                        iaArena = nullptr;
+                    }
+
+                    delete arenaCombate;
+                    delete jugadorAzul;
+                    delete jugadorRojo;
+
+                    arenaCombate = nullptr;
+                    jugadorAzul = nullptr;
+                    jugadorRojo = nullptr;
+
+                    esperandoFinCombate = false;
+                    timerFinCombate = 0.0f;
+                    bandoGanadorCombate = 0;
+
+                    estadoActual = EstadoJuego::TABLERO;
+                }
             }
 
             break;
         }
+
+        case EstadoJuego::FIN_PARTIDA:
+        {
+            window.clear(sf::Color(20, 20, 20));
+
+            if (equipoGanador == 1)
+            {
+                textoFin.setString("HA GANADO EL EQUIPO AZUL");
+            }
+            else if (equipoGanador == 2)
+            {
+                textoFin.setString("HA GANADO EL EQUIPO ROJO");
+            }
+
+            window.draw(textoFin);
+            window.draw(textoVolverMenu);
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+            {
+                estadoActual = EstadoJuego::MENU;
+                equipoGanador = 0;
+            }
+
+            break;
+        }
+
         default:
             break;
 
