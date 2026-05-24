@@ -350,6 +350,8 @@ void Tablero::aplicar_Resultado_Combate(int orig_x, int orig_y, int dest_x, int 
 
 	int bandoAtacante = casillas[orig_x][orig_y]->getBando();
 
+
+
 	if (bandoGanador == bandoAtacante) {
 		// Gana el que inició el movimiento: el defensor muere y el atacante avanza
 		delete casillas[dest_x][dest_y];
@@ -368,4 +370,25 @@ void Tablero::aplicar_Resultado_Combate(int orig_x, int orig_y, int dest_x, int 
 	Avanzar_Turno();
 	deseleccionar_Pieza();
 	Comprobar_Ganador();
+}
+
+void Tablero::reiniciar_Tablero() 
+{
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = 0; j < 9; j++)
+		{
+			if (casillas[i][j] != nullptr)
+			{
+				delete casillas[i][j];
+				casillas[i][j] = nullptr;
+			}
+		}
+
+		combatePendiente = false;
+		pieza_Seleccionada = nullptr;
+		Turno_Actual = 1;
+		Inicializar_Campo();
+		Inicializar_Partida();
+	}
 }

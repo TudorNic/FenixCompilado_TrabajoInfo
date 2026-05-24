@@ -12,6 +12,8 @@ bool Arena::comprobarColision(Hitbox a, Hitbox b) {
 }
 
 void Arena::actualizar(float deltaTime) {
+
+
     for (size_t i = 0; i < proyectiles.size(); ) {
         proyectiles[i].actualizar(deltaTime);
         if (proyectiles[i].isActivo() && proyectiles[i].getIdDueno() != 1 && comprobarColision(proyectiles[i].getHitbox(), jugador1->getHitbox())) {
@@ -32,6 +34,7 @@ void Arena::actualizar(float deltaTime) {
     if (combateTerminado) return;
     if (jugador1->estaMuerto()) { combateTerminado = true; ganador = jugador2; }
     else if (jugador2->estaMuerto()) { combateTerminado = true; ganador = jugador1; }
+    
 }
 
 void Arena::comandoDisparoJugador1(float dx, float dy) {
@@ -48,4 +51,11 @@ void Arena::comandoEspecialJugador1() {
 
 void Arena::comandoEspecialJugador2() {
     if (!combateTerminado) jugador2->usarHabilidadEspecial();
+}
+
+int Arena::getBandoGanador() const {
+    if (ganador != nullptr) {
+        return ganador->getBando();
+    }
+    return 1; 
 }

@@ -25,6 +25,7 @@ public:
 
 	void Inicializar_Campo();
 	void Inicializar_Partida();
+	void reiniciar_Tablero();
 	void oscilarTerreno(int Turno);
 	int getEfecto_Casilla(int x, int y);
 	bool seleccionar_Pieza(int x, int y);

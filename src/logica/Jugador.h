@@ -4,6 +4,7 @@
 #include <cmath>
 #include <algorithm>
 #include "Proyectil.h"
+#include<iostream>
 
 enum EstadoJugador { QUIETO, CAMINANDO, ATACANDO, MUERTO };
 
@@ -78,7 +79,7 @@ public:
     }
     int getVidaActual() const { return vidaActual; }
     int getVidaMaxima() const { return vidaMaxima; }
-    void recibirDano(int cant) { vidaActual -= cant; if (vidaActual < 0) vidaActual = 0; }
+    void recibirDano(int cant) { vidaActual -= cant; if (vidaActual < 0) vidaActual = 0;}
     bool estaMuerto() const { return vidaActual <= 0; }
     Hitbox getHitbox() const { return hitbox; }
     void setPosicion(float nx, float ny) { hitbox.x = nx; hitbox.y = ny; }
