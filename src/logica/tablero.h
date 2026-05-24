@@ -1,6 +1,7 @@
 #pragma once
 #include<vector>
 
+
 class Jugador;
 
 class Tablero {
@@ -32,7 +33,7 @@ public:
 	void deseleccionar_Pieza();
 	bool mover_Pieza(int dest_x, int dest_y);
 	void Avanzar_Turno();
-	bool Ejecutar_combate(Jugador* atacante, Jugador* defensor);
+	void Ejecutar_mejoras(int xOrigen, int yOrigen, int xDestino, int yDestino);
 	bool Verificar_Movimiento(int x1, int y1, int x2, int y2);
 	int Comprobar_Ganador();
 

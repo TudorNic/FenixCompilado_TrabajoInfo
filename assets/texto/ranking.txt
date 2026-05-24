@@ -1,2 +1,4 @@
-Sergio 1 0 1
+Jugador_IA 1 0 1
+Jugador_1 1 0 1
+Jugador_2 0 1 1
 IA 0 1 1

@@ -381,8 +381,52 @@ int main()
 
         if (logicaTablero.Comprobar_Ganador() != 0)
         {
-            logicaTablero.reiniciar_Tablero();
-            estadoActual = EstadoJuego::RANKING_PANTALLA;
+           
+
+            if (logicaTablero.Comprobar_Ganador() == 2)
+            {
+                if (esModoPvP) {
+                    
+                    ranking.registrarResultado("Jugador_2", true);   // El Rojo gana
+                    ranking.registrarResultado("Jugador_1", false); // El Azul pierde
+
+                    ranking.guardar();
+                    logicaTablero.reiniciar_Tablero();
+                    estadoActual = EstadoJuego::RANKING_PANTALLA;
+                    pantallaRanking.actualizarTextoRanking();
+                }
+                else {
+                    ranking.registrarResultado("IA", true);   // La IA gana
+                    ranking.registrarResultado("Jugador_IA", false); // El Azul pierde
+
+                    ranking.guardar();
+                    logicaTablero.reiniciar_Tablero();
+                    estadoActual = EstadoJuego::RANKING_PANTALLA;
+                    pantallaRanking.actualizarTextoRanking();
+                }
+            }
+            else if(logicaTablero.Comprobar_Ganador() == 1)
+            {
+                if (esModoPvP) {
+                    
+                    ranking.registrarResultado("Jugador_2", false);   // El Rojo gana
+                    ranking.registrarResultado("Jugador_1", true); // El Azul pierde
+
+                    ranking.guardar();
+                    logicaTablero.reiniciar_Tablero();
+                    estadoActual = EstadoJuego::RANKING_PANTALLA;
+                    pantallaRanking.actualizarTextoRanking();
+                }
+                else {
+                    ranking.registrarResultado("IA", false);   // La IA gana
+                    ranking.registrarResultado("Jugador_IA", true); // El Azul pierde
+
+                    ranking.guardar();
+                    logicaTablero.reiniciar_Tablero();
+                    estadoActual = EstadoJuego::RANKING_PANTALLA;
+                    pantallaRanking.actualizarTextoRanking();
+                }
+            }
         }
 
         // --- DIBUJADO Y ACTUALIZACION DEL JUEGO REAL ---

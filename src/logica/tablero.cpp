@@ -307,41 +307,8 @@ Tablero::~Tablero() {
 }
 
 // Lógica de simulación de Hugo antigua (se mantiene por si se pide)
-bool Tablero::Ejecutar_combate(Jugador* atacante, Jugador* defensor) {
-	if (defensor == nullptr) return true;
+void Tablero::Ejecutar_mejoras(int xOrigen, int yOrigen, int xDestino, int yDestino){
 
-	float Dano_Modificado = defensor->getDanoAtaque();
-	float Velocidad_Modificada = defensor->getVelocidad();
-
-	if (Turno_Actual == 1) {
-		if (defensor->getY() == 2 || defensor->getY() == 6)
-		{
-			Velocidad_Modificada = defensor->getVelocidad() * 1.3f;
-			Dano_Modificado = defensor->getDanoAtaque() * 0.7f;
-		}
-		else if (defensor->getY() == 4)
-		{
-			Velocidad_Modificada = defensor->getVelocidad() * 0.7f;
-			Dano_Modificado = defensor->getDanoAtaque() * 1.3f;
-		}
-	}
-	else if (Turno_Actual == 2) {
-		if (defensor->getY() == 2 || defensor->getY() == 6)
-		{
-			Velocidad_Modificada = defensor->getVelocidad() * 0.7f;
-			Dano_Modificado = defensor->getDanoAtaque() * 1.3f;
-		}
-		else if (defensor->getY() == 4)
-		{
-			Velocidad_Modificada = defensor->getVelocidad() * 1.3f;
-			Dano_Modificado = defensor->getDanoAtaque() * 0.7f;
-		}
-	}
-
-	if (Dano_Modificado > atacante->getDanoAtaque())
-		return false;
-	else
-		return true;
 }
 
 // NUEVA FUNCIÓN MAESTRA: Aplica las bajas reales del combate 2D al tablero táctico
