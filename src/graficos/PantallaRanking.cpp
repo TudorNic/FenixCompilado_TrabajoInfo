@@ -103,26 +103,81 @@ void PantallaRanking::actualizarTextoRanking()
 {
     std::ostringstream ss;
 
-    ss << "POS  "
-        << std::left << std::setw(14) << "JUGADOR"
+    const std::vector<RegistroJugador>& jugadores = ranking.obtenerJugadores();
+
+    if (jugadores.empty()) {
+        rankingTexto.setString("Todavia no hay partidas registradas.");
+        return;
+    }
+
+    ss << "=== TOP JUGADOR VS JUGADOR (PvP) ===\n";
+
+    ss  << std::left << std::setw(4) << "POS"
+        << std::setw(14) << " JUGADOR"
         << std::setw(8) << "V"
         << std::setw(8) << "D"
         << std::setw(8) << "PJ"
         << "PROM\n\n";
 
-    const std::vector<RegistroJugador>& jugadores = ranking.obtenerJugadores();
+    int contPvP = 0;
 
     for (size_t i = 0; i < jugadores.size(); i++)
     {
-        ss << std::left
-            << std::setw(5) << (std::to_string(i + 1) + ".")
-            << std::setw(14) << jugadores[i].nombre
-            << std::setw(8) << jugadores[i].victorias
-            << std::setw(8) << jugadores[i].derrotas
-            << std::setw(8) << jugadores[i].partidasJugadas
-            << std::fixed << std::setprecision(2) << jugadores[i].obtenerPromedio()
-            << "\n";
+        std::string nom = jugadores[i].nombre;
+
+        // Filtro: Si el nombre contiene "IA", "ia" o "Ia", es la maquina y no se imprime
+        bool esMaquina = (nom.find("IA") != std::string::npos ||
+            nom.find("ia") != std::string::npos ||
+            nom.find("Ia") != std::string::npos);
+        if (!esMaquina) {
+            ss << std::left
+                << std::setw(9) << (std::to_string(i + 1) + ".")
+                << std::setw(18) << jugadores[i].nombre
+                << std::setw(9) << jugadores[i].victorias
+                << std::setw(9) << jugadores[i].derrotas
+                << std::setw(9) << jugadores[i].partidasJugadas
+                << std::fixed << std::setprecision(2) << jugadores[i].obtenerPromedio()
+                << "\n";
+            contPvP++;
+        }
+        if (contPvP >= 2) break;
     }
+    if (contPvP == 0) ss << "No hay registros PvP todavía.\n";
+    ss << "\n--------------------------------------------------\n\n";
+
+    ss << "=== TOP JUGADOR VS IA (PvE) ===\n";
+    ss << std::left << std::setw(5) << "POS"
+        << std::setw(14) << "JUGADOR"
+        << std::setw(8) << "V"
+        << std::setw(8) << "D"
+        << std::setw(8) << "PJ"
+        << "PROM\n\n";
+
+    int contIA = 0;
+    for (size_t i = 0; i < jugadores.size(); i++) {
+        std::string nom = jugadores[i].nombre;
+            bool esMaquina = (nom.find("IA") != std::string::npos ||
+                nom.find("ia") != std::string::npos ||
+                nom.find("Ia") != std::string::npos);
+        if (esMaquina) {
+            ss << std::left
+                << std::setw(5) << (std::to_string(contIA + 1) + ".")
+                << std::setw(14) << jugadores[i].nombre
+                << std::setw(8) << jugadores[i].victorias
+                << std::setw(8) << jugadores[i].derrotas
+                << std::setw(8) << jugadores[i].partidasJugadas
+                << std::fixed << std::setprecision(2) << jugadores[i].obtenerPromedio()
+                << "\n";
+            contIA++;
+        }
+        if (contIA >= 2) break; 
+    }
+    if (contIA == 0) ss << "No hay registros contra la IA todavia.\n";
+
+
+
+
+
 
     if (jugadores.empty())
     {

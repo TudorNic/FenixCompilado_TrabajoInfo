@@ -28,9 +28,10 @@ public:
 
     bool debeVolverAlMenu() const;
     void reiniciarVolver();
+    void actualizarTextoRanking();
 
 private:
     void inicializarTextos();
-	void actualizarTextoRanking();
+	
 };
 

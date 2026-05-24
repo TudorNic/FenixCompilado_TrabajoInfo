@@ -86,7 +86,7 @@ public:
     bool puedeAtacar() const { return tiempoRecargaActual <= 0.0f; }
     void reiniciarRecarga() { tiempoRecargaActual = tiempoRecarga; }
     float getVelocidad() const { return velocidad; }
-    float getDanoAtaque()const { return danoAtaque; }
+    float getDanoAtaque() const { return danoAtaque; }
     bool puedeUsarEspecial() const { return tiempoEspecialActual <= 0.0f; }
     void reiniciarEspecial() { tiempoEspecialActual = cooldownEspecial; }
     int getRadio() const { return radio; }

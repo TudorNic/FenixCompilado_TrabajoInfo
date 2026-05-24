@@ -5,7 +5,7 @@
 
 class Defensa : public Jugador {
 public:
-    Defensa(int equipo) : Jugador(100, 200.0f, 25, 1.5f,2,equipo){
+    Defensa(int equipo) : Jugador(100, 4.0f, 25, 1.5f,2,equipo){
         hitbox.ancho = 50.f;
         hitbox.alto = 100.f;
         }
