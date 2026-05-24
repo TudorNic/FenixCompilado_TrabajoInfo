@@ -341,6 +341,8 @@ int main()
                         {
                             logicaTablero.seleccionar_Pieza(clicX, clicY);
                         }
+
+                        
                     }
                 }
             }
@@ -375,6 +377,12 @@ int main()
 
 
             }
+        }
+
+        if (logicaTablero.Comprobar_Ganador() != 0)
+        {
+            logicaTablero.reiniciar_Tablero();
+            estadoActual = EstadoJuego::RANKING_PANTALLA;
         }
 
         // --- DIBUJADO Y ACTUALIZACION DEL JUEGO REAL ---
@@ -553,9 +561,11 @@ int main()
             window.draw(fBarraRojo); window.draw(bVidaRojo);
 
             if (arenaCombate->isTerminado() || jugadorAzul->estaMuerto() || jugadorRojo->estaMuerto()) {
-                int bandoGanador = (jugadorAzul->estaMuerto()) ? 2 : 1;
-
-                logicaTablero.aplicar_Resultado_Combate(origenX, origenY, combateDestX, combateDestY, bandoGanador);
+                
+         
+               int bandoGanador = arenaCombate->getBandoGanador();
+             
+               logicaTablero.aplicar_Resultado_Combate(origenX, origenY, combateDestX, combateDestY, bandoGanador);
 
                 if (!esModoPvP && iaArena != nullptr)
                 {

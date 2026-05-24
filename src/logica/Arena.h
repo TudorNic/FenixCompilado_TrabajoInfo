@@ -27,4 +27,6 @@ public:
     bool isTerminado() const { return combateTerminado; }
     Jugador* getGanador() const { return ganador; }
     const std::vector<Proyectil>& getProyectiles() const { return proyectiles; }
+   
+    int getBandoGanador() const;
 };
