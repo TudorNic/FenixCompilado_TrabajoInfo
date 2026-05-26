@@ -599,7 +599,7 @@ int main()
 
                 if (colisionSegada && !segadaYaGolpeo)
                 {
-                    jugadorRojo->recibirDano(1);
+                    jugadorRojo->recibirDano(15);
                     segadaYaGolpeo = true;
                 }
 
@@ -654,7 +654,7 @@ int main()
 
                 if (colisionSegadaP2 && !segadaYaGolpeoP2)
                 {
-                    jugadorAzul->recibirDano(1);
+                    jugadorAzul->recibirDano(15);
                     segadaYaGolpeoP2 = true;
                 }
 
