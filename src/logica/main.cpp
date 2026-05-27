@@ -451,6 +451,7 @@ int main()
             }
         }
 
+
         // --- DIBUJADO Y ACTUALIZACION DEL JUEGO REAL ---
 
         window.clear();
@@ -796,7 +797,10 @@ int main()
             {
                 esperandoFinCombate = true;
                 timerFinCombate = TIEMPO_ESPERA_FIN_COMBATE;
-                bandoGanadorCombate = (jugadorAzul->estaMuerto()) ? 2 : 1;
+
+                //Con la siguiente linea una de las dos piezas no mueren
+                //bandoGanadorCombate = (jugadorAzul->estaMuerto()) ? 2 : 1; 
+                bandoGanadorCombate = arenaCombate->getBandoGanador();
             }
 
             if (esperandoFinCombate)
@@ -844,10 +848,46 @@ int main()
             if (equipoGanador == 1)
             {
                 textoFin.setString("HA GANADO EL EQUIPO AZUL");
+                //
+                if (esModoPvP) {
+                ranking.registrarResultado("Jugador_2", false); //El rojo pierde
+                ranking.registrarResultado("Jugador_1", true); //El azul gana
+
+                ranking.guardar();
+                logicaTablero.reiniciar_Tablero();
+                pantallaRanking.actualizarTextoRanking();
+            }
+            else {
+                ranking.registrarResultado("IA", false); //La IA pierde
+                ranking.registrarResultado("Jugador_IA", true); //El azul gana
+
+                ranking.guardar();
+                logicaTablero.reiniciar_Tablero();
+                pantallaRanking.actualizarTextoRanking();
+            }
+                //
             }
             else if (equipoGanador == 2)
             {
                 textoFin.setString("HA GANADO EL EQUIPO ROJO");
+                //
+                if (esModoPvP) {
+                    ranking.registrarResultado("Jugador_2", true); //El rojo gana
+                    ranking.registrarResultado("Jugador_1", false); //El azul pierde
+
+                    ranking.guardar();
+                    logicaTablero.reiniciar_Tablero();
+                    pantallaRanking.actualizarTextoRanking();
+                }
+                else {
+                    ranking.registrarResultado("IA", true); //La IA gana
+                    ranking.registrarResultado("Jugador_IA", false); //El azul pierde
+
+                    ranking.guardar();
+                    logicaTablero.reiniciar_Tablero();
+                    pantallaRanking.actualizarTextoRanking();
+                }
+                //
             }
 
             window.draw(textoFin);
