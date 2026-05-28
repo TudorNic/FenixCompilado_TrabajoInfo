@@ -84,16 +84,7 @@ void TableroGrafico::dibujar(sf::RenderWindow& window, Tablero& logica) {
 
     // Dibujar puntos de poder (Balones animados)
     for (int i = 0; i < 5; i++) {
-        /*int px = logica.getPuntoPoder(i).x;
-        int py = logica.getPuntoPoder(i).y;
-
-        spriteTile.setTexture(texPower);
-        spriteTile.setScale(escala * 0.6f, escala * 0.6f);
-        float offset = (64 * escala * (1.0f - 0.6f)) / 2.0f;
-        spriteTile.setPosition((px * 64 * escala) + offset, (py * 64 * escala) + offset);
-        window.draw(spriteTile);*/
-
-        /////CAMBIOS NUEVOS VISUALES//////
+       
         // Dibujar puntos de poder
         for (int i = 0; i < 5; i++) {
             int px = logica.getPuntoPoder(i).x;

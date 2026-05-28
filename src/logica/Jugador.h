@@ -37,9 +37,9 @@ public:
     virtual std::string getNombreClase() const = 0;
     virtual void usarHabilidadEspecial() {}
 
-    void activarAnimacionAtaque() {
+    void activarAnimacionAtaque(float tiempoPersonalizado = 0.2f) {
         estadoActual = ATACANDO;
-        timerAtaqueVisual = DURACION_ATAQUE;
+        timerAtaqueVisual = tiempoPersonalizado;
         frameActual = 0;
         tiempoAnimacion = 0.0f;
     }

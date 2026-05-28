@@ -95,10 +95,27 @@ void cargarAnimacionesArena(std::string nombre, int bando,
     if (carpeta.find("later") != std::string::npos || carpeta.find("porte") != std::string::npos) carpeta = "portero";
 
     for (int i = 0; i < 3; i++) {
-        std::string num = std::to_string(i + 1); // <--- ESTA LÍNEA FALTABA
+        std::string num = std::to_string(i + 1);
+        std::string rutaBase = "assets/players/" + equipo + "/" + carpeta + "/";
 
-        texWalk[i].loadFromFile("assets/players/" + equipo + "/" + carpeta + "/walk/sprite_" + carpeta + "_" + equipo + "_walk-" + num + ".png");
-        texAtk[i].loadFromFile("assets/players/" + equipo + "/" + carpeta + "/atack/sprite_" + carpeta + "_" + equipo + "_atack-" + num + ".png");
+        std::string rutaAtkDash = rutaBase + "atack/sprite_" + carpeta + "_" + equipo + "_atack-" + num + ".png";
+        std::string rutaAtkUnder = rutaBase + "atack/sprite_" + carpeta + "_" + equipo + "_atack_" + num + ".png";
+
+        if (!texAtk[i].loadFromFile(rutaAtkDash)) {
+            if (!texAtk[i].loadFromFile(rutaAtkUnder)) {
+                // Si falta el frame 2 o 3, clonamos el 1
+                if (i > 0) texAtk[i] = texAtk[0];
+            }
+        }
+
+        std::string rutaWalkDash = rutaBase + "walk/sprite_" + carpeta + "_" + equipo + "_walk-" + num + ".png";
+        std::string rutaWalkUnder = rutaBase + "walk/sprite_" + carpeta + "_" + equipo + "_walk_" + num + ".png";
+
+        if (!texWalk[i].loadFromFile(rutaWalkDash)) {
+            if (!texWalk[i].loadFromFile(rutaWalkUnder)) {
+                texWalk[i] = texAtk[i];
+            }
+        }
         texIdle[i] = texWalk[0];
     }
 }
@@ -204,7 +221,6 @@ int main()
 
     float dirDisparoX1 = 1.0f;  float dirDisparoY1 = 0.0f;
     float dirDisparoX2 = -1.0f; float dirDisparoY2 = 0.0f;
-    std::string claseJugadorActual = "";
 
     // Mecánica de Segada (Afición)
     bool segadaActiva = false; float segadaTimer = 0.0f; sf::Vector2f dirSegada(0.f, 0.f);bool segadaYaGolpeo = false;
@@ -425,7 +441,7 @@ int main()
             else if (estadoActual == EstadoJuego::COMBATE) {
                 if (event.type == sf::Event::KeyPressed) {
                     if (event.key.code == sf::Keyboard::Space) {
-                        std::string claseLower = claseJugadorActual;
+                        std::string claseLower = jugadorAzul->getNombreClase();
                         std::transform(claseLower.begin(), claseLower.end(), claseLower.begin(), ::tolower);
 
                         if (claseLower.find("afic") != std::string::npos) {
@@ -433,7 +449,7 @@ int main()
                                 segadaActiva = true; segadaTimer = 0.25f; segadaYaGolpeo = false;
                                 dirSegada = sf::Vector2f(dirDisparoX1, dirDisparoY1);
                                 sprLuchadorAzul.setRotation(65.f);
-                                
+                                jugadorAzul->activarAnimacionAtaque(0.25f);
                             }
                         }
                         else {
@@ -456,6 +472,7 @@ int main()
                                 dirSegadaP2 = sf::Vector2f(dirDisparoX2, dirDisparoY2);
 
                                 sprLuchadorRojo.setRotation(-65.f);
+                                jugadorRojo->activarAnimacionAtaque(0.25f);
                             }
                         }
                         else {
@@ -493,10 +510,12 @@ int main()
                 Jugador* defensor = logicaTablero.getCasilla(combateDestX, combateDestY);
 
                 if (atacante != nullptr && defensor != nullptr) {
-                    claseJugadorActual = atacante->getNombreClase();
 
-                    jugadorAzul = crearLuchadorArena(atacante->getNombreClase(), atacante->getBando());
-                    jugadorRojo = crearLuchadorArena(defensor->getNombreClase(), defensor->getBando());
+                    Jugador* p1 = (atacante->getBando() == 1) ? atacante : defensor;
+                    Jugador* p2 = (atacante->getBando() == 2) ? atacante : defensor;
+
+                    jugadorAzul = crearLuchadorArena(p1->getNombreClase(), p1->getBando());
+                    jugadorRojo = crearLuchadorArena(p2->getNombreClase(), p2->getBando());
 
                     arenaCombate = new Arena(jugadorAzul, jugadorRojo);
                     if (!esModoPvP) iaArena = new ControladorIA(jugadorRojo, jugadorAzul, arenaCombate);
@@ -504,8 +523,8 @@ int main()
                     jugadorAzul->setPosicion(150.f, 280.f);
                     jugadorRojo->setPosicion(500.f, 280.f);
 
-                    cargarAnimacionesArena(atacante->getNombreClase(), atacante->getBando(), azulIdle, azulWalk, azulAtk);
-                    cargarAnimacionesArena(defensor->getNombreClase(), defensor->getBando(), rojoIdle, rojoWalk, rojoAtk);
+                    cargarAnimacionesArena(p1->getNombreClase(), p1->getBando(), azulIdle, azulWalk, azulAtk);
+                    cargarAnimacionesArena(p2->getNombreClase(), p2->getBando(), rojoIdle, rojoWalk, rojoAtk);
 
                     sprLuchadorAzul.setTexture(azulIdle[0]);
                     sprLuchadorRojo.setTexture(rojoIdle[0]);
@@ -637,10 +656,12 @@ int main()
                         std::clamp(jugadorAzul->getHitbox().x + (vA.x / len) * miVel * 100.f * dt, LIMITE_MIN_X, LIMITE_MAX_X - jugadorAzul->getHitbox().ancho),
                         std::clamp(jugadorAzul->getHitbox().y + (vA.y / len) * miVel * 100.f * dt, LIMITE_MIN_Y, LIMITE_MAX_Y - jugadorAzul->getHitbox().alto)
                     );
-
+                    jugadorAzul->setEstado(CAMINANDO);
+                }
+                else {
+                    jugadorAzul->setEstado(QUIETO);
                 }
             }
-
             // --- CORRECCIÓN INTEGRAL: LÍMITES CERRADOS PARA EL JUGADOR 2 / IA EN EL CAMPO AZUL ---
             if (segadaActivaP2) {
                 segadaTimerP2 -= dt;
@@ -690,12 +711,37 @@ int main()
                     jugadorRojo->setPosicion(
                         std::clamp(jugadorRojo->getHitbox().x + (vR.x / len) * velRed * 100.f * dt, LIMITE_MIN_X, LIMITE_MAX_X - jugadorAzul->getHitbox().ancho),
                         std::clamp(jugadorRojo->getHitbox().y + (vR.y / len) * velRed * 100.f * dt, LIMITE_MIN_Y, LIMITE_MAX_Y - jugadorAzul->getHitbox().alto));
+                    jugadorRojo->setEstado(CAMINANDO);
                 }
+                else {
+                    jugadorRojo->setEstado(QUIETO);
+                }
+
             }
             else {
                 if (iaArena != nullptr)
                 {
                     iaArena->actualizar(dt);
+                    if (jugadorRojo->getEstado() == ATACANDO && !segadaActivaP2) {
+                        std::string claseRojo = jugadorRojo->getNombreClase();
+                        std::transform(claseRojo.begin(), claseRojo.end(), claseRojo.begin(), ::tolower);
+
+                        if (claseRojo.find("afic") != std::string::npos) {
+                            segadaActivaP2 = true;
+                            segadaTimerP2 = 0.25f;
+                            segadaYaGolpeoP2 = false;
+
+                            float dx = jugadorAzul->getHitbox().x - jugadorRojo->getHitbox().x;
+                            float dy = jugadorAzul->getHitbox().y - jugadorRojo->getHitbox().y;
+                            float len = std::sqrt(dx * dx + dy * dy);
+
+                            if (len != 0) dirSegadaP2 = sf::Vector2f(dx / len, dy / len);
+                            else dirSegadaP2 = sf::Vector2f(-1.f, 0.f);
+
+                            sprLuchadorRojo.setRotation(-65.f);
+                            jugadorRojo->activarAnimacionAtaque(0.25f);
+                        }
+                    }
                 }
             }
 
