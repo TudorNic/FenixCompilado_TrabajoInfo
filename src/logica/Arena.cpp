@@ -25,9 +25,6 @@ void Arena::actualizar(float deltaTime) {
             proyectiles[i].desactivar();
         }
 
-        /*if (!proyectiles[i].isActivo() || proyectiles[i].getHitbox().x < -100 || proyectiles[i].getHitbox().x > 2500) {
-            proyectiles.erase(proyectiles.begin() + i);
-        }*/
         Hitbox hb = proyectiles[i].getHitbox();
 
         if (!proyectiles[i].isActivo() ||

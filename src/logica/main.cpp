@@ -257,7 +257,7 @@ int main()
                 pantallaModoJuego.reiniciarVolver();
                 estadoActual = EstadoJuego::MENU;
 
-                ////AÑADIDO PARA AL FINALIZAR PARTIDA REINICIAR
+                ////AÑADIDO PARA AL FINALIZAR REINICIAR PARTIDA 
                 int equipoGanador = 0;
 
                 sf::Font fuenteFin;
@@ -418,11 +418,7 @@ int main()
                     }
                     if (event.key.code == sf::Keyboard::E) arenaCombate->comandoEspecialJugador1();
 
-                    /*if (esModoPvP && event.key.code == sf::Keyboard::RControl) {
-                        if (jugadorRojo->getNombreClase().find("Afic") == std::string::npos && jugadorRojo->getNombreClase().find("afic") == std::string::npos) {
-                            arenaCombate->comandoDisparoJugador2(dirDisparoX2, dirDisparoY2);
-                        }
-                    }*/
+                
                     if (esModoPvP && event.key.code == sf::Keyboard::RControl) {
                         std::string claseRojo = jugadorRojo->getNombreClase();
                         std::transform(claseRojo.begin(), claseRojo.end(), claseRojo.begin(), ::tolower);
@@ -497,19 +493,12 @@ int main()
 
                     logicaTablero.resetearCombatePendiente();
                     sonidoJuego.reproducirEntradaCombate();
-                    //estadoActual = EstadoJuego::COMBATE;
+                    
                     timerPreCombate = 3.0f;
                     estadoActual = EstadoJuego::PRE_COMBATE;
                 }
             }
 
-            /*logicaTablero.Comprobar_Ganador();
-            graficosTablero.dibujar(window, logicaTablero);
-            break;
-            */
-
-            //////
-            /////NUEVO 
             int ganador = logicaTablero.Comprobar_Ganador();
 
             if (ganador != 0)
@@ -576,10 +565,7 @@ int main()
                 float velocidadSegada = 520.f;
                 float nuevaX = jugadorAzul->getHitbox().x + (dirSegada.x * velocidadSegada * dt);
                 float nuevaY = jugadorAzul->getHitbox().y + (dirSegada.y * velocidadSegada * dt);
-                ///ANTIGUO
-                /*nuevaX = std::clamp(nuevaX, 25.f, 600.f - 25.f - jugadorAzul->getHitbox().ancho);
-                nuevaY = std::clamp(nuevaY, 25.f, 560.f - 25.f - jugadorAzul->getHitbox().alto);*/
-                //NUEVO
+               
                 nuevaX = std::clamp(nuevaX,LIMITE_MIN_X,LIMITE_MAX_X - jugadorAzul->getHitbox().ancho);
                 nuevaY = std::clamp(nuevaY,LIMITE_MIN_Y,LIMITE_MAX_Y - jugadorAzul->getHitbox().alto);
                 ///FIN NUEVO
@@ -692,22 +678,16 @@ int main()
             jugadorAzul->actualizar(dt);
             jugadorRojo->actualizar(dt);
 
-            //NUEVO PARA QUE SE CAMBIE LA VISTA
+            //VUELVE LA VISTA INICIAL
             sf::View vistaCombate(sf::FloatRect(0.f, 0.f, 600.f, 560.f));
             window.setView(vistaCombate);
-            ///
+            
             window.draw(sprCampo);
 
             sprLuchadorAzul.setScale(3.0f, 3.0f);
             sprLuchadorRojo.setScale(3.0f, 3.0f);
             sprBalon.setScale(0.8f, 0.8f);
-            //ANTIGUO
-            /*sprLuchadorAzul.setPosition(jugadorAzul->getHitbox().x, jugadorAzul->getHitbox().y);
-            sprLuchadorRojo.setPosition(jugadorRojo->getHitbox().x, jugadorRojo->getHitbox().y);
-            window.draw(sprLuchadorAzul);
-            window.draw(sprLuchadorRojo);*/
 
-            //NUEVO
             sprLuchadorAzul.setPosition(jugadorAzul->getHitbox().x, jugadorAzul->getHitbox().y);
             sprLuchadorRojo.setPosition(jugadorRojo->getHitbox().x, jugadorRojo->getHitbox().y);
 
@@ -746,7 +726,6 @@ int main()
             bVidaAzul.setPosition(fBarraAzul.getPosition());
             bVidaAzul.setFillColor(sf::Color::Green); // P1 siempre es verde (tu aliado/tú)
 
-           // window.draw(fBarraAzul); window.draw(bVidaAzul);
             if (!jugadorAzul->estaMuerto())
             {
                 window.draw(fBarraAzul);
@@ -764,42 +743,19 @@ int main()
             bVidaRojo.setPosition(fBarraRojo.getPosition());
             bVidaRojo.setFillColor(sf::Color::Red); // Enemigo/P2 siempre es rojo
 
-           // window.draw(fBarraRojo); window.draw(bVidaRojo);
             if (!jugadorRojo->estaMuerto())
             {
                 window.draw(fBarraRojo);
                 window.draw(bVidaRojo);
             }
 
-            //ANTIGUO
-            /*if (arenaCombate->isTerminado() || jugadorAzul->estaMuerto() || jugadorRojo->estaMuerto()) {
-                int bandoGanador = (jugadorAzul->estaMuerto()) ? 2 : 1;
-
-                logicaTablero.aplicar_Resultado_Combate(origenX, origenY, combateDestX, combateDestY, bandoGanador);
-
-                if (!esModoPvP && iaArena != nullptr)
-                {
-                    delete iaArena;
-                    iaArena = nullptr;
-                }
-
-
-                delete arenaCombate; delete jugadorAzul; delete jugadorRojo;
-                arenaCombate = nullptr;
-                jugadorAzul = nullptr;
-                jugadorRojo = nullptr;
-                estadoActual = EstadoJuego::TABLERO;
-            }*/
-
-            //NUEVO
             if (!esperandoFinCombate &&
                 (arenaCombate->isTerminado() || jugadorAzul->estaMuerto() || jugadorRojo->estaMuerto()))
             {
                 esperandoFinCombate = true;
                 timerFinCombate = TIEMPO_ESPERA_FIN_COMBATE;
 
-                //Con la siguiente linea una de las dos piezas no mueren
-                //bandoGanadorCombate = (jugadorAzul->estaMuerto()) ? 2 : 1; 
+                
                 bandoGanadorCombate = arenaCombate->getBandoGanador();
             }
 
