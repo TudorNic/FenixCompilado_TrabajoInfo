@@ -102,6 +102,7 @@ int main()
 
         //---FIN PARTIDA---
     int equipoGanador = 0;
+	bool resultadoRegistrado = false;
     sf::Text textoFin;
     textoFin.setFont(fuenteFin);
     textoFin.setCharacterSize(36);
@@ -844,50 +845,52 @@ int main()
         case EstadoJuego::FIN_PARTIDA:
         {
             window.clear(sf::Color(20, 20, 20));
-
+            
             if (equipoGanador == 1)
             {
                 textoFin.setString("HA GANADO EL EQUIPO AZUL");
-                //
-                if (esModoPvP) {
-                ranking.registrarResultado("Jugador_2", false); //El rojo pierde
-                ranking.registrarResultado("Jugador_1", true); //El azul gana
-
-                ranking.guardar();
-                logicaTablero.reiniciar_Tablero();
-                pantallaRanking.actualizarTextoRanking();
-            }
-            else {
-                ranking.registrarResultado("IA", false); //La IA pierde
-                ranking.registrarResultado("Jugador_IA", true); //El azul gana
-
-                ranking.guardar();
-                logicaTablero.reiniciar_Tablero();
-                pantallaRanking.actualizarTextoRanking();
-            }
-                //
             }
             else if (equipoGanador == 2)
             {
                 textoFin.setString("HA GANADO EL EQUIPO ROJO");
-                //
-                if (esModoPvP) {
-                    ranking.registrarResultado("Jugador_2", true); //El rojo gana
-                    ranking.registrarResultado("Jugador_1", false); //El azul pierde
+            }
 
-                    ranking.guardar();
-                    logicaTablero.reiniciar_Tablero();
-                    pantallaRanking.actualizarTextoRanking();
+            // Registrar el resultado solo una vez
+            if (!resultadoRegistrado)
+            {
+                if (equipoGanador == 1)
+                {
+                    // Gana equipo azul
+                    if (esModoPvP)
+                    {
+                        ranking.registrarResultado("Jugador_1", true);   // Azul gana
+                        ranking.registrarResultado("Jugador_2", false);  // Rojo pierde
+                    }
+                    else
+                    {
+                        ranking.registrarResultado("Jugador_IA", true);  // Azul gana
+                        ranking.registrarResultado("IA", false);         // IA pierde
+                    }
                 }
-                else {
-                    ranking.registrarResultado("IA", true); //La IA gana
-                    ranking.registrarResultado("Jugador_IA", false); //El azul pierde
+                else if (equipoGanador == 2)
+                {
+                    // Gana equipo rojo
+                    if (esModoPvP)
+                    {
+                        ranking.registrarResultado("Jugador_2", true);   // Rojo gana
+                        ranking.registrarResultado("Jugador_1", false);  // Azul pierde
+                    }
+                    else
+                    {
+                        ranking.registrarResultado("IA", true);          // IA gana
+                        ranking.registrarResultado("Jugador_IA", false); // Azul pierde
+                    }
+                }
 
-                    ranking.guardar();
-                    logicaTablero.reiniciar_Tablero();
-                    pantallaRanking.actualizarTextoRanking();
-                }
-                //
+                ranking.guardar();
+                pantallaRanking.actualizarTextoRanking();
+
+                resultadoRegistrado = true;
             }
 
             window.draw(textoFin);
@@ -900,6 +903,7 @@ int main()
 
                 estadoActual = EstadoJuego::MENU;
                 equipoGanador = 0;
+				resultadoRegistrado = false;
             }
 
             break;
