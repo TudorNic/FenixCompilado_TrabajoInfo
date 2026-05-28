@@ -24,6 +24,8 @@ private:
     DificultadIA dificultadActual;
     bool detectarPeligro(float& dirEscapeX, float& dirEscapeY);
 
+    float temporizadorInicio;
+
 public:
     // Constructor
     ControladorIA(Jugador* botPtr, Jugador* humanoPtr, Arena* arenaPtr);

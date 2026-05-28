@@ -66,9 +66,6 @@
     <ClCompile Include="..\..\graficos\tablerografico.cpp">
       <Filter>Graficos</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\audio\SonidoJuego.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>

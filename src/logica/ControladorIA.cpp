@@ -1,6 +1,7 @@
 #include "ControladorIA.h"
 #include <cmath>
 #include <cstdlib>
+#include <algorithm>
 
 bool ControladorIA::detectarPeligro(float& dirEscapeX, float& dirEscapeY) {
     const auto& listaProyectiles = arena->getProyectiles();
@@ -8,9 +9,6 @@ bool ControladorIA::detectarPeligro(float& dirEscapeX, float& dirEscapeY) {
 
     for (const auto& p : listaProyectiles) {
         if (bot->getNombreClase() == "aficion") return false;
-
-        const auto& listaProyectiles = arena->getProyectiles();
-        Hitbox hBot = bot->getHitbox();
 
         // Ignorar proyectiles que ya han chocado
         if (p.isActivo()) {
@@ -39,11 +37,18 @@ ControladorIA::ControladorIA(Jugador* botPtr, Jugador* humanoPtr, Arena* arenaPt
     estadoActual = EstadoIA::PERSEGUIR;
 
     dificultadActual = DificultadIA::NORMAL;
+
+    temporizadorInicio = 0.5f;
 }
 
 void ControladorIA::actualizar(float deltaTime) {
     // No hacer nada si la partida ha acabado
     if (arena->isTerminado() || bot->estaMuerto() || humano->estaMuerto()) {
+        return;
+    }
+
+    if (temporizadorInicio > 0.0f) {
+        temporizadorInicio -= deltaTime;
         return;
     }
 
@@ -196,6 +201,7 @@ void ControladorIA::actualizar(float deltaTime) {
                     float velDisparoY = dy / distancia;
                     arena->comandoDisparoJugador2(velDisparoX, velDisparoY);
                     bot->reiniciarRecarga();
+                    bot->activarAnimacionAtaque();
                 }
             }
         }
@@ -212,7 +218,13 @@ void ControladorIA::actualizar(float deltaTime) {
             float dx = hHumano.x - hBot.x;
             float dy = hHumano.y - hBot.y;
             float distancia = std::sqrt(dx * dx + dy * dy);
-
+            //USO DE HABILIDAD ESPECIAL
+            if (bot->getNombreClase() == "entrenador" && bot->puedeUsarEspecial()) {
+                if (bot->getVidaActual() <= 70) {
+                    arena->comandoEspecialJugador2();
+                    bot->reiniciarEspecial();
+                }
+            }
             // Si está a tiro y el arma se ha recargado
             if (distancia < 450.0f && bot->puedeAtacar()) {
                 float velocidadProyectil = 420.0f;
@@ -220,20 +232,7 @@ void ControladorIA::actualizar(float deltaTime) {
 
                 float futuroX = hHumano.x;
                 float futuroY = hHumano.y;
-                //USO DE HABILIDAD ESPECIAL
-                if (distancia < 350.0f && bot->puedeUsarEspecial()) {
 
-                    // Probabilidad por frame de lanzarlo
-                    int probabilidadEspecial = 0;
-                    if (dificultadActual == DificultadIA::FACIL) probabilidadEspecial = 1;
-                    else if (dificultadActual == DificultadIA::NORMAL) probabilidadEspecial = 3;
-                    else if (dificultadActual == DificultadIA::DIFICIL) probabilidadEspecial = 8;
-
-                    if (rand() % 100 < probabilidadEspecial) {
-                        arena->comandoEspecialJugador2();
-                        bot->reiniciarEspecial();
-                    }
-                }
                 // En nivel Fácil no predice el futuro, tira a donde estás
                 if (dificultadActual != DificultadIA::FACIL) {
                     futuroX += (velHumanoX * tiempoImpacto);
@@ -258,10 +257,12 @@ void ControladorIA::actualizar(float deltaTime) {
 
                     arena->comandoDisparoJugador2(velDisparoX, velDisparoY);
                     bot->reiniciarRecarga();
+                    bot->activarAnimacionAtaque();
                 }
             }
         }
-        // Aplicar movimiento final
+    }
+        // Aplicar movimiento
         if (dirX != 0.0f || dirY != 0.0f) {
             float velocidadReal = bot->getVelocidad() * 100.0f;
             float nuevaX = hBot.x + (dirX * velocidadReal * deltaTime);
@@ -275,6 +276,10 @@ void ControladorIA::actualizar(float deltaTime) {
             nuevaY = std::clamp(nuevaY, margen, limiteAlto - margen - hBot.alto);
 
             bot->setPosicion(nuevaX, nuevaY);
+
+            bot->setEstado(CAMINANDO);
         }
+    else {
+        bot->setEstado(QUIETO);
     }
 }

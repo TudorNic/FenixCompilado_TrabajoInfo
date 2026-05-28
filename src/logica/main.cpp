@@ -80,6 +80,29 @@ std::string obtenerRutaSpriteArena(std::string nombre, int bando) {
     return "assets/players/" + equipo + "/" + carpeta + "/atack/sprite_" + carpeta + "_" + equipo + "_atack-1.png";
 }
 
+void cargarAnimacionesArena(std::string nombre, int bando,
+    std::vector<sf::Texture>& texIdle, std::vector<sf::Texture>& texWalk, std::vector<sf::Texture>& texAtk)
+{
+    std::string equipo = (bando == 1) ? "blue" : "red";
+    std::string nomLower = nombre;
+    std::transform(nomLower.begin(), nomLower.end(), nomLower.begin(), ::tolower);
+
+    std::string carpeta = nomLower;
+    if (carpeta.find("afic") != std::string::npos) carpeta = "aficion";
+    if (carpeta.find("defen") != std::string::npos) carpeta = "defensa";
+    if (carpeta.find("centro") != std::string::npos) carpeta = "centrocampista";
+    if (carpeta.find("entren") != std::string::npos) carpeta = "entrenador";
+    if (carpeta.find("later") != std::string::npos || carpeta.find("porte") != std::string::npos) carpeta = "portero";
+
+    for (int i = 0; i < 3; i++) {
+        std::string num = std::to_string(i + 1); // <--- ESTA LÍNEA FALTABA
+
+        texWalk[i].loadFromFile("assets/players/" + equipo + "/" + carpeta + "/walk/sprite_" + carpeta + "_" + equipo + "_walk-" + num + ".png");
+        texAtk[i].loadFromFile("assets/players/" + equipo + "/" + carpeta + "/atack/sprite_" + carpeta + "_" + equipo + "_atack-" + num + ".png");
+        texIdle[i] = texWalk[0];
+    }
+}
+
 int main()
 {
     srand(static_cast<unsigned int>(time(NULL)));
@@ -196,8 +219,8 @@ int main()
     // Arena de combate
     Jugador* jugadorAzul = nullptr; Jugador* jugadorRojo = nullptr;
     Arena* arenaCombate = nullptr; ControladorIA* iaArena = nullptr;
-
-    sf::Texture texLuchadorAzul, texLuchadorRojo;
+    std::vector<sf::Texture> azulIdle(3), azulWalk(3), azulAtk(3);
+    std::vector<sf::Texture> rojoIdle(3), rojoWalk(3), rojoAtk(3);
     sf::Sprite sprLuchadorAzul, sprLuchadorRojo;
 
     sf::Texture texCampo, texBalon;
@@ -481,10 +504,11 @@ int main()
                     jugadorAzul->setPosicion(150.f, 280.f);
                     jugadorRojo->setPosicion(500.f, 280.f);
 
-                    texLuchadorAzul.loadFromFile(obtenerRutaSpriteArena(atacante->getNombreClase(), atacante->getBando()));
-                    texLuchadorRojo.loadFromFile(obtenerRutaSpriteArena(defensor->getNombreClase(), defensor->getBando()));
-                    sprLuchadorAzul.setTexture(texLuchadorAzul);
-                    sprLuchadorRojo.setTexture(texLuchadorRojo);
+                    cargarAnimacionesArena(atacante->getNombreClase(), atacante->getBando(), azulIdle, azulWalk, azulAtk);
+                    cargarAnimacionesArena(defensor->getNombreClase(), defensor->getBando(), rojoIdle, rojoWalk, rojoAtk);
+
+                    sprLuchadorAzul.setTexture(azulIdle[0]);
+                    sprLuchadorRojo.setTexture(rojoIdle[0]);
 
                     sprLuchadorAzul.setRotation(0.f); sprLuchadorRojo.setRotation(0.f);
                     segadaActiva = false;
@@ -688,6 +712,17 @@ int main()
             sprLuchadorAzul.setScale(3.0f, 3.0f);
             sprLuchadorRojo.setScale(3.0f, 3.0f);
             sprBalon.setScale(0.8f, 0.8f);
+            auto actualizarSprite = [](Jugador* j, sf::Sprite& spr, const std::vector<sf::Texture>& idl, const std::vector<sf::Texture>& wlk, const std::vector<sf::Texture>& atk) {
+                int frame = j->getFrameActual();
+                EstadoJugador estado = j->getEstado();
+
+                if (estado == ATACANDO) spr.setTexture(atk[frame]);
+                else if (estado == CAMINANDO) spr.setTexture(wlk[frame]);
+                else spr.setTexture(idl[frame]); // QUIETO
+                };
+
+            actualizarSprite(jugadorAzul, sprLuchadorAzul, azulIdle, azulWalk, azulAtk);
+            actualizarSprite(jugadorRojo, sprLuchadorRojo, rojoIdle, rojoWalk, rojoAtk);
 
             sprLuchadorAzul.setPosition(jugadorAzul->getHitbox().x, jugadorAzul->getHitbox().y);
             sprLuchadorRojo.setPosition(jugadorRojo->getHitbox().x, jugadorRojo->getHitbox().y);
