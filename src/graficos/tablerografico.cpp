@@ -44,7 +44,7 @@ void TableroGrafico::cargarTexturas() {
     texLateral[1].loadFromFile("assets/players/red/portero/atack/sprite_portero_red_atack-1.png");
    // texLateral[1].loadFromFile("assets/players/red/defensa/atack/sprite_defensa_red_atack-1.png");
    // texAficion[1].loadFromFile("assets/players/red/aficion/atack/sprite_aficion_red_atack-1.png");
-    texAficion[1].loadFromFile("../../../assets/players/red/aficion/atack/sprite_aficion_red_atack-1.png");
+    texAficion[1].loadFromFile("assets/players/red/aficion/atack/sprite_aficion_red_atack-1.png");
     
     spriteTile.setTexture(texGrass);
     spriteTile.setScale(escala, escala);

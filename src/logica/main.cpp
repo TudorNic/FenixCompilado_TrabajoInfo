@@ -132,7 +132,7 @@ int main()
 
         //---PANTALLA PRE COMBATE---
     sf::Font fuenteFin;
-    fuenteFin.loadFromFile("../../../assets/fonts/Bungee-Regular.ttf");
+    fuenteFin.loadFromFile("assets/fonts/Bungee-Regular.ttf");
     float timerPreCombate = 3.0f;
     sf::Text textoPreCombate;
     textoPreCombate.setFont(fuenteFin);
@@ -159,7 +159,7 @@ int main()
  
         // --- RANKING ---
 
-    Ranking ranking("../../../assets/texto/ranking.txt");
+    Ranking ranking("assets/texto/ranking.txt");
     ranking.cargar();
 
     
@@ -167,43 +167,43 @@ int main()
  
     PantallaMenu pantallaMenu(
         window,
-        "../../../assets/fonts/Bungee-Regular.ttf",
-        "../../../assets/images/menu/fondo_haram.png",
-        "../../../assets/images/menu/pelota_futbol.png",
-        "../../../assets/audio/menu/mover_opcion.mp3",
-        "../../../assets/audio/menu/confirmar_opcion.mp3",
-        "../../../assets/audio/menu/salir_menu.mp3",
-        "../../../assets/audio/menu/musica_haram_fondo_menu.mp3"
+        "assets/fonts/Bungee-Regular.ttf",
+        "assets/images/menu/fondo_haram.png",
+        "assets/images/menu/pelota_futbol.png",
+        "assets/audio/menu/mover_opcion.mp3",
+        "assets/audio/menu/confirmar_opcion.mp3",
+        "assets/audio/menu/salir_menu.mp3",
+        "assets/audio/menu/musica_haram_fondo_menu.mp3"
     );
 
     PantallaModoJuego pantallaModoJuego(
         window,
-        "../../../assets/fonts/Bungee-Regular.ttf",
-		"../../../assets/images/menu/fondo_haram.png",
-        "../../../assets/audio/menu/mover_opcion.mp3"
+        "assets/fonts/Bungee-Regular.ttf",
+		"assets/images/menu/fondo_haram.png",
+        "assets/audio/menu/mover_opcion.mp3"
     );
 
     PantallaDificultadIA pantallaDificultadIA(
         window,
-        "../../../assets/fonts/Bungee-Regular.ttf",
-        "../../../assets/images/menu/fondo_haram.png",
-        "../../../assets/audio/menu/mover_opcion.mp3"
+        "assets/fonts/Bungee-Regular.ttf",
+        "assets/images/menu/fondo_haram.png",
+        "assets/audio/menu/mover_opcion.mp3"
     );
 
     PantallaInstrucciones pantallaInstrucciones(
         window,
-        "../../../assets/fonts/Bungee-Regular.ttf"
+        "assets/fonts/Bungee-Regular.ttf"
     );
 
     PantallaRanking pantallaRanking(
         window,
         ranking,
-        "../../../assets/fonts/Bungee-Regular.ttf"
+        "assets/fonts/Bungee-Regular.ttf"
     );
     //Sonido juego
     SonidoJuego sonidoJuego(
-        "../../../assets/audio/tablero/Sonido_ambiente_estadio.mp3",
-        "../../../assets/audio/tablero/Silbato_arbitro.mp3"
+        "assets/audio/tablero/Sonido_ambiente_estadio.mp3",
+        "assets/audio/tablero/Silbato_arbitro.mp3"
     );
 
     // --- TABLERO TÁCTICO ---
@@ -301,7 +301,7 @@ int main()
                 int equipoGanador = 0;
 
                 sf::Font fuenteFin;
-                fuenteFin.loadFromFile("../../../assets/fonts/Bungee-Regular.ttf");
+                fuenteFin.loadFromFile("assets/fonts/Bungee-Regular.ttf");
 
                 sf::Text textoFin;
                 textoFin.setFont(fuenteFin);
