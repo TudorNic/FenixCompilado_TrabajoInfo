@@ -220,7 +220,7 @@ void ControladorIA::actualizar(float deltaTime) {
             float distancia = std::sqrt(dx * dx + dy * dy);
             //USO DE HABILIDAD ESPECIAL
             if (bot->getNombreClase() == "entrenador" && bot->puedeUsarEspecial()) {
-                if (bot->getVidaActual() <= 70) {
+                if (bot->getVidaActual() <= 40) {
                     arena->comandoEspecialJugador2();
                     bot->reiniciarEspecial();
                 }
